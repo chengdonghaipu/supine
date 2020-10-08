@@ -2,5 +2,167 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "projects": {}
+  "projects": {
+    "dy-form": {
+      "projectType": "library",
+      "root": "projects/dy-form",
+      "sourceRoot": "projects/dy-form/src",
+      "prefix": "jd",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/dy-form/tsconfig.lib.json",
+            "project": "projects/dy-form/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/dy-form/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dy-form/src/test.ts",
+            "tsConfig": "projects/dy-form/tsconfig.spec.json",
+            "karmaConfig": "projects/dy-form/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dy-form/tsconfig.lib.json",
+              "projects/dy-form/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "dev": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/dev",
+      "sourceRoot": "projects/dev/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/dev",
+            "index": "projects/dev/src/index.html",
+            "main": "projects/dev/src/main.ts",
+            "polyfills": "projects/dev/src/polyfills.ts",
+            "tsConfig": "projects/dev/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/dev/src/favicon.ico",
+              "projects/dev/src/assets"
+            ],
+            "styles": [
+              "projects/dev/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/dev/src/environments/environment.ts",
+                  "with": "projects/dev/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "dev:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "dev:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "dev:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dev/src/test.ts",
+            "polyfills": "projects/dev/src/polyfills.ts",
+            "tsConfig": "projects/dev/tsconfig.spec.json",
+            "karmaConfig": "projects/dev/karma.conf.js",
+            "assets": [
+              "projects/dev/src/favicon.ico",
+              "projects/dev/src/assets"
+            ],
+            "styles": [
+              "projects/dev/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dev/tsconfig.app.json",
+              "projects/dev/tsconfig.spec.json",
+              "projects/dev/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/dev/e2e/protractor.conf.js",
+            "devServerTarget": "dev:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dev:serve:production"
+            }
+          }
+        }
+      }
+    }},
+  "defaultProject": "dy-form"
 }

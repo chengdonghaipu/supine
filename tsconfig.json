@@ -6,5 +6,18 @@
 */
 {
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./projects/dy-form/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/dy-form/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/dev/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/dev/tsconfig.spec.json"
+    }
+]
 }

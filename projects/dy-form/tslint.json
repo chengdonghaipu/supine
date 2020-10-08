@@ -1,0 +1,22 @@
+{
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [
+      true,
+      "attribute",
+      "jd",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "jd",
+      "kebab-case"
+    ],
+    "variable-name": false,
+    "typedef": false,
+    "no-redundant-jsdoc": false,
+    "no-unused-expression": false,
+    "forin": false
+  }
+}

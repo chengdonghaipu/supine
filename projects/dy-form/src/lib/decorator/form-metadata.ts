@@ -1,0 +1,4 @@
+
+export const DY_FORM_OPTIONS = 'DY_FORM_OPTIONS';
+
+export const VALIDATOR_RULE = 'VALIDATOR_RULE';

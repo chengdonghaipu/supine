@@ -1,0 +1,17 @@
+:host {
+  display: block;
+
+  .jd-dy-form-body-outlet {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+
+:host(.jd-dy-form-vertical) {
+  ::ng-deep {
+    .jd-form-control-item {
+      width: 100%;
+    }
+  }
+}
