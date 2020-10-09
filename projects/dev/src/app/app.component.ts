@@ -14,7 +14,7 @@ export class AppComponent implements OnInit{
 
   constructor() {
     setTimeout(() => {
-      this.dyFormRef.addControl(new InputModelControl({name: 'test', label: 'test'}));
+      // this.dyFormRef.addControl(new InputModelControl({name: 'test', label: 'test'}));
     }, 5000);
   }
 

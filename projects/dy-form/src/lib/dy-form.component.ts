@@ -287,7 +287,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return 0;
   }
 
-  _removeControlView({controlName, uid, areaId}: FormControlConfig) {
+  _removeControlView({uid, areaId}: FormControlConfig) {
     // 如果存在 说明是分区模式渲染
     let outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
 
@@ -390,6 +390,32 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       return formControl;
     };
 
+    const updateValidators = (control: AbstractControl, op) => {
+      const oldAsyncValidators = control.asyncValidator;
+      const oldValidators = control.validator;
+
+      console.log(oldValidators, 'oldValidators');
+      /**
+       * 当修改控件时
+       * 先清除验证器 然后根据一些规则 重新生成验证器
+       */
+      control.clearAsyncValidators();
+      control.clearValidators();
+
+      // tslint:disable-next-line:one-variable-per-declaration
+      const _asyncValidators = op.asyncValidators && op.asyncValidators.length ?
+        op.asyncValidators : op.asyncValidators === null ? [] : oldAsyncValidators,
+        _validators = op.validators && op.validators.length ?
+          op.validators : op.validators === null ? [] : oldValidators;
+
+      /**
+       * 当修改控件时
+       * 重新设置验证器
+       */
+      control.setAsyncValidators(_asyncValidators);
+      control.setValidators(_validators);
+    };
+
     if (config.group || config.parent) {
       if (config.group) {
         exit = this.formArea.get(controlName) as FormGroup;
@@ -421,14 +447,15 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
         setControlStatus(control, config.disabled);
 
-        // updateValidators(control, fi);
+        updateValidators(control, config);
       }
 
       if (isControl) {
         const control = this.formArea.get(controlName);
 
         setControlStatus(control, config.disabled);
-        // updateValidators(control, fi);
+
+        updateValidators(control, config);
       }
     } else {
       let isControl = true;

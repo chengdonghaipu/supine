@@ -5,9 +5,10 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {AsyncValidatorFn, FormControl, ValidatorFn} from '@angular/forms';
 import {BaseFormModel} from './models';
 import {ControlLayout} from './models/type';
-import {DY_FORM_OPTIONS} from './decorator/form-metadata';
+import {DY_FORM_OPTIONS, VALIDATOR_RULE} from './decorator/form-metadata';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {DyFormComponent} from './dy-form.component';
+import {universal_valid} from './validator-fn';
 
 
 interface InitialData {
@@ -155,7 +156,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
             }
           }
 
-          /*const ruleObj = Reflect.getMetadata(VALIDATOR_RULE, _model, value.name);
+          const ruleObj = Reflect.getMetadata(VALIDATOR_RULE, _model, value.name);
 
           if (ruleObj) {
             // tslint:disable-next-line:prefer-const
@@ -168,7 +169,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
             value.required = /required/.test(rule);
 
             (value.validators as ValidatorFn[]).push(universal_valid(value.name, rule, msg));
-          }*/
+          }
 
           if (typeof value.initHook === 'function') {
             value.initHook.bind(_model)(value, _model);

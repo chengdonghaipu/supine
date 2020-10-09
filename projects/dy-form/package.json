@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^10.0.14",
-    "@angular/core": "^10.0.14"
+    "@angular/core": "^10.0.14",
+    "date-fns": "^2.16.1",
+    "lodash": "^4.17.20"
   },
   "dependencies": {
     "tslib": "^2.0.0"

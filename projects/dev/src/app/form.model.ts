@@ -1,8 +1,10 @@
-import {BaseFormModel, InputModel} from 'dy-form';
+import {BaseFormModel, InputModel, ValidatorRule} from 'dy-form';
 
 export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})
+  @ValidatorRule(['max:999'], {max: '最大排土次数999'})
   mineralName = [null];
+
   @InputModel<FormModel>({label: '矿岩名称1', areaId: 2})
   mineralName5 = [null];
 
