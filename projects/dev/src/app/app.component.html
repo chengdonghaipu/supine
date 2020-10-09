@@ -4,7 +4,7 @@
     <input type="text" id="{{config.name}}"
            *jdDyFormControlCellDef="let control; let config = config let even = even"
            [formControl]="control"
-           [placeholder]="config.placeHolder + even">
+           [placeholder]="config.placeHolder + config.disabled">
   </ng-container>
   <jd-form-control-item *jdDyFormControlItemDef></jd-form-control-item>
 

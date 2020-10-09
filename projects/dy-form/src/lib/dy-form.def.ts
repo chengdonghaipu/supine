@@ -90,6 +90,11 @@ export class DyFormAreaOutlet implements OnDestroy {
     class: 'jd-form-area',
     role: 'form-area',
   },
+  styles: [`
+    jd-form-area {
+      display: block;
+    }
+  `],
   // tslint:disable-next-line:validate-decorators
   changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None,
@@ -158,7 +163,7 @@ export class DyFormControlItem {
     class: 'jd-form-header',
   },
   styles: [`
-    :host {
+    jd-form-header {
       display: block;
     }
   `],
@@ -182,7 +187,7 @@ export class DyFormHeader {
     class: 'jd-form-footer',
   },
   styles: [`
-    :host {
+    jd-form-footer {
       display: block;
     }
   `],

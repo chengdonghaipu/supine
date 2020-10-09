@@ -1,7 +1,7 @@
 import {BaseFormModel, InputModel} from 'dy-form';
 
 export class FormModel extends BaseFormModel {
-  @InputModel<FormModel>({label: '矿岩名称0', areaId: 6})
+  @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})
   mineralName = [null];
   @InputModel<FormModel>({label: '矿岩名称1', areaId: 2})
   mineralName5 = [null];

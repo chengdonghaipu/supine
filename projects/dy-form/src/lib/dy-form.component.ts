@@ -11,7 +11,7 @@ import {
   Renderer2, ViewChild,
 } from '@angular/core';
 import {Subject} from 'rxjs';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {
   DyFormAreaDef,
   DyFormColumnDef,
@@ -20,7 +20,7 @@ import {
   DyFormControlItemOutlet,
   DyFormCellDefContext, DyFormAreaOutlet, DyFormArea
 } from './dy-form.def';
-import {AbstractDyFormRef} from './dy-form-ref';
+import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
 import {debounceTime, distinctUntilChanged, takeUntil} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
@@ -47,6 +47,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _formOptionsDirty = true;
 
   private _columnDefsByName = new Map<string, DyFormColumnDef>();
+
+  private _controlUIDMap = new Map<number, FormControlConfig>();
+
+  private _recordControlUIDMap = new Map<number, FormControlConfig>();
   // 表单选项
   private _options: FormControlConfig[] = [];
   // 窗口变化事件
@@ -116,6 +120,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     if (!this.dyFormRef) {
       throw Error(`Must be passed when entering attribute dyFormRef`);
     }
+
+    this.dyFormRef.dyForm = this;
 
     this.dyFormRef.model.formGroup = this.formArea;
 
@@ -257,8 +263,31 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
     }
 
-
     return 0;
+  }
+
+  _removeControlView({controlName, uid, areaId}: FormControlConfig) {
+    // 如果存在 说明是分区模式渲染
+    let outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
+
+    if (!outletViewContainer) {
+      outletViewContainer = this._formCellOutlet.viewContainer;
+    }
+
+    for (let i = 0; i < outletViewContainer.length; i++) {
+      const viewRef = outletViewContainer.get(i) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
+
+      const context = viewRef.context.childView;
+      const controlContext = context.controlView.context;
+
+      if (controlContext.config.uid === uid) {
+        // 移除视图
+        outletViewContainer.remove(i);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   _renderCustomControl(record: IterableChangeRecord<FormControlConfig>) {
@@ -282,13 +311,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const {_formControlItemDef, _formAreaDef} = this;
 
       if (containerCount > 1) {
-        // const areaIndex = keys.findIndex(value => value === item.areaId);
-
         const areaViewIndex = this._getAreaViewIndexById(item.areaId);
 
-        const areaView = outlet.viewContainer.get(areaViewIndex) as EmbeddedViewRef<any>;
-
-        if (!areaView) {
+        if (areaViewIndex < 0) {
           const createIndex = this._getCreateViewIndex(item.areaId);
 
           outlet.viewContainer.createEmbeddedView(_formAreaDef.template, item, createIndex);
@@ -312,6 +337,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
           dyFormColumnDef.controlCell.template,
           new DyFormCellDefContext(null, record.item, -1, 0)
         );
+
+        this._recordControlUIDMap.set(record.item.uid, record.item);
 
         view.context.childView = new RecordControlItemViewTuple(record, labelView, controlView);
       } else {
@@ -352,7 +379,36 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     if (exit) {
+      let isControl = true;
 
+      if (config.group) {
+        isControl = false;
+
+        const control: FormGroup = this.formArea.get(controlName) as FormGroup;
+
+        if (control) {
+          throw new Error(`表单模型定义错误:  无法找到${controlName}表单组`);
+        }
+      }
+
+      if (config.parent) {
+        isControl = false;
+        const formGroup: FormGroup = this._getFormGroup(controlName) as FormGroup;
+
+        // console.log(this.formArea);
+        const control = formGroup.get(controlName);
+
+        setControlStatus(control, config.disabled);
+
+        // updateValidators(control, fi);
+      }
+
+      if (isControl) {
+        const control = this.formArea.get(controlName);
+
+        setControlStatus(control, config.disabled);
+        // updateValidators(control, fi);
+      }
     } else {
       let isControl = true;
 
@@ -379,7 +435,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         getFormControl(config)
       );
     }
-    console.log(record, '_addControl');
+    console.log('_addControl');
   }
 
   private _getControlPath(name: string) {
@@ -416,13 +472,53 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return control;
   }
 
-  _removeControl(controlName: string) {
+  _removeControl(options: FormControlConfig) {
+    const result = this._removeControlView(options);
+
+    console.log(result, '_removeControl');
+
+    const {controlName, group, parent} = options;
+
+    if (group || !parent) {
+      this.formArea.removeControl(controlName);
+      return;
+    }
+
+    if (parent) {
+      const formGroup = this._getFormGroup(controlName);
+
+      formGroup.removeControl(controlName);
+    }
   }
 
   _updateRowIndexContext() {
     const viewContainer = this._formCellOutlet.viewContainer;
 
     const {containerCount} = this.dyFormRef;
+
+    const attachContext = (viewRef: EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>, count: number, renderIndex: number) => {
+      const context = viewRef.context.childView;
+      const labelContext = context.labelView.context;
+      const controlContext = context.controlView.context;
+
+      const record = context.record;
+
+      const controlName = record.item.name;
+
+      let _$implicit;
+
+      if (record.item.parent) {
+        const formGroup = this._getFormGroup(controlName);
+        _$implicit = formGroup.get(controlName);
+      } else {
+        _$implicit = this.formArea.get(controlName);
+      }
+
+      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(record.item.uid)};
+
+      Object.assign(labelContext, tempContext);
+      Object.assign(controlContext, tempContext);
+    };
 
     if (containerCount > 1) {
       const keys = Object.keys(this.areaOptions)
@@ -439,65 +535,20 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         for (let i = 0, length = _viewContainer.length; i < length; i++, renderIndex++) {
           const viewRef = _viewContainer.get(i) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
 
-          const context = viewRef.context.childView;
-          const labelContext = context.labelView.context;
-          const controlContext = context.controlView.context;
-
-          const record = context.record;
-
-          const controlName = record.item.name;
-
-          let _$implicit;
-
-          if (record.item.parent) {
-            const formGroup = this._getFormGroup(controlName);
-            _$implicit = formGroup.get(controlName);
-          } else {
-            _$implicit = this.formArea.get(controlName);
-          }
-
-          const tempContext = {count, index: renderIndex, $implicit: _$implicit};
-
-          Object.assign(labelContext, tempContext);
-          Object.assign(controlContext, tempContext);
+          attachContext(viewRef, count, renderIndex);
         }
-
-
       });
     } else {
       for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
         const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
-        const context = viewRef.context.childView;
-        const labelContext = context.labelView.context;
-        const controlContext = context.controlView.context;
 
-        const record = context.record;
-
-        const controlName = record.item.name;
-
-        let _$implicit;
-
-        if (record.item.parent) {
-          const formGroup = this._getFormGroup(controlName);
-
-          _$implicit = formGroup.get(controlName);
-        } else {
-          _$implicit = this.formArea.get(controlName);
-        }
-
-        const tempContext = {count, index: renderIndex, $implicit: _$implicit};
-
-        Object.assign(labelContext, tempContext);
-        Object.assign(controlContext, tempContext);
+        attachContext(viewRef, count, renderIndex);
       }
     }
   }
 
 
   _applyChanges(changes: IterableChanges<FormControlConfig>) {
-    const _record = {
-      addControl: []
-    };
 
     changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>,
                               previousIndex: number | null,
@@ -505,21 +556,21 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       // 新增 | 修改
       if (record.previousIndex === null) {
         // console.log('新增 | 修改', record.item.name);
-        if (!record.item.invalid) {
-          this._addControl(record);
-          _record.addControl.push(record);
-        }
+        this._addControl(record);
 
-        if (!this.dyFormRef.customLayout && !record.item.hide) {
+        if (!this._recordControlUIDMap.get(record.item.uid)) {
           this._renderCustomControl(record);
         }
+
+        console.log('新增 | 修改');
       } else if (currentIndex === null) {
         // 删除
-        if (!this.dyFormRef.optionMap.has(record.item.name)) {
-          // console.log('删除', record.item.name);
-          this._removeControl(record.item.controlName);
+        console.log('删除', record.item.name, previousIndex, record.item.disabled, this._controlUIDMap.get(record.item.uid));
+        if (!this._controlUIDMap.get(record.item.uid)) {
+          this._removeControl(record.item);
         }
       } else {
+        console.log('移动');
         // 移动 不需要处理
         // console.log('移动');
       }
@@ -549,9 +600,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const changes = this._optionDiffer.diff(this.options);
 
       if (changes) {
+        this._controlUIDMap.clear();
+        this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
         // this._optionChange$.next(changes);
         this._applyChanges(changes);
-        console.log(this.renderData);
         // this._cdf.markForCheck();
         Promise.resolve().then(() => {
           this._cdf.markForCheck();
@@ -600,11 +652,20 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 }
 
+function setControlStatus(control: AbstractControl, disabled: boolean) {
+  if (disabled && control.enabled) {
+    control.disable();
+  }
+  if (!disabled && control.disabled) {
+    control.enable();
+  }
+}
+
 function percentage(size: number, columns: number) {
   return ((size / columns) * 100).toFixed(2) + '%';
 }
 
-function trackByFn(item) {
+function trackByFn(index, item) {
   let token = '';
   for (const itemKey in item) {
     if (item.hasOwnProperty(itemKey) && !(typeof item[itemKey] === 'object')) {

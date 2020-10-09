@@ -13,6 +13,9 @@ export class AppComponent implements OnInit{
   dyFormRef = new DyFormRef(FormModel, {mode: 'responsive'});
 
   constructor() {
+    setTimeout(() => {
+      this.dyFormRef.removeControl(['mineralName1', 'mineralName2']);
+    }, 5000);
   }
 
   ngOnInit(): void {
