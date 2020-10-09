@@ -206,6 +206,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   }
 
   reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }) {
+    this.dyForm.reset(value, options);
   }
 
   setValues(value: { [p: string]: any }, options?: { onlySelf?: boolean; emitEvent?: boolean }): this {

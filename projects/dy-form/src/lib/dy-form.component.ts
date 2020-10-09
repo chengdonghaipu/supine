@@ -93,6 +93,18 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return keys.map(value => this.areaOptions[value]);
   }
 
+  /**
+   * 重置控件
+   * @param value
+   * @param options
+   */
+  reset(value?: any, options?: {
+    onlySelf?: boolean;
+    emitEvent?: boolean;
+  }) {
+    this.formArea.reset(value, options);
+  }
+
   constructor(private _differs: IterableDiffers,
               private _fb: FormBuilder,
               private _renderer: Renderer2,

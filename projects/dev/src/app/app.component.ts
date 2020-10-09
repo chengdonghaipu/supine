@@ -14,7 +14,7 @@ export class AppComponent implements OnInit{
 
   constructor() {
     setTimeout(() => {
-      this.dyFormRef.removeAllControl();
+      this.dyFormRef.reset();
     }, 5000);
   }
 
