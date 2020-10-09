@@ -1,0 +1,7 @@
+import {BaseFormModel, InputModel, ValidatorRule} from '@supine/dy-form';
+
+export class <%= classify(name) %> extends BaseFormModel {
+  @InputModel<<%= classify(name) %>>({label: 'label'})
+  @ValidatorRule(['max:999'], {max: '最大999'})
+  exp = [null];
+}

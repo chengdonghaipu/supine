@@ -67,7 +67,7 @@ export class DyFormControlCellDef {
 export class DyFormAreaOutlet implements OnDestroy {
   static mostRecentAreaOutlet: { [key: string]: DyFormAreaOutlet | null } = {};
 
-  static mostRecentTemAreaOutlet: DyFormAreaOutlet | null;
+  static mostRecentTemAreaOutlet: DyFormAreaOutlet | null = null;
 
   constructor(public viewContainer: ViewContainerRef) {
     console.log(this, 'DyFormAreaOutlet');
