@@ -179,7 +179,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   }
 
   removeAllControl(): this {
-    return undefined;
+    const newData = [];
+    this._renderData.next(newData);
+    return this;
   }
 
   removeControl(controlName: string | string[]): this {
