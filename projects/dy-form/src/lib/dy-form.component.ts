@@ -105,6 +105,15 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this.formArea.reset(value, options);
   }
 
+  /**
+   * 填充表单数据
+   * @param value
+   * @param options
+   */
+  setValues(value: { [p: string]: any }, options?: { onlySelf?: boolean; emitEvent?: boolean }) {
+    this.formArea.patchValue(value, options);
+  }
+
   constructor(private _differs: IterableDiffers,
               private _fb: FormBuilder,
               private _renderer: Renderer2,
@@ -385,7 +394,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       if (config.group) {
         exit = this.formArea.get(controlName) as FormGroup;
       } else {
-        const formGroup = this._getFormGroup(controlName);
+        const formGroup = this._getFormGroup(config.name);
         exit = formGroup.get(controlName);
       }
     }
@@ -405,7 +414,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       if (config.parent) {
         isControl = false;
-        const formGroup: FormGroup = this._getFormGroup(controlName) as FormGroup;
+        const formGroup: FormGroup = this._getFormGroup(config.name) as FormGroup;
 
         // console.log(this.formArea);
         const control = formGroup.get(controlName);
@@ -433,7 +442,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       if (config.parent) {
         isControl = false;
-        const control: FormGroup = this._getFormGroup(controlName) as FormGroup;
+        const control: FormGroup = this._getFormGroup(config.name) as FormGroup;
 
         if (!control) {
           throw new Error(`表单模型定义错误:  无法找到${controlName}表单组`);
@@ -489,7 +498,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     console.log(result, '_removeControl');
 
-    const {controlName, group, parent} = options;
+    const {controlName, group, parent, name} = options;
 
     if (group || !parent) {
       this.formArea.removeControl(controlName);
@@ -497,7 +506,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     if (parent) {
-      const formGroup = this._getFormGroup(controlName);
+      const formGroup = this._getFormGroup(name);
 
       formGroup.removeControl(controlName);
     }

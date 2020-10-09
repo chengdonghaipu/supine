@@ -62,13 +62,17 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     }
   }
 
-  addControl(control: BaseModel | BaseModel[], indexOrName?: number | string): this {
-    return undefined;
-  }
-
   disconnect(): void {
     this._unsubscribe$.next();
     this._unsubscribe$.complete();
+  }
+
+  renderDataNext(options: FormControlConfig[]) {
+    this.optionMap.clear();
+
+    options.forEach(value => this.optionMap.set(value.name, value));
+
+    this._renderData.next(options);
   }
 
   connect(): Observable<BaseModel[]> {
@@ -104,7 +108,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       // this.model.whitelist(null, model, this.whitelistChange);
     });
     this.generateAreaOptions(model);
-    this._renderData.next(model);
+    this.renderDataNext(model);
   }
 
   registeredModel(model: FormControlConfig[] | Type<any>): this {
@@ -178,12 +182,68 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     return this;
   }
 
-  removeAllControl(): this {
-    const newData = [];
-    this._renderData.next(newData);
+  /**
+   * 新增表单控件 一般很少用 建议通过模型实现相应的业务
+   * @param control
+   * @param indexOrName
+   */
+  addControl(control: BaseModel | BaseModel[], indexOrName?: number | string): this {
+    control = !Array.isArray(control) ? [control] : control;
+
+    for (const ol of control) {
+      if (this.optionMap.has(ol.name)) {
+        throw Error(`${ol.name} always exists`);
+      }
+    }
+
+    let index: number;
+
+    if (typeof indexOrName === 'string') {
+      index = this.options.findIndex(value => value.name === indexOrName);
+    } else {
+      index = indexOrName;
+    }
+
+    if (indexOrName && index < 0) {
+      throw Error(`${indexOrName} not exit`);
+    }
+
+    const option = this.options;
+
+    control.forEach(value => {
+      if (!value.controlLayout) {
+        value.controlLayout = this.controlLayout;
+      }
+      value.oldControl = undefined;
+    });
+
+    if (indexOrName && index > -1) {
+      option.splice(index, 0, ...control);
+    }
+
+    if (!indexOrName) {
+      option.push(...control);
+    }
+
+    this.generateAreaOptions(option);
+    this.renderDataNext(option);
+
     return this;
   }
 
+  /**
+   * 移除所有表单控件 一般很少用 建议通过模型实现相应的业务
+   */
+  removeAllControl(): this {
+    const newData = [];
+    this.renderDataNext(newData);
+    return this;
+  }
+
+  /**
+   * 移除表单控件 一般很少用 建议通过模型实现相应的业务
+   * @param controlName
+   */
   removeControl(controlName: string | string[]): this {
     controlName = !Array.isArray(controlName) ? [controlName] : controlName;
 
@@ -200,19 +260,35 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     if (!remove) {
       return this;
     }
-    this._renderData.next(option);
+
+    this.renderDataNext(option);
 
     return this;
   }
 
+  /**
+   * 重置表单
+   * @param value
+   * @param options
+   */
   reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }) {
     this.dyForm.reset(value, options);
   }
 
+  /**
+   * 填充表单数据
+   * @param value
+   * @param options
+   */
   setValues(value: { [p: string]: any }, options?: { onlySelf?: boolean; emitEvent?: boolean }): this {
-    return undefined;
+    this.dyForm.setValues(value, options);
+    return this;
   }
 
+  /**
+   * 更新表单控件 一般很少用 建议通过模型实现相应的业务
+   * @param control
+   */
   updateControl(control: BaseModel | BaseModel[]): this {
     control = !Array.isArray(control) ? [control] : control;
 
@@ -238,7 +314,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       return this;
     }
 
-    this._renderData.next(option);
+    this.renderDataNext(option);
 
     return this;
   }

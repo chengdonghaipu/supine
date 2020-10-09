@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {DyFormRef} from 'dy-form';
+import {DyFormRef, InputModelControl} from 'dy-form';
 import {FormModel} from './form.model';
 
 @Component({
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit{
 
   constructor() {
     setTimeout(() => {
-      this.dyFormRef.reset();
+      this.dyFormRef.addControl(new InputModelControl({name: 'test', label: 'test'}));
     }, 5000);
   }
 
