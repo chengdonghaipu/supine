@@ -1,19 +1,4 @@
-<jd-dy-form [dyFormRef]="dyFormRef">
-  <ng-container jdDyFormColumnDef="INPUT">
-    <label for="{{config.name}}" *jdDyFormLabelCellDef="let config = config">{{config.label}}</label>
-    <input type="text" id="{{config.name}}"
-           *jdDyFormControlCellDef="let control; let config = config let even = even"
-           [formControl]="control"
-           [placeholder]="config.placeHolder + config.disabled">
-  </ng-container>
-  <jd-form-control-item *jdDyFormControlItemDef></jd-form-control-item>
-
-  <jd-form-area *jdDyFormAreaDef></jd-form-area>
-
-
-  <jd-form-footer>jd-form-footer</jd-form-footer>
-  <jd-form-header>jd-form-header</jd-form-header>
-</jd-dy-form>
+<jd-dy-form-zorro [dyFormRef]="dyFormRef"></jd-dy-form-zorro>
 
 
 <router-outlet></router-outlet>

@@ -16,9 +16,13 @@
       "dom"
     ],
     "paths": {
-      "dy-form": [
+      "@supine/dy-form": [
         "dist/dy-form/dy-form",
         "dist/dy-form"
+      ],
+      "@supine/dy-form-zorro": [
+        "dist/dy-form-zorro/dy-form-zorro",
+        "dist/dy-form-zorro"
       ]
     }
   }

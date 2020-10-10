@@ -30,8 +30,8 @@ import {
   DyFormCellDefContext,
   DyFormCellOutlet,
   DyFormColumnDef,
-  DyFormControlItemDef,
-  DyFormControlItemOutlet
+  DyFormItemDef,
+  DyFormControlItemOutlet, DyFormTestItemDef
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
@@ -84,7 +84,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
-  @ContentChild(DyFormControlItemDef, {static: true}) _formControlItemDef: DyFormControlItemDef;
+  @ContentChild(DyFormItemDef, {static: true}) _formControlItemDef: DyFormItemDef;
+  @ContentChildren(DyFormTestItemDef, {descendants: true}) _formTestItemDef: DyFormTestItemDef;
 
   @ContentChild(DyFormAreaDef, {static: true}) _formAreaDef: DyFormAreaDef;
 
@@ -385,6 +386,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
 
       const view = outletViewContainer.createEmbeddedView(_formControlItemDef.template);
+      console.log(_formControlItemDef, dyFormColumnDef);
 
       if (DyFormControlItemOutlet.mostRecentCellOutlet) {
         const {viewContainer} = DyFormControlItemOutlet.mostRecentCellOutlet;
@@ -728,6 +730,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       this._applyChanges(this._willRenderChanges);
       this._willRenderChanges = null;
     }
+    console.log(this._formTestItemDef);
     console.log('_cacheColumnDefs');
   }
 

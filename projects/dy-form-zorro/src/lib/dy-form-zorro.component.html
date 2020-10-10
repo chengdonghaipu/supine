@@ -1,0 +1,28 @@
+<jd-dy-form [dyFormRef]="dyFormRef">
+  <ng-container jdDyFormColumnDef="INPUT">
+    <nz-form-label *jdDyFormLabelCellDef="let config = config" [nzFor]="config.name">{{config.label}}</nz-form-label>
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config">
+      <input type="text" id="{{config.name}}" nz-input [formControl]="control" [placeholder]="config.placeHolder">
+    </nz-form-control>
+  </ng-container>
+  <jd-form-control-item *jdDyFormItemDef>
+    <nz-form-label *jdDyFormLabelCellDef></nz-form-label>
+  </jd-form-control-item>
+
+  <jd-form-control-item jdDyFormTestItemDef></jd-form-control-item>
+  <ng-container jdDyFormTestItemDef>
+    <nz-form-label *jdDyFormLabelCellDef></nz-form-label>
+  </ng-container>
+<!--  -->
+<!--  <nz-form-item *jdDyFormControlItemDef>-->
+<!--    <ng-container jdFormControlItemOutlet></ng-container>-->
+<!--  </nz-form-item>-->
+
+  <jd-form-area *jdDyFormAreaDef></jd-form-area>
+
+
+  <ng-content></ng-content>
+</jd-dy-form>
+<nz-form-item>
+  dads
+</nz-form-item>

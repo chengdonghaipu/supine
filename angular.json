@@ -163,6 +163,46 @@
           }
         }
       }
+    },
+    "dy-form-zorro": {
+      "projectType": "library",
+      "root": "projects/dy-form-zorro",
+      "sourceRoot": "projects/dy-form-zorro/src",
+      "prefix": "jd",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/dy-form-zorro/tsconfig.lib.json",
+            "project": "projects/dy-form-zorro/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/dy-form-zorro/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dy-form-zorro/src/test.ts",
+            "tsConfig": "projects/dy-form-zorro/tsconfig.spec.json",
+            "karmaConfig": "projects/dy-form-zorro/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dy-form-zorro/tsconfig.lib.json",
+              "projects/dy-form-zorro/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "dy-form"
 }

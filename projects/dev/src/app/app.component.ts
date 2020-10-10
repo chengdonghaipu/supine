@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {DyFormRef, InputModelControl} from 'dy-form';
+import {DyFormRef, InputModelControl} from '@supine/dy-form';
 import {FormModel} from './form.model';
 
 @Component({

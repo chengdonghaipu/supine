@@ -1,4 +1,4 @@
-import {BaseFormModel, FormControlConfig, InputModel, ValidatorRule} from 'dy-form';
+import {BaseFormModel, FormControlConfig, InputModel, ValidatorRule} from '@supine/dy-form';
 
 export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})

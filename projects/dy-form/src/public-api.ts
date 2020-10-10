@@ -11,10 +11,12 @@ export {
   DyFormColumnDef,
   DyFormLabelCellDef,
   DyFormControlItem,
-  DyFormControlItemDef,
+  DyFormItemDef,
   DyFormHeader,
   DyFormFooter,
   DyFormArea,
+  DyFormControlItemOutlet,
+  DyFormTestItemDef
 } from './lib/dy-form.def';
 export * from './lib/models';
 export * from './lib/decorator';

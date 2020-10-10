@@ -201,10 +201,23 @@ export class DyFormFooter {
   }
 }
 
-@Directive({selector: '[jdDyFormControlItemDef]'})
+@Directive({selector: '[jdDyFormItemDef]'})
 // tslint:disable-next-line:directive-class-suffix
-export class DyFormControlItemDef {
-  constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef, public template: TemplateRef<any>) {
+export class DyFormItemDef {
+  @ContentChild(DyFormLabelCellDef) labelCell: DyFormLabelCellDef;
+  constructor(public viewContainer: ViewContainerRef,
+              public elementRef: ElementRef,
+              public template: TemplateRef<any>) {
+  }
+}
+
+@Directive({selector: '[jdDyFormTestItemDef]'})
+// tslint:disable-next-line:directive-class-suffix
+export class DyFormTestItemDef {
+  @ContentChild(DyFormLabelCellDef) labelCell: DyFormLabelCellDef;
+  constructor(public viewContainer: ViewContainerRef,
+              public elementRef: ElementRef,
+              /*public template: TemplateRef<any>*/) {
   }
 }
 
