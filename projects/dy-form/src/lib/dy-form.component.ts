@@ -29,9 +29,9 @@ import {
   DyFormAreaOutlet,
   DyFormCellDefContext,
   DyFormCellOutlet,
-  DyFormColumnDef,
+  DyFormColumnDef, DyFormFooterDef, DyFormFooterOutlet, DyFormHeaderDef, DyFormHeaderOutlet,
   DyFormItemDef,
-  DyFormControlItemOutlet, DyFormTestItemDef
+  DyFormItemOutlet
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
@@ -62,6 +62,12 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _columnDefsByName = new Map<string, DyFormColumnDef>();
 
+  private _customColumnDefs = new Set<DyFormColumnDef>();
+
+  private _customHeaderDefs = new Set<DyFormHeaderDef>();
+
+  private _customFooterDefs = new Set<DyFormFooterDef>();
+
   private _controlUIDMap = new Map<number, FormControlConfig>();
 
   private _recordControlUIDMap = new Map<number, FormControlConfig>();
@@ -78,18 +84,33 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _willRenderChanges: IterableChanges<FormControlConfig>;
 
+  private _headerRowDefChanged = true;
+
+  private _footerRowDefChanged = true;
+
+  private _headerRowDefs: DyFormHeaderDef[] = [];
+
+  private _footerRowDefs: DyFormFooterDef[] = [];
+
   formArea: FormGroup;
 
   @Input() dyFormRef: AbstractDyFormRef<any>;
 
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
+  @ContentChildren(DyFormHeaderDef, {descendants: true}) _formHeaderDefs: QueryList<DyFormHeaderDef>;
+
+  @ContentChildren(DyFormFooterDef, {descendants: true}) _formFooterDefs: QueryList<DyFormFooterDef>;
+
   @ContentChild(DyFormItemDef, {static: true}) _formControlItemDef: DyFormItemDef;
-  @ContentChild(DyFormTestItemDef, {static: true}) _formTestItemDef: DyFormTestItemDef;
 
   @ContentChild(DyFormAreaDef, {static: true}) _formAreaDef: DyFormAreaDef;
 
   @ViewChild(DyFormCellOutlet, {static: true}) _formCellOutlet: DyFormCellOutlet;
+
+  @ViewChild(DyFormFooterOutlet, {static: true}) _formFooterOutlet: DyFormFooterOutlet;
+
+  @ViewChild(DyFormHeaderOutlet, {static: true}) _formHeaderOutlet: DyFormHeaderOutlet;
 
   get breakpoint(): BreakpointType {
     return this._breakpoint;
@@ -179,6 +200,48 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentInit(): void {
+  }
+
+  addColumnDef(columnDef: DyFormColumnDef) {
+    this._customColumnDefs.add(columnDef);
+  }
+
+  removeColumnDef(columnDef: DyFormColumnDef) {
+    this._customColumnDefs.delete(columnDef);
+  }
+
+  addHeaderRowDef(headerRowDef: DyFormHeaderDef) {
+    this._customHeaderDefs.add(headerRowDef);
+    this._headerRowDefChanged = true;
+  }
+
+  removeHeaderRowDef(headerRowDef: DyFormHeaderDef) {
+    this._customHeaderDefs.delete(headerRowDef);
+    this._headerRowDefChanged = true;
+  }
+
+  addFooterRowDef(footerRowDef: DyFormFooterDef) {
+    this._customFooterDefs.add(footerRowDef);
+    this._footerRowDefChanged = true;
+  }
+
+  removeFooterRowDef(footerRowDef: DyFormFooterDef) {
+    this._customFooterDefs.delete(footerRowDef);
+    this._footerRowDefChanged = true;
+  }
+
+  controlClass(config: FormControlConfig) {
+    if (typeof config.controlClass === 'function') {
+      return config.controlClass(this.formArea.value, this.dyFormRef.model);
+    }
+    return config.controlClass || [];
+  }
+
+  labelClass(config: FormControlConfig) {
+    if (typeof config.labelClass === 'function') {
+      return config.labelClass(this.formArea.value, this.dyFormRef.model);
+    }
+    return config.labelClass || [];
   }
 
   private _restSetLayoutForControl() {
@@ -324,7 +387,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return 0;
   }
 
-  _removeControlView({uid, areaId}: FormControlConfig) {
+  private _removeControlView({uid, areaId}: FormControlConfig) {
     // 如果存在 说明是分区模式渲染
     let outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
 
@@ -348,7 +411,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return false;
   }
 
-  _renderCustomControl(record: IterableChangeRecord<FormControlConfig>) {
+  private _renderCustomControl(record: IterableChangeRecord<FormControlConfig>) {
     const item = record.item;
 
     const filterType = ['GROUP'];
@@ -385,11 +448,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._setHostClass([], ['jd-dy-form-area-mode']);
       }
 
-      const view = outletViewContainer.createEmbeddedView(_formControlItemDef.template);
-      console.log(_formControlItemDef);
+      const view = outletViewContainer.createEmbeddedView(_formControlItemDef.wrapDef.template);
+      console.log(_formControlItemDef, _formControlItemDef);
 
-      if (DyFormControlItemOutlet.mostRecentCellOutlet) {
-        const {viewContainer} = DyFormControlItemOutlet.mostRecentCellOutlet;
+      if (DyFormItemOutlet.mostRecentCellOutlet) {
+        const {viewContainer} = DyFormItemOutlet.mostRecentCellOutlet;
         const labelView = viewContainer.createEmbeddedView(
           dyFormColumnDef.labelCell.template,
           new DyFormCellDefContext(null, record.item, -1, 0)
@@ -563,7 +626,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return control;
   }
 
-  _removeControl(options: FormControlConfig) {
+  private _removeControl(options: FormControlConfig) {
     const result = this._removeControlView(options);
 
     console.log(result, '_removeControl');
@@ -582,7 +645,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
-  _updateRowIndexContext() {
+  private _updateRowIndexContext() {
     const viewContainer = this._formCellOutlet.viewContainer;
 
     const {containerCount} = this.dyFormRef;
@@ -638,8 +701,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
-
-  _applyChanges(changes: IterableChanges<FormControlConfig>) {
+  private _applyChanges(changes: IterableChanges<FormControlConfig>) {
     this._controlUIDMap.clear();
     this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
 
@@ -678,6 +740,22 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._dyFormInit = true;
       }
     });
+  }
+
+  private _forceRenderHeaderRows() {
+    if (this._formHeaderOutlet.viewContainer.length > 0) {
+      this._formHeaderOutlet.viewContainer.clear();
+    }
+
+    this._headerRowDefs.forEach(value => this._formHeaderOutlet.viewContainer.createEmbeddedView(value.template));
+  }
+
+  private _forceRenderFooterRows() {
+    if (this._formFooterOutlet.viewContainer.length > 0) {
+      this._formFooterOutlet.viewContainer.clear();
+    }
+
+    this._footerRowDefs.forEach(value => this._formFooterOutlet.viewContainer.createEmbeddedView(value.template));
   }
 
   ngDoCheck(): void {
@@ -730,14 +808,45 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       this._applyChanges(this._willRenderChanges);
       this._willRenderChanges = null;
     }
-    console.log(this._formTestItemDef);
+
+    if (this._footerRowDefChanged) {
+      this._forceRenderHeaderRows();
+      this._footerRowDefChanged = false;
+    }
+
+    if (this._headerRowDefChanged) {
+      this._forceRenderFooterRows();
+      this._headerRowDefChanged = false;
+    }
+
     console.log('_cacheColumnDefs');
   }
 
   private _cacheColumnDefs() {
+    const _headerRowDefs = mergeArrayAndSet(
+      this._formHeaderDefs.toArray(), this._customHeaderDefs);
+
+    // TODO 目前暂时通过长度变化 来渲染
+    if (this._headerRowDefs.length !== _headerRowDefs.length) {
+      this._forceRenderHeaderRows();
+    }
+
+    this._headerRowDefs = _headerRowDefs;
+
+    const _footerRowDefs = mergeArrayAndSet(
+      this._formFooterDefs.toArray(), this._customFooterDefs);
+
+    // TODO 目前暂时通过长度变化 来渲染
+    if (this._footerRowDefs.length !== _footerRowDefs.length) {
+      this._forceRenderFooterRows();
+    }
+
+    this._footerRowDefs = _footerRowDefs;
+
     this._columnDefsByName.clear();
 
-    const columnDefs = this._formColumnDefs;
+    const columnDefs = mergeArrayAndSet(
+      this._formColumnDefs.toArray(), this._customColumnDefs);
 
     columnDefs.forEach(columnDef => {
       if (this._columnDefsByName.has(columnDef.name)) {
@@ -771,4 +880,8 @@ function trackByFn(index, item) {
     }
   }
   return token;
+}
+
+function mergeArrayAndSet<T>(array: T[], set: Set<T>): T[] {
+  return array.concat(Array.from(set));
 }

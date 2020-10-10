@@ -1,28 +1,199 @@
-<jd-dy-form [dyFormRef]="dyFormRef">
+<!--通用错误提示-->
+<ng-template #errorTpl let-control>
+  <ng-container *ngIf="control.hasError(control.name)">
+    {{control.getError(control.name)}}
+  </ng-container>
+</ng-template>
+
+
+<ng-template #label let-config>
+  <nz-form-label [nzRequired]="config.required"
+                 [ngClass]="dyForm.labelClass(config)"
+                 [ngStyle]="config.labelStyle"
+                 [nzFor]="config.controlName">{{config.label}}
+  </nz-form-label>
+</ng-template>
+
+<ng-template #inputControl let-config let-control=control>
+  <input nz-input
+         [id]="config.name"
+         [placeholder]="config.placeHolder"
+         [formControl]="control"
+         [disabled]="config.disabled"
+         [nzSize]="config.size"
+         [readOnly]="config.readonly"/>
+</ng-template>
+
+<ng-template #inputNumberControl let-config let-control=control>
+  <nz-input-number [formControl]="control"
+                   [nzPlaceHolder]="config.placeHolder"
+                   [nzMin]="config.min"
+                   [nzStep]="config.step"
+                   [nzPrecision]="config.precision"
+                   [nzMax]="config.max"
+                   [nzSize]="config.size"
+                   [nzDisabled]="config.disabled">
+  </nz-input-number>
+</ng-template>
+
+<ng-template #textAreaControl let-config let-control=control>
+  <textarea nz-input
+            [id]="config.controlName"
+            [placeholder]="config.placeHolder"
+            [formControl]="control"
+            [disabled]="config.disabled"
+            [nzSize]="config.size"
+            [nzAutosize]="config.autosize"
+            [readOnly]="config.readonly">
+  </textarea>
+</ng-template>
+
+<ng-template #selectControl let-config let-control=control>
+  <nz-select [formControl]="control"
+             [nzAllowClear]="config.allowClear"
+             [nzSize]="config.size"
+             [disabled]="config.disabled"
+             [nzClearIcon]="config.clearIcon"
+             [nzDropdownClassName]="config.dropdownClassName"
+             [nzMaxTagCount]="config.maxTagCount"
+             [nzMaxTagPlaceholder]="config.maxTagPlaceholder"
+             (ngModelChange)="config.ngModelChange($event)"
+             (nzOpenChange)="config.openChange($event)"
+             [nzLoading]="config.loading"
+             [nzRemoveIcon]="config.removeIcon"
+             [nzSuffixIcon]="config.suffixIcon"
+             [nzShowSearch]="config.showSearch"
+             [nzShowArrow]="config.showArrow"
+             [nzDropdownMatchSelectWidth]="config.dropdownMatchSelectWidth"
+             [nzMode]="config.mode"
+             [nzDropdownStyle]="config.dropdownStyle"
+             [nzMaxMultipleCount]="config.maxMultipleCount"
+             [nzNotFoundContent]="config.notFoundContent"
+             [nzMenuItemSelectedIcon]="config.menuItemSelectedIcon"
+             [nzDisabled]="config.disabled"
+             [nzPlaceHolder]="config.placeHolder">
+    <nz-option *ngFor="let item of config.optionContent"
+               [nzValue]="item.value"
+               [nzLabel]="item.label"
+               [nzDisabled]="item.disabled">
+    </nz-option>
+  </nz-select>
+</ng-template>
+
+<ng-template #formGroupControl let-config let-type=type let-control=control>
+  <nz-input-group [nzAddOnAfter]="config.addOnAfter"
+                  [nzAddOnBefore]="config.addOnBefore"
+                  [nzPrefix]="config.prefix"
+                  [nzSuffix]="config.suffix">
+    <ng-container *ngIf="type === 'INPUT'">
+      <ng-template [ngTemplateOutlet]="inputControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </ng-container>
+    <ng-container *ngIf="type === 'INPUT_NUMBER'">
+      <ng-template [ngTemplateOutlet]="inputNumberControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </ng-container>
+  </nz-input-group>
+</ng-template>
+
+<jd-dy-form [dyFormRef]="dyFormRef" #dyForm>
   <ng-container jdDyFormColumnDef="INPUT">
-    <nz-form-label *jdDyFormLabelCellDef="let config = config" [nzFor]="config.name">{{config.label}}</nz-form-label>
-    <nz-form-control *jdDyFormControlCellDef="let control; let config = config">
-      <input type="text" id="{{config.name}}" nz-input [formControl]="control" [placeholder]="config.placeHolder">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="inputControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
     </nz-form-control>
   </ng-container>
-  <jd-form-control-item *jdDyFormItemDef>
-    <nz-form-label *jdDyFormLabelCellDef></nz-form-label>
-  </jd-form-control-item>
 
-<!--  <jd-form-control-item jdDyFormTestItemDef></jd-form-control-item>-->
-  <ng-container jdDyFormTestItemDef>
-    <nz-form-label *jdDyFormLabelCellDef></nz-form-label>
+  <ng-container jdDyFormColumnDef="INPUT_GROUP">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="formGroupControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control, type: 'INPUT'}">
+      </ng-template>
+    </nz-form-control>
   </ng-container>
-<!--  -->
-<!--  <nz-form-item *jdDyFormControlItemDef>-->
-<!--    <ng-container jdFormControlItemOutlet></ng-container>-->
-<!--  </nz-form-item>-->
+
+  <ng-container jdDyFormColumnDef="INPUT_NUMBER">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="inputNumberControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </nz-form-control>
+  </ng-container>
+
+  <ng-container jdDyFormColumnDef="INPUT_NUMBER_GROUP">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="formGroupControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control, type: 'INPUT_NUMBER'}">
+      </ng-template>
+    </nz-form-control>
+  </ng-container>
+
+  <ng-container jdDyFormColumnDef="TEXTAREA">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="textAreaControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </nz-form-control>
+  </ng-container>
+
+  <ng-container jdDyFormColumnDef="SELECT">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="selectControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </nz-form-control>
+  </ng-container>
+
+  <ng-container jdDyFormItemDef>
+    <nz-form-item *jdDyFormItemWrapDef>
+      <ng-container jdFormItemOutlet></ng-container>
+    </nz-form-item>
+  </ng-container>
 
   <jd-form-area *jdDyFormAreaDef></jd-form-area>
-
-
-  <ng-content></ng-content>
 </jd-dy-form>
-<nz-form-item>
-  dads
-</nz-form-item>

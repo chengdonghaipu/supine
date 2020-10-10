@@ -12,13 +12,14 @@ export {
   DyFormLabelCellDef,
   DyFormControlItem,
   DyFormItemDef,
-  DyFormHeader,
-  DyFormFooter,
+  DyFormHeaderDef,
+  DyFormFooterDef,
   DyFormArea,
-  DyFormControlItemOutlet,
-  DyFormTestItemDef
+  DyFormItemOutlet,
+  DyFormItemWrapDef,
 } from './lib/dy-form.def';
 export * from './lib/models';
 export * from './lib/decorator';
 export * from './lib/dy-form-ref';
+export {ModelPartial} from './lib/type';
 // export * from './lib/models/base-form.model';

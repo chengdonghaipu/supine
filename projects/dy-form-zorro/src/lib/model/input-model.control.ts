@@ -1,5 +1,4 @@
-import {BaseModel} from './base.model';
-import {ModelPartial} from '../type';
+import {BaseModel, ModelPartial} from '@supine/dy-form';
 
 export class InputModelControl<M = any> extends BaseModel<M> {
 

@@ -2,17 +2,19 @@
   "extends": "../../tslint.json",
   "rules": {
     "directive-selector": [
-      true,
+      false,
       "attribute",
       "jd",
       "camelCase"
     ],
     "component-selector": [
-      true,
+      false,
       "element",
       "jd",
       "kebab-case"
     ],
+    "directive-class-suffix": false,
+    "component-class-suffix": false,
     "variable-name": false,
     "typedef": false,
     "no-redundant-jsdoc": false,

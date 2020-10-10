@@ -9,10 +9,13 @@ import {
   DyFormControlCellDef,
   DyFormControlItem,
   DyFormItemDef,
-  DyFormControlItemOutlet,
-  DyFormHeader,
-  DyFormFooter,
-  DyFormArea, DyFormTestItemDef
+  DyFormItemOutlet,
+  DyFormFooterDef,
+  DyFormArea,
+  DyFormItemWrapDef,
+  DyFormFooterOutlet,
+  DyFormHeaderOutlet,
+  DyFormHeaderDef
 } from './dy-form.def';
 import {CommonModule} from '@angular/common';
 
@@ -24,17 +27,19 @@ const export_com = [
   DyFormComponent,
   DyFormControlItem,
   DyFormItemDef,
-  DyFormHeader,
-  DyFormFooter,
+  DyFormHeaderDef,
+  DyFormFooterDef,
   DyFormArea,
-  DyFormControlItemOutlet,
-  DyFormTestItemDef
+  DyFormItemOutlet,
+  DyFormItemWrapDef
 ];
 
 @NgModule({
   declarations: [
     DyFormAreaOutlet,
     DyFormCellOutlet,
+    DyFormFooterOutlet,
+    DyFormHeaderOutlet,
     ...export_com
   ],
   imports: [

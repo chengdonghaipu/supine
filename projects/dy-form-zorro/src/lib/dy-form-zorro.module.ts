@@ -4,6 +4,9 @@ import {DyFormModule} from '@supine/dy-form';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzInputModule} from 'ng-zorro-antd/input';
+import {CommonModule} from '@angular/common';
+import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
+import {NzSelectModule} from 'ng-zorro-antd/select';
 
 
 
@@ -13,7 +16,10 @@ import {NzInputModule} from 'ng-zorro-antd/input';
     DyFormModule,
     ReactiveFormsModule,
     NzFormModule,
-    NzInputModule
+    NzInputModule,
+    CommonModule,
+    NzInputNumberModule,
+    NzSelectModule
   ],
   exports: [DyFormZorroComponent]
 })

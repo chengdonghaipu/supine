@@ -1,4 +1,13 @@
-<jd-dy-form-zorro [dyFormRef]="dyFormRef"></jd-dy-form-zorro>
+<jd-dy-form-zorro [dyFormRef]="dyFormRef">
+  <!--<ng-container jdDyFormColumnDef="INPUT">
+    <label for="{{config.name}}" *jdDyFormLabelCellDef="let config = config">{{config.label}}</label>
+    <input type="text" id="{{config.name}}" *jdDyFormControlCellDef="let control; let config = config" [formControl]="control" [placeholder]="config.placeHolder">
+  </ng-container>-->
+<!--  <jd-form-header>header</jd-form-header>-->
+<!--  <jd-form-footer>footer</jd-form-footer>-->
+  <div *jdDyFormHeaderDef>jdDyFormHeaderDef1</div>
+  <div *jdDyFormFooterDef>jdDyFormFooterDef1</div>
+</jd-dy-form-zorro>
 
 
 <router-outlet></router-outlet>

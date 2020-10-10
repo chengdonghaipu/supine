@@ -1,4 +1,5 @@
-import {BaseFormModel, FormControlConfig, InputModel, ValidatorRule} from '@supine/dy-form';
+import {BaseFormModel, FormControlConfig, ValidatorRule} from '@supine/dy-form';
+import {InputModel} from '@supine/dy-form-zorro';
 
 export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})
