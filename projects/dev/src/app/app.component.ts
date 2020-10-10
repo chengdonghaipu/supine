@@ -13,7 +13,9 @@ export class AppComponent implements OnInit{
   dyFormRef = new DyFormRef(FormModel, {mode: 'responsive'});
 
   constructor() {
+    this.dyFormRef.executeModelUpdate();
     setTimeout(() => {
+      this.dyFormRef.executeModelUpdate();
       // this.dyFormRef.addControl(new InputModelControl({name: 'test', label: 'test'}));
     }, 5000);
   }

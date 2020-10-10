@@ -1,17 +1,37 @@
-:host {
+$prefix: 'jd-dy-form';
+
+#{$prefix} {
   display: block;
 
-  .jd-dy-form-body-outlet {
-    display: flex;
-    flex-wrap: wrap;
+  .#{$prefix}-body-outlet {
     width: 100%;
   }
-}
 
-:host(.jd-dy-form-vertical) {
-  ::ng-deep {
+  &.#{$prefix}-responsive {
+    .jd-form-area {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+  }
+
+  &:not(.#{$prefix}-area-mode) {
+    .#{$prefix}-body-outlet {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  &.#{$prefix}-area-mode {
+    .#{$prefix}-body-outlet {
+      display: block;
+    }
+  }
+
+  &.#{$prefix}-vertical {
     .jd-form-control-item {
       width: 100%;
     }
   }
 }
+

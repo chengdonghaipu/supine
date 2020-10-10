@@ -2,23 +2,36 @@ import {
   AfterContentChecked,
   AfterContentInit,
   ChangeDetectorRef,
-  Component, ContentChild, ContentChildren,
+  Component,
+  ContentChild,
+  ContentChildren,
   DoCheck,
-  ElementRef, EmbeddedViewRef, Inject, Input, IterableChangeRecord, IterableChanges, IterableDiffer,
-  IterableDiffers, NgZone,
+  ElementRef,
+  EmbeddedViewRef,
+  Inject,
+  Input,
+  IterableChangeRecord,
+  IterableChanges,
+  IterableDiffer,
+  IterableDiffers,
+  NgZone,
   OnDestroy,
-  OnInit, QueryList,
-  Renderer2, ViewChild,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import {Subject} from 'rxjs';
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {
   DyFormAreaDef,
-  DyFormColumnDef,
+  DyFormAreaOutlet,
+  DyFormCellDefContext,
   DyFormCellOutlet,
+  DyFormColumnDef,
   DyFormControlItemDef,
-  DyFormControlItemOutlet,
-  DyFormCellDefContext, DyFormAreaOutlet, DyFormArea
+  DyFormControlItemOutlet
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
@@ -37,7 +50,8 @@ class RecordControlItemViewTuple {
 @Component({
   selector: 'jd-dy-form',
   templateUrl: './dy-form.component.html',
-  styleUrls: ['./dy-form.component.scss']
+  styleUrls: ['./dy-form.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContentInit, AfterContentChecked {
   private _document: Document;
@@ -61,6 +75,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _optionDiffer: IterableDiffer<FormControlConfig> | null = null;
 
   private _breakpoint: BreakpointType;
+
+  private _willRenderChanges: IterableChanges<FormControlConfig>;
 
   formArea: FormGroup;
 
@@ -86,12 +102,12 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return this.dyFormRef.areaOptions;
   }
 
-  get renderData() {
+  /*get renderData() {
     const keys = Object.keys(this.areaOptions)
       .sort((a, b) => +a - +b)
       .map(value => +value);
     return keys.map(value => this.areaOptions[value]);
-  }
+  }*/
 
   /**
    * 重置控件
@@ -166,16 +182,36 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _restSetLayoutForControl() {
     const viewContainer = this._formCellOutlet.viewContainer;
+    console.log('_restSetLayoutForControl');
 
     if (!this.dyFormRef.responsiveForm) {
       return;
     }
 
-    for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
-      const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
-      const context = viewRef.context.childView;
+    const {containerCount} = this.dyFormRef;
 
-      this._setLayoutForControl(viewRef, context.record.item);
+    if (containerCount > 1) {
+      const keys = Object.keys(this.areaOptions)
+        .sort((a, b) => +a - +b)
+        .map(value => +value);
+
+      keys.forEach(areaId => {
+        const _viewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
+
+        for (let i = 0, length = _viewContainer.length; i < length; i++) {
+          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
+          const context = viewRef.context.childView;
+
+          this._setLayoutForControl(viewRef, context.record.item);
+        }
+      });
+    } else {
+      for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
+        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
+        const context = viewRef.context.childView;
+
+        this._setLayoutForControl(viewRef, context.record.item);
+      }
     }
   }
 
@@ -275,7 +311,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         return i > 0 ? i - 1 : 0;
       }
 
-      if (areaId > _areaId && _areaId < _nextAreaId) {
+      if (areaId > _areaId && areaId < _nextAreaId) {
         return i + 1;
       }
 
@@ -332,6 +368,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const {_formControlItemDef, _formAreaDef} = this;
 
       if (containerCount > 1) {
+        this._setHostClass(['jd-dy-form-area-mode'], []);
         const areaViewIndex = this._getAreaViewIndexById(item.areaId);
 
         if (areaViewIndex < 0) {
@@ -343,6 +380,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         }
 
         outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId].viewContainer;
+      } else {
+        this._setHostClass([], ['jd-dy-form-area-mode']);
       }
 
       const view = outletViewContainer.createEmbeddedView(_formControlItemDef.template);
@@ -362,6 +401,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._recordControlUIDMap.set(record.item.uid, record.item);
 
         view.context.childView = new RecordControlItemViewTuple(record, labelView, controlView);
+
+        this._setLayoutForControl(view, record.item);
       } else {
         throw Error(`error`);
       }
@@ -597,6 +638,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
 
   _applyChanges(changes: IterableChanges<FormControlConfig>) {
+    this._controlUIDMap.clear();
+    this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
+
 
     changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>,
                               previousIndex: number | null,
@@ -625,6 +669,13 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     });
 
     this._updateRowIndexContext();
+
+    Promise.resolve().then(() => {
+      this._cdf.markForCheck();
+      if (!this._dyFormInit) {
+        this._dyFormInit = true;
+      }
+    });
   }
 
   ngDoCheck(): void {
@@ -648,22 +699,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const changes = this._optionDiffer.diff(this.options);
 
       if (changes) {
-        this._controlUIDMap.clear();
-        this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
-        // this._optionChange$.next(changes);
-        this._applyChanges(changes);
-        // this._cdf.markForCheck();
-        Promise.resolve().then(() => {
-          this._cdf.markForCheck();
-          if (!this._dyFormInit) {
-            this._dyFormInit = true;
-            this.dyFormRef.model.initHook();
-            // this.dyFormRef.OnInit.emit();
-          }
-        });
-        // setTimeout(() => this._cdf.markForCheck());
-        // areaOptions
-
+        if (this._columnDefsByName.size) {
+          this._applyChanges(changes);
+        } else {
+          this._willRenderChanges = changes;
+        }
       }
     }
   }
@@ -683,6 +723,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   ngAfterContentChecked(): void {
     this._cacheColumnDefs();
+
+    if (this._columnDefsByName.size && this._willRenderChanges) {
+      this._applyChanges(this._willRenderChanges);
+      this._willRenderChanges = null;
+    }
     console.log('_cacheColumnDefs');
   }
 

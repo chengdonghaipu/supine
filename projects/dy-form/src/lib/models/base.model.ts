@@ -73,11 +73,6 @@ export abstract class BaseModel<M = any> {
   }
 
   /**
-   * 自定义label
-   */
-  customLabel = false;
-
-  /**
    * 当前控件是否隐藏
    */
   hide = false;
@@ -126,7 +121,8 @@ export abstract class BaseModel<M = any> {
    */
   controlCol: string | number = 24;
 
-  initHook: (that: this, context: ModelPartial<M>) => void;
+  // TODO 暂时不实现
+  // initHook: (that: this, context: ModelPartial<M>) => void;
 
   protected constructor() {
     this.uid = ++nextUniqueId;

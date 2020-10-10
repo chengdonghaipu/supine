@@ -8,15 +8,13 @@ import {ControlLayout} from './models/type';
 
 
 export abstract class AbstractDyFormRef<T extends BaseFormModel> {
+  abstract dyForm;
+
   mode: DyFormMode = 'vertical';
 
   model: T;
 
   column = 24;
-
-  customLayout = false;
-
-  abstract dyForm;
 
   gridBreakpoints: ControlLayout & { unit: string } = {
     xs: 0,
@@ -32,6 +30,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
 
   protected readonly _renderData = new BehaviorSubject<FormControlConfig[]>([]);
 
+  protected allOptions: FormControlConfig[] = [];
   /**
    * 容器个数
    */
@@ -68,7 +67,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
   }
 
   get options(): FormControlConfig[] {
-    return this._renderData.value || [];
+    return this._renderData.value;
   }
 
   generateAreaOptions(model?: FormControlConfig[]) {

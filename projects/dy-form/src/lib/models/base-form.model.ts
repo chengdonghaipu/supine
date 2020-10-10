@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from '@angular/forms';
+import {AbstractControl, FormGroup} from '@angular/forms';
 import {FormControlConfig} from './base.model';
 
 export abstract class BaseFormModel<T = any> {
@@ -52,7 +52,8 @@ export abstract class BaseFormModel<T = any> {
     });
   }
 
-  forConfig(formValue: any, model: FormControlConfig[], ...params) {
+  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params): FormControlConfig[] | void {
+
   }
 
   withAttachValue(value): this {

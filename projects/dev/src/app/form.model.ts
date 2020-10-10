@@ -1,4 +1,4 @@
-import {BaseFormModel, InputModel, ValidatorRule} from 'dy-form';
+import {BaseFormModel, FormControlConfig, InputModel, ValidatorRule} from 'dy-form';
 
 export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})
@@ -7,6 +7,8 @@ export class FormModel extends BaseFormModel {
 
   @InputModel<FormModel>({label: '矿岩名称1', areaId: 2})
   mineralName5 = [null];
+  @InputModel<FormModel>({label: '矿岩名称6', areaId: 3})
+  mineralName6 = [null];
 
   @InputModel<FormModel>({label: '矿岩名称2', areaId: 3})
   mineralName1 = [null];
@@ -16,4 +18,10 @@ export class FormModel extends BaseFormModel {
 
   @InputModel<FormModel>({label: '矿岩名称4', areaId: 5})
   mineralName3 = [3];
+
+  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): void {
+    super.modelUpdateHook(formValue, model, ...params);
+    console.log(model);
+    // return model.filter((value, index) => index > 2);
+  }
 }

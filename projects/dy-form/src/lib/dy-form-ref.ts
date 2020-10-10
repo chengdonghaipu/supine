@@ -5,7 +5,7 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {AsyncValidatorFn, FormControl, ValidatorFn} from '@angular/forms';
 import {BaseFormModel} from './models';
 import {ControlLayout} from './models/type';
-import {DY_FORM_OPTIONS, VALIDATOR_RULE} from './decorator/form-metadata';
+import {ATTACHED_MODEL, DY_FORM_OPTIONS, VALIDATOR_RULE} from './decorator/form-metadata';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {DyFormComponent} from './dy-form.component';
 import {universal_valid} from './validator-fn';
@@ -28,6 +28,8 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   private _unsubscribe$ = new Subject<void>();
 
   dyForm: DyFormComponent;
+
+  protected modelSet = new Map<Type<any>, FormControlConfig[]>();
   /**
    * 默认所有控件都按照这个配置进行响应式变化
    */
@@ -52,9 +54,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     this.updateControl(_updateField);
   }
 
-  constructor(models: FormControlConfig[] | Type<T> = [], initialData: InitialData = {}) {
+  constructor(model: Type<T>, initialData: InitialData = {}) {
     super();
-    this.registeredModel(models);
+    this.registeredModel(model);
 
     for (const initialDataKey in initialData) {
       if (initialData.hasOwnProperty(initialDataKey)) {
@@ -95,90 +97,124 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   }
 
   private _registeredModel(model: FormControlConfig[]) {
+    const optionMap = new Map<string, FormControlConfig>();
+
     model.forEach(value => {
-      if (this.optionMap.has(value.name)) {
+      if (optionMap.has(value.name)) {
         throw Error(`${value.name} always exists`);
       }
-      this.optionMap.set(value.name, value);
+      optionMap.set(value.name, value);
       if (!value.controlLayout) {
         value.controlLayout = this.controlLayout;
       }
     });
-    // TODO 会触发两次
-    setTimeout(() => {
-      // this.model.whitelist(null, model, this.whitelistChange);
-    });
-    this.generateAreaOptions(model);
-    this.renderDataNext(model);
+
+    this.allOptions = model;
+
+    // this.generateAreaOptions(model);
+    // this.renderDataNext(model);
   }
 
-  registeredModel(model: FormControlConfig[] | Type<any>): this {
-    if (Array.isArray(model)) {
-      this._registeredModel(model);
-      return this;
+  executeModelUpdate(...params: any[]) {
+    const hook = this.model.modelUpdateHook.bind(this.model);
+
+    const formValue = this?.dyForm?.formArea.value || {};
+
+    const options = hook(formValue, this.allOptions, ...params);
+
+    console.log((options || this.allOptions).length);
+
+    this.generateAreaOptions(options || this.allOptions);
+    this.renderDataNext(options || this.allOptions);
+  }
+
+  /**
+   * 解析模型
+   * @param Model
+   * @param attached
+   */
+  resolveModel<M extends BaseFormModel>(Model: Type<M>, attached = false) {
+    if (this.model && !attached) {
+      throw Error(`不能注册多个表单模型`);
     }
 
-    if (typeof model === 'function') {
-      const _model = new (model as Type<T>)();
+    const options: FormControlConfig[] = Reflect.getMetadata(DY_FORM_OPTIONS, Model.prototype);
 
-      this.model = _model;
+    const attachedModels = Reflect.getMetadata(ATTACHED_MODEL, Model) as Type<M>[] || [];
+    // 递归注册附加模型
+    attachedModels.forEach(value => {
+      const tempOptions = this.resolveModel(value, true);
+      options.push(...tempOptions);
+    });
 
-      Promise.resolve().then(() => {
-        const options: FormControlConfig[] = Reflect.getMetadata(DY_FORM_OPTIONS, model.prototype);
-        if (!options) {
-          throw Error(`Parameter ${model} is invalid`);
-        }
-        _model.options = options;
+    if (attached) {
+      return options;
+    }
 
-        options.forEach(value => {
-          const formOptionValue = _model[value.name];
-          value.validators = [];
-          value.asyncValidators = [];
+    const _model = new Model();
 
-          if (formOptionValue) {
-            if (!Array.isArray(formOptionValue)) {
-              throw new Error(`控件赋值错误: eg:
+    this.model = _model as unknown as T;
+
+    if (!options) {
+      throw Error(`Parameter ${Model} is invalid`);
+    }
+    _model.options = options;
+
+    options.forEach(value => {
+      const formOptionValue = _model[value.name];
+      value.validators = [];
+      value.asyncValidators = [];
+
+      if (formOptionValue) {
+        if (!Array.isArray(formOptionValue)) {
+          throw new Error(`控件赋值错误: eg:
               export class MineralModel {
                   @InputModel({label: '矿岩名称'})
                   mineralName = [null, [Validators.required]];
               }`);
-            }
-            const [state, validators, asyncValidators] = formOptionValue;
+        }
+        const [state, validators, asyncValidators] = formOptionValue;
 
-            value.defaultValue = state;
+        value.defaultValue = state;
 
-            if (Array.isArray(validators)) {
-              (value.validators as ValidatorFn[]).push(...validators);
-            }
+        if (Array.isArray(validators)) {
+          (value.validators as ValidatorFn[]).push(...validators);
+        }
 
-            if (Array.isArray(asyncValidators)) {
-              (value.asyncValidators as AsyncValidatorFn[]).push(...asyncValidators);
-            }
-          }
+        if (Array.isArray(asyncValidators)) {
+          (value.asyncValidators as AsyncValidatorFn[]).push(...asyncValidators);
+        }
+      }
 
-          const ruleObj = Reflect.getMetadata(VALIDATOR_RULE, _model, value.name);
+      const ruleObj = Reflect.getMetadata(VALIDATOR_RULE, _model, value.name);
 
-          if (ruleObj) {
-            // tslint:disable-next-line:prefer-const
-            let { rule, msg } = ruleObj;
+      if (ruleObj) {
+        // tslint:disable-next-line:prefer-const
+        let {rule, msg} = ruleObj;
 
-            if (Array.isArray(rule)) {
-              rule = rule.join('&');
-            }
+        if (Array.isArray(rule)) {
+          rule = rule.join('&');
+        }
 
-            value.required = /required/.test(rule);
+        value.required = /required/.test(rule);
 
-            (value.validators as ValidatorFn[]).push(universal_valid(value.name, rule, msg));
-          }
+        (value.validators as ValidatorFn[]).push(universal_valid(value.name, rule, msg));
+      }
 
-          if (typeof value.initHook === 'function') {
-            value.initHook.bind(_model)(value, _model);
-          }
-        });
+      // if (typeof value.initHook === 'function') {
+      //   value.initHook.bind(_model)(value, _model);
+      // }
+    });
 
-        this._registeredModel(options);
-      });
+    this._registeredModel(options);
+  }
+
+  registeredModel<M extends BaseFormModel>(model: Type<M>): this {
+    if (this.model) {
+      throw Error(`不能注册多个表单模型`);
     }
+
+    this.resolveModel(model);
 
     return this;
   }
@@ -315,6 +351,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       return this;
     }
 
+    this.generateAreaOptions(option);
     this.renderDataNext(option);
 
     return this;

@@ -2,8 +2,6 @@
  * Public API Surface of dy-form
  */
 
-import {DyFormControlItem, DyFormControlItemDef} from './lib/dy-form.def';
-
 export * from './lib/dy-form.service';
 export * from './lib/dy-form.component';
 export * from './lib/dy-form.module';
@@ -16,7 +14,7 @@ export {
   DyFormControlItemDef,
   DyFormHeader,
   DyFormFooter,
-  DyFormArea
+  DyFormArea,
 } from './lib/dy-form.def';
 export * from './lib/models';
 export * from './lib/decorator';
