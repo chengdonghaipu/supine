@@ -168,13 +168,13 @@ export class DyFormHeaderDef {
 }
 
 @Directive({selector: '[jdFormFooterOutlet]'})
-export class DyFormFooterOutlet  {
+export class DyFormFooterOutlet {
   constructor(public viewContainer: ViewContainerRef) {
   }
 }
 
 @Directive({selector: '[jdFormHeaderOutlet]'})
-export class DyFormHeaderOutlet  {
+export class DyFormHeaderOutlet {
   constructor(public viewContainer: ViewContainerRef) {
   }
 }
@@ -227,6 +227,13 @@ export class DyFormColumnDef {
 }
 
 export class DyFormCellDefContext<T> {
+  groupInfo: { [key: string]: T } = {};
+
+  withGroupInfo(groupInfo: { [key: string]: T }) {
+    this.groupInfo = groupInfo;
+    return this;
+  }
+
   constructor(public $implicit: FormControl,
               public config: T,
               public index: number,
