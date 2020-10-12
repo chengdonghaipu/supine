@@ -418,8 +418,31 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     const {containerCount} = this.dyFormRef;
 
-    if (filterType.includes(item.type)) {
+    const groupChildrenMap: { [key: string]: FormControlConfig } = {};
+
+    if (filterType.includes(item.type) && item?.groupMode !== 'combine') {
       return;
+    }
+
+    let combineMode = false;
+
+    // 如果是组合模式
+    if (filterType.includes(item.type) && item?.groupMode === 'combine') {
+      this.options
+        .filter(value => value.parent === item.name)
+        .forEach(value => groupChildrenMap[value.name] = value);
+
+      combineMode = true;
+    }
+
+
+    if (item.parent) {
+      const parent = this.dyFormRef.optionMap.get(item.parent);
+
+      // 如果是组合模式 则不单独渲染子控件
+      if (parent?.groupMode === 'combine') {
+        return;
+      }
     }
 
     const dyFormColumnDef = this._columnDefsByName.get(item.type);
@@ -449,7 +472,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
 
       const view = outletViewContainer.createEmbeddedView(_formControlItemDef.wrapDef.template);
-      console.log(_formControlItemDef, _formControlItemDef);
+      // console.log(_formControlItemDef, _formControlItemDef);
 
       if (DyFormItemOutlet.mostRecentCellOutlet) {
         const {viewContainer} = DyFormItemOutlet.mostRecentCellOutlet;
@@ -655,20 +678,33 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const labelContext = context.labelView.context;
       const controlContext = context.controlView.context;
 
-      const record = context.record;
+      const {item} = context.record;
 
-      const controlName = record.item.name;
+      const controlName = item.name;
 
       let _$implicit;
 
-      if (record.item.parent) {
+      if (item.parent) {
         const formGroup = this._getFormGroup(controlName);
         _$implicit = formGroup.get(controlName);
       } else {
         _$implicit = this.formArea.get(controlName);
       }
 
-      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(record.item.uid)};
+      const groupChildrenMap: { [key: string]: FormControlConfig } = {};
+
+      let combineMode = false;
+
+      // 如果是组合模式
+      if (item.type === 'GROUP' && item?.groupMode === 'combine') {
+        this.options
+          .filter(value => value.parent === item.name)
+          .forEach(value => groupChildrenMap[value.name] = value);
+
+        combineMode = true;
+      }
+
+      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(item.uid)};
 
       Object.assign(labelContext, tempContext);
       Object.assign(controlContext, tempContext);

@@ -106,8 +106,6 @@ export abstract class BaseModel<M = any> {
    */
   required = false;
 
-  group = false;
-
   controlLayout: ControlLayout;
 
   formControl: FormControl | undefined;
