@@ -8,6 +8,7 @@ export class FormModel extends BaseFormModel {
 
   @InputModel<FormModel>({label: '矿岩名称1', areaId: 2})
   mineralName5 = [null];
+
   @InputModel<FormModel>({label: '矿岩名称6', areaId: 3})
   mineralName6 = [null];
 
