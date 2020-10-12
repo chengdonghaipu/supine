@@ -708,6 +708,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       Object.assign(labelContext, tempContext);
       Object.assign(controlContext, tempContext);
+
+      if (combineMode) {
+        labelContext.withGroupInfo(groupChildrenMap);
+        controlContext.withGroupInfo(groupChildrenMap);
+      } else {
+        labelContext.withGroupInfo({});
+        controlContext.withGroupInfo({});
+      }
     };
 
     if (containerCount > 1) {
