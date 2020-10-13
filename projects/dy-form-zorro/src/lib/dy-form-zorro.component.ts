@@ -16,7 +16,7 @@ import {DyFormColumnDef, DyFormComponent, DyFormFooterDef, DyFormHeaderDef, DyFo
   templateUrl: './dy-form-zorro.component.html',
   styleUrls: ['./dy-form-zorro.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;

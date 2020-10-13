@@ -1,5 +1,6 @@
 <!--通用错误提示-->
 <ng-template #errorTpl let-control>
+  {{control.name}}
   <ng-container *ngIf="control.hasError(control.name)">
     {{control.getError(control.name)}}
   </ng-container>
@@ -113,11 +114,19 @@
 
     <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
                      [nzErrorTip]="errorTpl"
+                     [nzValidateStatus]="control"
                      [ngStyle]="config.controlStyle"
                      [ngClass]="dyForm.controlClass(config)">
-      <ng-template [ngTemplateOutlet]="inputControl"
+      <input nz-input
+             [id]="config.name"
+             [placeholder]="config.placeHolder"
+             [formControl]="control"
+             [disabled]="config.disabled"
+             [nzSize]="config.size"
+             [readOnly]="config.readonly"/>
+     <!-- <ng-template [ngTemplateOutlet]="inputControl"
                    [ngTemplateOutletContext]="{$implicit: config, control: control}">
-      </ng-template>
+      </ng-template>-->
     </nz-form-control>
   </ng-container>
 

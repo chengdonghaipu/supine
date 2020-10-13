@@ -320,6 +320,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     this._setHostClass([prefix + mode], classList);
 
+    this._renderer.addClass(controlHostEl, 'jd-form-item');
+
     if (config.hide) {
       this._renderer.setStyle(controlHostEl, 'display', 'none');
     }

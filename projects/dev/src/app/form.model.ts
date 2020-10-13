@@ -1,31 +1,24 @@
 import {BaseFormModel, FormControlConfig, GroupModel, ValidatorRule} from '@supine/dy-form';
 import {InputGroupModel, InputModel, SelectGroupModel} from '@supine/dy-form-zorro';
+import {Validators} from '@angular/forms';
 
 export class FormModel extends BaseFormModel {
-  @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})
-  @ValidatorRule(['max:999'], {max: '最大排土次数999'})
+  @InputModel<FormModel>({label: '矿岩名称5', updateOn: 'change'})
+  @ValidatorRule(['required&max:999'], {max: '最大排土次数999', required: '必传'})
   mineralName = [null];
 
-  @GroupModel<FormModel>({label: '矿岩名称1', areaId: 2, groupMode: 'combine', parent: 'mineralName8'})
-  mineralName5 = [null];
-  @GroupModel<FormModel>({label: '矿岩名称1', areaId: 2, groupMode: 'combine', parent:　'mineralName9'})
-  mineralName8 = [null];
+  @InputModel<FormModel>({label: '矿岩名称6'})
+  mineralName6 = [null, [Validators.required]];
 
-  @GroupModel<FormModel>({label: '矿岩名称1', areaId: 2, groupMode: 'combine'})
-  mineralName9 = [null];
-
-  @InputModel<FormModel>({label: '矿岩名称6', areaId: 3, parent: 'mineralName5'})
-  mineralName6 = [null];
-
-  @InputModel<FormModel>({label: '矿岩名称2', areaId: 3, parent: 'mineralName5'})
+  @InputModel<FormModel>({label: '矿岩名称2'})
   mineralName1 = [null];
 
-  @InputModel<FormModel>({label: '矿岩名称3', areaId: 4, parent: 'mineralName5'})
+  @InputModel<FormModel>({label: '矿岩名称3'})
   mineralName2 = [null];
 
-  @InputGroupModel({label: '矿岩名称4', areaId: 5, addOnAfter: 'RGB'})
+  @InputGroupModel({label: '矿岩名称4', addOnAfter: 'RGB'})
   mineralName3 = [3];
-  @SelectGroupModel({label: '矿岩名称4', areaId: 5, addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
+  @SelectGroupModel({label: '矿岩名称78978974', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
   mineralName31 = [3];
 
   /**

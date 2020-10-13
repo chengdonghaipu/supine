@@ -51,6 +51,10 @@ export class SelectModelControl<M = any> extends BaseModel<M> {
 
   openChange: (open: boolean) => void = open => {};
 
+  get placeHolder(): string {
+    return `请选择${this.label}`;
+  }
+
   constructor(init?: SelectModelControl) {
     super();
     this.init(init);

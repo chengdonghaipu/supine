@@ -179,7 +179,13 @@ export class DyFormHeaderOutlet {
   }
 }
 
-@Directive({selector: '[jdDyFormItemWrapDef]'})
+@Directive({
+  selector: '[jdDyFormItemWrapDef]',
+  // host: {
+  //   class: 'jd-form-item',
+  //   role: 'row',
+  // }
+})
 // tslint:disable-next-line:directive-class-suffix
 export class DyFormItemWrapDef {
 

@@ -10,8 +10,27 @@
     <input type="text" id="{{config.name}}" *jdDyFormControlCellDef="let control; let config = groupInfo" [value]="config | json">
   </ng-container>
   <div *jdDyFormHeaderDef>jdDyFormHeaderDef1</div>
-  <div *jdDyFormFooterDef>jdDyFormFooterDef1</div>
+  <div *jdDyFormFooterDef>
+    <button (click)="submit()">submit</button>
+  </div>
 </jd-dy-form-zorro>
 
-
+<div  class="login-form" >
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input your username!">
+      <nz-input-group >
+        <input type="text" nz-input [formControl]="validateForm?.get('userName')" placeholder="Username" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input your Password!">
+      <nz-input-group >
+        <input type="password" nz-input [formControl]="validateForm?.get('password')" placeholder="Password" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Log in</button>
+  Or <a> register now! </a>
+</div>
 <router-outlet></router-outlet>
