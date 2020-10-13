@@ -61,7 +61,7 @@
              (nzOpenChange)="config.openChange($event)"
              [nzLoading]="config.loading"
              [nzRemoveIcon]="config.removeIcon"
-             [nzSuffixIcon]="config.suffixIcon"
+             [nzSuffixIcon]="config.suffixIconPv"
              [nzShowSearch]="config.showSearch"
              [nzShowArrow]="config.showArrow"
              [nzDropdownMatchSelectWidth]="config.dropdownMatchSelectWidth"
@@ -92,6 +92,11 @@
     </ng-container>
     <ng-container *ngIf="type === 'INPUT_NUMBER'">
       <ng-template [ngTemplateOutlet]="inputNumberControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </ng-container>
+    <ng-container *ngIf="type === 'SELECT_GROUP'">
+      <ng-template [ngTemplateOutlet]="selectControl"
                    [ngTemplateOutletContext]="{$implicit: config, control: control}">
       </ng-template>
     </ng-container>
@@ -185,6 +190,21 @@
                      [ngClass]="dyForm.controlClass(config)">
       <ng-template [ngTemplateOutlet]="selectControl"
                    [ngTemplateOutletContext]="{$implicit: config, control: control}">
+      </ng-template>
+    </nz-form-control>
+  </ng-container>
+
+  <ng-container jdDyFormColumnDef="SELECT_GROUP">
+    <ng-container *jdDyFormLabelCellDef="let config = config">
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: config}"></ng-template>
+    </ng-container>
+
+    <nz-form-control *jdDyFormControlCellDef="let control; let config = config"
+                     [nzErrorTip]="errorTpl"
+                     [ngStyle]="config.controlStyle"
+                     [ngClass]="dyForm.controlClass(config)">
+      <ng-template [ngTemplateOutlet]="formGroupControl"
+                   [ngTemplateOutletContext]="{$implicit: config, control: control, type: 'SELECT_GROUP'}">
       </ng-template>
     </nz-form-control>
   </ng-container>

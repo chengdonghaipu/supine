@@ -418,30 +418,29 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     const {containerCount} = this.dyFormRef;
 
-    const groupChildrenMap: { [key: string]: FormControlConfig } = {};
+    let isRenderControl = true;
 
-    if (filterType.includes(item.type) && item?.groupMode !== 'combine') {
-      return;
+    if (item.type === 'GROUP') {
+      item.group = true;
     }
 
-    let combineMode = false;
+    if (item.group && item?.groupMode !== 'combine') {
+      isRenderControl = false;
+    }
 
     // 如果是组合模式
-    if (filterType.includes(item.type) && item?.groupMode === 'combine') {
-      this.options
-        .filter(value => value.parent === item.name)
-        .forEach(value => groupChildrenMap[value.name] = value);
-
-      combineMode = true;
+    if (item.group && item?.groupMode === 'combine') {
+      const groupChildrenMap = this._getGroupChildrenMap(item.name);
+      isRenderControl = Object.keys(groupChildrenMap).length > 0;
     }
 
 
-    if (item.parent) {
+    if (item.parent && !item.group) {
       const parent = this.dyFormRef.optionMap.get(item.parent);
 
       // 如果是组合模式 则不单独渲染子控件
       if (parent?.groupMode === 'combine') {
-        return;
+        isRenderControl = false;
       }
     }
 
@@ -451,24 +450,32 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     let outletViewContainer = outlet.viewContainer;
 
+    if (containerCount > 1) {
+      this._setHostClass(['jd-dy-form-area-mode'], []);
+      const areaViewIndex = this._getAreaViewIndexById(item.areaId);
+
+      if (areaViewIndex < 0) {
+        const createIndex = this._getCreateViewIndex(item.areaId);
+
+        outlet.viewContainer.createEmbeddedView(this._formAreaDef.template, item, createIndex);
+
+        DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId] = DyFormAreaOutlet.mostRecentTemAreaOutlet;
+      }
+
+      outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId].viewContainer;
+
+      if (!isRenderControl) {
+        return;
+      }
+    } else {
+      this._setHostClass([], ['jd-dy-form-area-mode']);
+    }
+
     if (dyFormColumnDef) {
-      const {_formControlItemDef, _formAreaDef} = this;
+      const {_formControlItemDef} = this;
 
-      if (containerCount > 1) {
-        this._setHostClass(['jd-dy-form-area-mode'], []);
-        const areaViewIndex = this._getAreaViewIndexById(item.areaId);
-
-        if (areaViewIndex < 0) {
-          const createIndex = this._getCreateViewIndex(item.areaId);
-
-          outlet.viewContainer.createEmbeddedView(_formAreaDef.template, item, createIndex);
-
-          DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId] = DyFormAreaOutlet.mostRecentTemAreaOutlet;
-        }
-
-        outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId].viewContainer;
-      } else {
-        this._setHostClass([], ['jd-dy-form-area-mode']);
+      if (!isRenderControl) {
+        return;
       }
 
       const view = outletViewContainer.createEmbeddedView(_formControlItemDef.wrapDef.template);
@@ -547,31 +554,28 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     if (config.group || config.parent) {
       if (config.group) {
-        exit = this.formArea.get(controlName) as FormGroup;
+        exit = this._getFormGroup(config.name);
       } else {
         const formGroup = this._getFormGroup(config.name);
-        exit = formGroup.get(controlName);
+
+        exit = formGroup && formGroup.get(controlName);
       }
     }
 
     if (exit) {
+      console.log(exit, 'exit');
+
       let isControl = true;
 
       if (config.group) {
         isControl = false;
-
-        const control: FormGroup = this.formArea.get(controlName) as FormGroup;
-
-        if (control) {
-          throw new Error(`表单模型定义错误:  无法找到${controlName}表单组`);
-        }
+        // const control: FormGroup = exit as FormGroup;
       }
 
-      if (config.parent) {
+      if (config.parent && !config.group) {
         isControl = false;
         const formGroup: FormGroup = this._getFormGroup(config.name) as FormGroup;
 
-        // console.log(this.formArea);
         const control = formGroup.get(controlName);
 
         setControlStatus(control, config.disabled);
@@ -591,18 +595,12 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       if (config.group) {
         isControl = false;
-        if (!this.formArea.get(controlName)) {
-          this.formArea.addControl(controlName, new FormGroup({}));
-        }
+        this._addFormGroup(config.name);
       }
 
-      if (config.parent) {
+      if (config.parent && !config.group) {
         isControl = false;
-        const control: FormGroup = this._getFormGroup(config.name) as FormGroup;
-
-        if (!control) {
-          throw new Error(`表单模型定义错误:  无法找到${controlName}表单组`);
-        }
+        const control: FormGroup = this._getFormGroup(config.name, true) as FormGroup;
 
         control.addControl(controlName, getFormControl(config));
       }
@@ -615,34 +613,77 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     console.log('_addControl');
   }
 
-  private _getControlPath(name: string) {
+  private _addFormGroup(groupName: string) {
+    const option = this.dyFormRef.optionMap.get(groupName);
+
+    if (!option) {
+      throw Error(`表单组: ${groupName}  未注册`);
+    }
+
+    if (!option.group) {
+      throw Error(`表单配置错误: ${groupName}并不是表单组`);
+    }
+
+    this._getFormGroup(groupName, true);
+  }
+
+  private _getControlPath(name: string, first = true) {
     const path = [];
 
     const option = this.dyFormRef.optionMap.get(name);
 
-    if (option.parent) {
-      path.push(option.parent);
-      const p = this._getControlPath(option.parent);
-      path.push(...p);
+    if (option.group && first) {
+      path.push(option.name);
     }
+
+    let parent = option.parent;
+
+    for (let i = 0; i < 10; i++) {
+      const _option = this.dyFormRef.optionMap.get(parent);
+
+      if (_option) {
+        path.push(parent);
+        parent = _option.parent;
+
+        if (!parent) {
+          break;
+        }
+      } else {
+        break;
+      }
+
+      if (path.length > 9) {
+        throw Error('表单组嵌套太深');
+      }
+    }
+
     return path.reverse();
   }
 
-  private _getFormGroup(name: string): FormGroup {
+  private _getFormGroup(name: string, generate = false): FormGroup {
     const path = this._getControlPath(name);
     // console.log(path);
     let control: FormGroup = null;
 
     path.forEach(value => {
+      const option = this.dyFormRef.optionMap.get(value);
       if (!control) {
-        control = this.formArea.get(value) as FormGroup;
+        const temp = this.formArea.get(option.controlName) as FormGroup;
+        if (!temp && generate) {
+          this.formArea.addControl(option.controlName, new FormGroup({}));
+          control = this.formArea.get(option.controlName) as FormGroup;
+        } else {
+          control = temp;
+        }
       } else {
-        control = control.get(value) as FormGroup;
-      }
+        const temp = control.get(value) as FormGroup;
 
-      if (!control) {
-        // this.formArea.addControl(value, new FormGroup({}));
-        throw new Error(`表单模型定义错误:  无法找到${value}表单组`);
+        if (!temp && generate) {
+          control.addControl(option.controlName, new FormGroup({}));
+          control = control.get(option.controlName) as FormGroup;
+        } else {
+          control = temp;
+        }
       }
     });
 
@@ -668,6 +709,16 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
+  private _getGroupChildrenMap(groupName: string) {
+    const groupChildrenMap: { [key: string]: FormControlConfig } = {};
+
+    this.options
+      .filter(value => value.parent === groupName && !value.group)
+      .forEach(value => groupChildrenMap[value.name] = value);
+
+    return groupChildrenMap;
+  }
+
   private _updateRowIndexContext() {
     const viewContainer = this._formCellOutlet.viewContainer;
 
@@ -691,16 +742,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         _$implicit = this.formArea.get(controlName);
       }
 
-      const groupChildrenMap: { [key: string]: FormControlConfig } = {};
-
       let combineMode = false;
 
       // 如果是组合模式
       if (item.type === 'GROUP' && item?.groupMode === 'combine') {
-        this.options
-          .filter(value => value.parent === item.name)
-          .forEach(value => groupChildrenMap[value.name] = value);
-
         combineMode = true;
       }
 
@@ -710,6 +755,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       Object.assign(controlContext, tempContext);
 
       if (combineMode) {
+        const groupChildrenMap = this._getGroupChildrenMap(item.name);
+
         labelContext.withGroupInfo(groupChildrenMap);
         controlContext.withGroupInfo(groupChildrenMap);
       } else {
@@ -762,7 +809,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
           this._renderCustomControl(record);
         }
 
-        console.log('新增 | 修改');
+        console.log('新增 | 修改', record.item.name);
       } else if (currentIndex === null) {
         // 删除
         console.log('删除', record.item.name, previousIndex, record.item.disabled, this._controlUIDMap.get(record.item.uid));

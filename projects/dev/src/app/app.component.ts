@@ -14,10 +14,10 @@ export class AppComponent implements OnInit{
 
   constructor() {
     this.dyFormRef.executeModelUpdate();
-    setTimeout(() => {
-      this.dyFormRef.executeModelUpdate();
+    /*setTimeout(() => {
+      // this.dyFormRef.executeModelUpdate();
       // this.dyFormRef.addControl(new InputModelControl({name: 'test', label: 'test'}));
-    }, 5000);
+    }, 5000);*/
   }
 
   ngOnInit(): void {

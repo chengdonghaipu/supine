@@ -30,7 +30,7 @@ export class SelectModelControl<M = any> extends BaseModel<M> {
 
   showSearch = false;
 
-  suffixIcon: TemplateRef<void>;
+  // suffixIcon: TemplateRef<void>;
 
   removeIcon: TemplateRef<void>;
 
