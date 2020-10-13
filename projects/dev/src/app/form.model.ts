@@ -1,5 +1,5 @@
 import {BaseFormModel, FormControlConfig, GroupModel, ValidatorRule} from '@supine/dy-form';
-import {InputGroupModel, InputModel} from '@supine/dy-form-zorro';
+import {InputGroupModel, InputModel, SelectGroupModel} from '@supine/dy-form-zorro';
 
 export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: '矿岩名称5', areaId: 6})
@@ -25,6 +25,8 @@ export class FormModel extends BaseFormModel {
 
   @InputGroupModel({label: '矿岩名称4', areaId: 5, addOnAfter: 'RGB'})
   mineralName3 = [3];
+  @SelectGroupModel({label: '矿岩名称4', areaId: 5, addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
+  mineralName31 = [3];
 
   /**
    * 更新表单模型钩子

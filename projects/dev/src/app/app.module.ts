@@ -6,6 +6,7 @@ import {AppComponent} from './app.component';
 import {DyFormModule} from '@supine/dy-form';
 import {DyFormZorroModule} from '@supine/dy-form-zorro';
 import {ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     AppRoutingModule,
     DyFormModule,
     ReactiveFormsModule,
-    DyFormZorroModule
+    DyFormZorroModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
