@@ -50,6 +50,8 @@
 
 <ng-template #selectControl let-config let-control=control>
   <nz-select [formControl]="control"
+             class="dy-form-select"
+             style="width: 100%;"
              [nzAllowClear]="config.allowClear"
              [nzSize]="config.size"
              [disabled]="config.disabled"

@@ -1,10 +1,22 @@
-import {AfterContentInit, Component, ContentChildren, Input, OnInit, QueryList, ViewChild} from '@angular/core';
+import {
+  AfterContentInit,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChildren,
+  Input,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import {DyFormColumnDef, DyFormComponent, DyFormFooterDef, DyFormHeaderDef, DyFormRef} from '@supine/dy-form';
 
 @Component({
   selector: 'jd-dy-form-zorro',
   templateUrl: './dy-form-zorro.component.html',
-  styles: []
+  styleUrls: ['./dy-form-zorro.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;

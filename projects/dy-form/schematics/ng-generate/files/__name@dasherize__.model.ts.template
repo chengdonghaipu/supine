@@ -20,6 +20,7 @@ export class <%= classify(name) %> extends BaseFormModel {
     /**
        * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
        * HTTP模块 目前还没开源
+       * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
        */
     httpRequest() {
       // 获取表单数据 如果不能满足需要 可以在子类实现value的获取
