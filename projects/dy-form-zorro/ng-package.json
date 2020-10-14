@@ -2,6 +2,16 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/dy-form-zorro",
   "lib": {
-    "entryFile": "src/public-api.ts"
+    "entryFile": "src/public-api.ts",
+    "umdModuleIds": {
+      "lodash": "lodash",
+      "date-fns": "date-fns",
+      "@supine/dy-form": "i1",
+      "ng-zorro-antd/select": "i8",
+      "ng-zorro-antd/grid": "i3",
+      "ng-zorro-antd/form": "i4",
+      "ng-zorro-antd/input": "i5",
+      "ng-zorro-antd/input-number": "i7"
+    }
   }
 }

@@ -6,6 +6,7 @@ import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 export function ngAdd(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     addPackageToPackageJson(tree, '@supine/dy-form', '^10.0.0-rc0');
+    addPackageToPackageJson(tree, '@supine/dy-form-zorro', '^10.0.0-rc0');
     addPackageToPackageJson(tree, 'date-fns', '^2.16.1');
     addPackageToPackageJson(tree, 'lodash', '^4.17.20');
 

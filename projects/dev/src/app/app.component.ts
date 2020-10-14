@@ -11,22 +11,9 @@ import {FormBuilder, Validators} from '@angular/forms';
 export class AppComponent implements OnInit {
   title = 'dev';
   validateForm;
-  dyFormRef = new DyFormRef(FormModel, {mode: 'responsive'});
-
-  submitForm() {
-  }
-
-  submit() {
-    this.dyFormRef.model.updateValueAndValidity();
-  }
-
+  dyFormRef = new DyFormRef(FormModel, {mode: 'vertical'});
 
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      userName: [null, [Validators.required]],
-      password: [null, [Validators.required]],
-      remember: [true]
-    });
   }
 
   constructor(private fb: FormBuilder) {

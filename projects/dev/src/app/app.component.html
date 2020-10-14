@@ -1,36 +1,3 @@
-<jd-dy-form-zorro [dyFormRef]="dyFormRef">
-  <!--<ng-container jdDyFormColumnDef="INPUT">
-    <label for="{{config.name}}" *jdDyFormLabelCellDef="let config = config">{{config.label}}</label>
-    <input type="text" id="{{config.name}}" *jdDyFormControlCellDef="let control; let config = config" [formControl]="control" [placeholder]="config.placeHolder">
-  </ng-container>-->
-<!--  <jd-form-header>header</jd-form-header>-->
-<!--  <jd-form-footer>footer</jd-form-footer>-->
-  <!--<ng-container jdDyFormColumnDef="GROUP">
-    <label for="{{config.name}}" *jdDyFormLabelCellDef="let config = config">{{config.label}}</label>
-    <input type="text" id="{{config.name}}" *jdDyFormControlCellDef="let control; let config = groupInfo" [value]="config | json">
-  </ng-container>-->
-  <div *jdDyFormHeaderDef>jdDyFormHeaderDef1</div>
-  <div *jdDyFormFooterDef>
-    <button (click)="submit()">submit</button>
-  </div>
-</jd-dy-form-zorro>
+<jd-dy-form-zorro [dyFormRef]="dyFormRef"></jd-dy-form-zorro>
 
-<div  class="login-form" >
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your username!">
-      <nz-input-group >
-        <input type="text" nz-input [formControl]="validateForm?.get('userName')" placeholder="Username" />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control nzErrorTip="Please input your Password!">
-      <nz-input-group >
-        <input type="password" nz-input [formControl]="validateForm?.get('password')" placeholder="Password" />
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Log in</button>
-  Or <a> register now! </a>
-</div>
 <router-outlet></router-outlet>

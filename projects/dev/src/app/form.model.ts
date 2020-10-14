@@ -3,7 +3,7 @@ import {InputGroupModel, InputModel, SelectGroupModel} from '@supine/dy-form-zor
 import {Validators} from '@angular/forms';
 
 export class FormModel extends BaseFormModel {
-  @InputModel<FormModel>({label: '矿岩名称5', updateOn: 'change'})
+  /*@InputModel<FormModel>({label: '矿岩名称5', updateOn: 'change'})
   @ValidatorRule(['required&max:999'], {max: '最大排土次数999', required: '必传'})
   mineralName = [null];
 
@@ -19,8 +19,14 @@ export class FormModel extends BaseFormModel {
   @InputGroupModel({label: '矿岩名称4', addOnAfter: 'RGB'})
   mineralName3 = [3];
   @SelectGroupModel({label: '矿', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
-  mineralName31 = [3];
+  mineralName31 = [3];*/
+  @InputModel<FormModel>({label: '用户名'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  username = [null];
 
+  @InputModel<FormModel>({label: '密码'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
+  password = [null];
   /**
    * 更新表单模型钩子
    * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null

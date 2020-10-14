@@ -1,6 +1,6 @@
 {
   "name": "@supine/dy-form",
-  "version": "0.0.8",
+  "version": "10.0.0-rc0",
   "schematics": "./schematics/collection.json",
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
