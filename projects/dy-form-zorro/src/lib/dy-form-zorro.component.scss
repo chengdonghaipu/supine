@@ -1,9 +1,39 @@
+$form-vertical-label-margin: 0 0 8px;
+$line-height-base: 1.5715;
+$form-vertical-label-padding: 0 0 8px;
+
 jd-dy-form {
   nz-select.dy-form-select {
     width: 100%;
   }
   .jd-form-item {
     padding: 0 15px;
+
+
+  }
+  .ant-form-item-control {
+    flex: 1;
+  }
+ /* .ant-form-item .ant-form-item-label {
+    padding: 0 0 8px;
+    line-height: 1.5715;
+    white-space: initial;
+    text-align: left;
+  }*/
+  &.xs .ant-form-item-label, &.sm .ant-form-item-label {
+    margin: $form-vertical-label-margin;
+    padding: $form-vertical-label-padding;
+    line-height: $line-height-base;
+    white-space: initial;
+    text-align: left;
+
+    > label {
+      margin: 0;
+
+      &::after {
+        display: none;
+      }
+    }
   }
 }
 

@@ -213,11 +213,13 @@ export class DyFormItemDef {
 export class DyFormColumnDef {
   private _name: string;
 
-  constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef) {
+  constructor(public viewContainer: ViewContainerRef,
+              public elementRef: ElementRef,
+              public template: TemplateRef<DyFormCellDefContext<FormControlConfig>>) {
   }
 
   /** Unique name for this column. */
-  @Input('jdDyFormColumnDef')
+  @Input('jdDyFormColumnDefName')
   get name(): string {
     return this._name;
   }
@@ -227,9 +229,9 @@ export class DyFormColumnDef {
     // this._setNameInput(name);
   }
 
-  @ContentChild(DyFormLabelCellDef) labelCell: DyFormLabelCellDef;
+  // @ContentChild(DyFormLabelCellDef) labelCell: DyFormLabelCellDef;
 
-  @ContentChild(DyFormControlCellDef) controlCell: DyFormControlCellDef;
+  // @ContentChild(DyFormControlCellDef) controlCell: DyFormControlCellDef;
 }
 
 export class DyFormCellDefContext<T> {

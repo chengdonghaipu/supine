@@ -10,7 +10,7 @@ export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: '矿岩名称6'})
   mineralName6 = [null, [Validators.required]];
 
-  @InputModel<FormModel>({label: '矿岩名称2'})
+  @InputModel<FormModel>({label: '矿2'})
   mineralName1 = [null];
 
   @InputModel<FormModel>({label: '矿岩名称3'})
@@ -18,7 +18,7 @@ export class FormModel extends BaseFormModel {
 
   @InputGroupModel({label: '矿岩名称4', addOnAfter: 'RGB'})
   mineralName3 = [3];
-  @SelectGroupModel({label: '矿岩名称78978974', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
+  @SelectGroupModel({label: '矿', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
   mineralName31 = [3];
 
   /**

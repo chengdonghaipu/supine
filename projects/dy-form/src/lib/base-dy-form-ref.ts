@@ -26,6 +26,15 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
     unit: 'px'
   };
 
+  labelColLayout: ControlLayout = {
+    xs: '0 0 100%',
+    sm: '0 0 100%',
+    md: '0 0 25%',
+    lg: '0 0 25%',
+    xl: '0 0 25%',
+    xxl: '0 0 25%'
+  };
+
   private _areaOptions: { [key: number]: FormControlConfig[] } = {};
 
   protected readonly _renderData = new BehaviorSubject<FormControlConfig[]>([]);

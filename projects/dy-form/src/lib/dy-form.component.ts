@@ -29,9 +29,12 @@ import {
   DyFormAreaOutlet,
   DyFormCellDefContext,
   DyFormCellOutlet,
-  DyFormColumnDef, DyFormFooterDef, DyFormFooterOutlet, DyFormHeaderDef, DyFormHeaderOutlet,
-  DyFormItemDef,
-  DyFormItemOutlet
+  DyFormColumnDef,
+  DyFormFooterDef,
+  DyFormFooterOutlet,
+  DyFormHeaderDef,
+  DyFormHeaderOutlet,
+  DyFormItemDef
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
@@ -40,9 +43,9 @@ import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
 
 class RecordControlItemViewTuple {
-  constructor(public record: IterableChangeRecord<FormControlConfig>,
+  constructor(public record: IterableChangeRecord<FormControlConfig>/*,
               public labelView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,
-              public controlView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,
+              public controlView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,*/
   ) {
   }
 }
@@ -102,7 +105,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   @ContentChildren(DyFormFooterDef, {descendants: true}) _formFooterDefs: QueryList<DyFormFooterDef>;
 
-  @ContentChild(DyFormItemDef, {static: true}) _formControlItemDef: DyFormItemDef;
+  // @ContentChild(DyFormItemDef, {static: true}) _formControlItemDef: DyFormItemDef;
 
   @ContentChild(DyFormAreaDef, {static: true}) _formAreaDef: DyFormAreaDef;
 
@@ -263,18 +266,18 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         const _viewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
 
         for (let i = 0, length = _viewContainer.length; i < length; i++) {
-          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
-          const context = viewRef.context.childView;
+          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
+          const context = viewRef.context;
 
-          this._setLayoutForControl(viewRef, context.record.item);
+          this._setLayoutForControl(viewRef, context.config);
         }
       });
     } else {
       for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
-        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
-        const context = viewRef.context.childView;
+        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
+        const context = viewRef.context;
 
-        this._setLayoutForControl(viewRef, context.record.item);
+        this._setLayoutForControl(viewRef, context.config);
       }
     }
   }
@@ -295,6 +298,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     for (let i = 0; i < _bps.length; i++) {
       if (_bps[i].value < hostWidth) {
         if (this._breakpoint !== _bps[i].name) {
+          this._setHostClass([_bps[i].name], this._breakpoint ? [this._breakpoint] : []);
           this._breakpoint = _bps[i].name;
           // tslint:disable-next-line:no-unused-expression
           breakpointChangeCallback && breakpointChangeCallback();
@@ -304,7 +308,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
-  private _setLayoutForControl(view: EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>, config: FormControlConfig) {
+  private _setLayoutForControl(view: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, config: FormControlConfig) {
     // 获取宿主元素
     const controlHostEl: HTMLElement = view.rootNodes[0];
 
@@ -398,12 +402,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     for (let i = 0; i < outletViewContainer.length; i++) {
-      const viewRef = outletViewContainer.get(i) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
+      const viewRef = outletViewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
 
-      const context = viewRef.context.childView;
-      const controlContext = context.controlView.context;
-
-      if (controlContext.config.uid === uid) {
+      const context = viewRef.context;
+      if (context.config.config.uid === uid) {
         // 移除视图
         outletViewContainer.remove(i);
         return true;
@@ -474,16 +476,23 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     if (dyFormColumnDef) {
-      const {_formControlItemDef} = this;
+      // const {_formControlItemDef} = this;
 
       if (!isRenderControl) {
         return;
       }
 
-      const view = outletViewContainer.createEmbeddedView(_formControlItemDef.wrapDef.template);
+      const view = outletViewContainer.createEmbeddedView(
+        dyFormColumnDef.template,
+        new DyFormCellDefContext(null, record.item, -1, 0)
+      );
       // console.log(_formControlItemDef, _formControlItemDef);
 
-      if (DyFormItemOutlet.mostRecentCellOutlet) {
+      this._recordControlUIDMap.set(record.item.uid, record.item);
+      // view.context.childView = new RecordControlItemViewTuple(record);
+
+      this._setLayoutForControl(view, record.item);
+      /*if (DyFormItemOutlet.mostRecentCellOutlet) {
         const {viewContainer} = DyFormItemOutlet.mostRecentCellOutlet;
         const labelView = viewContainer.createEmbeddedView(
           dyFormColumnDef.labelCell.template,
@@ -502,7 +511,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._setLayoutForControl(view, record.item);
       } else {
         throw Error(`error`);
-      }
+      }*/
     }
     console.log('_renderCustomControl');
   }
@@ -726,44 +735,37 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     const {containerCount} = this.dyFormRef;
 
-    const attachContext = (viewRef: EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>, count: number, renderIndex: number) => {
-      const context = viewRef.context.childView;
-      const labelContext = context.labelView.context;
-      const controlContext = context.controlView.context;
+    const attachContext = (viewRef: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, count: number, renderIndex: number) => {
+      const {config} = viewRef.context;
 
-      const {item} = context.record;
-
-      const controlName = item.name;
+      const controlName = config.name;
 
       let _$implicit;
 
-      if (item.parent) {
+      if (config.parent) {
         const formGroup = this._getFormGroup(controlName);
-        _$implicit = formGroup.get(controlName);
+        _$implicit = formGroup.get(config.controlName);
       } else {
-        _$implicit = this.formArea.get(controlName);
+        _$implicit = this.formArea.get(config.controlName);
       }
 
       let combineMode = false;
 
       // 如果是组合模式
-      if (item.type === 'GROUP' && item?.groupMode === 'combine') {
+      if (config.type === 'GROUP' && config?.groupMode === 'combine') {
         combineMode = true;
       }
 
-      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(item.uid)};
+      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(config.uid)};
 
-      Object.assign(labelContext, tempContext);
-      Object.assign(controlContext, tempContext);
+      Object.assign(viewRef.context, tempContext);
 
       if (combineMode) {
-        const groupChildrenMap = this._getGroupChildrenMap(item.name);
+        const groupChildrenMap = this._getGroupChildrenMap(config.name);
 
-        labelContext.withGroupInfo(groupChildrenMap);
-        controlContext.withGroupInfo(groupChildrenMap);
+        viewRef.context.withGroupInfo(groupChildrenMap);
       } else {
-        labelContext.withGroupInfo({});
-        controlContext.withGroupInfo({});
+        viewRef.context.withGroupInfo({});
       }
     };
 
@@ -780,14 +782,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         const _viewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
 
         for (let i = 0, length = _viewContainer.length; i < length; i++, renderIndex++) {
-          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
+          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
 
           attachContext(viewRef, count, renderIndex);
         }
       });
     } else {
       for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
-        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<{ childView: RecordControlItemViewTuple }>;
+        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
 
         attachContext(viewRef, count, renderIndex);
       }
