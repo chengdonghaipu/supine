@@ -15,7 +15,7 @@ $prefix: 'jd-dy-form';
     }
   }
 
-  &:not(.#{$prefix}-area-mode) {
+  &:not(.#{$prefix}-area-mode):not(.#{$prefix}-vertical) {
     .#{$prefix}-body-outlet {
       display: flex;
       flex-wrap: wrap;

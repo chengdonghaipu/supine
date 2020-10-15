@@ -192,12 +192,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       .pipe(takeUntil(this._unsubscribe$))
       .subscribe(value => {
         this._options = value;
-        console.log(value);
       });
 
     const offsetWidth = this._elementRef.nativeElement.offsetWidth;
 
-    console.log(offsetWidth, 'offsetWidth');
     // this._watchDyFormRef();
     this._setBreakpoint(offsetWidth);
   }
@@ -294,13 +292,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     _bps = _bps.sort((a, b) => b.value - a.value);
 
-    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < _bps.length; i++) {
       if (_bps[i].value < hostWidth) {
         if (this._breakpoint !== _bps[i].name) {
           this._setHostClass([_bps[i].name], this._breakpoint ? [this._breakpoint] : []);
           this._breakpoint = _bps[i].name;
-          // tslint:disable-next-line:no-unused-expression
           breakpointChangeCallback && breakpointChangeCallback();
         }
         break;
@@ -897,6 +893,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentChecked(): void {
+    const offsetWidth = this._elementRef.nativeElement.offsetWidth;
+
+    // this._watchDyFormRef();
+    this._setBreakpoint(offsetWidth);
     this._cacheColumnDefs();
 
     if (this._columnDefsByName.size && this._willRenderChanges) {

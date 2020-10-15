@@ -19,6 +19,7 @@
     "typedef": false,
     "no-redundant-jsdoc": false,
     "no-unused-expression": false,
+    "prefer-for-of": false,
     "forin": false
   }
 }

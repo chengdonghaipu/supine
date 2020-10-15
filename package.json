@@ -1,11 +1,11 @@
 {
   "name": "jd-lib",
-  "version": "0.0.0",
+  "version": "10.0.0-rc1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
+    "build": "gulp build:app && gulp build:version",
+    "publish": "gulp build:publish",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -32,11 +32,17 @@
     "@angular/cli": "~10.0.6",
     "@angular/compiler-cli": "~10.0.9",
     "@types/date-fns": "^2.6.0",
+    "@types/fs-extra": "^9.0.2",
+    "@types/gulp": "^4.0.7",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/lodash": "^4.14.161",
     "@types/node": "^12.11.1",
+    "chalk": "^4.1.0",
     "codelyzer": "^6.0.0",
+    "fs-extra": "^9.0.1",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.0.0",
@@ -46,7 +52,9 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-packagr": "^10.0.0",
     "protractor": "~7.0.0",
+    "run-sequence": "^2.2.1",
     "ts-node": "~8.3.0",
+    "tsconfig-paths": "^3.9.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"
   }

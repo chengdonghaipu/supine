@@ -1,21 +1,21 @@
 {
-  "name": "@supine/dy-form",
-  "version": "10.0.0-rc0",
-  "schematics": "./schematics/collection.json",
-  "scripts": {
-    "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
-    "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/dy-form/",
-    "copy:files": "cp --parents -p schematics/*/files/** ../../dist/dy-form/",
-    "copy:collection": "cp schematics/collection.json ../../dist/dy-form/schematics/collection.json",
-    "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
-  },
-  "peerDependencies": {
-    "@angular/common": "^10.0.14",
-    "@angular/core": "^10.0.14",
-    "date-fns": "^2.16.1",
-    "lodash": "^4.17.20"
-  },
-  "dependencies": {
-    "tslib": "^2.0.0"
-  }
+ "name": "@supine/dy-form",
+ "version": "PACKAGE_VERSION",
+ "schematics": "./schematics/collection.json",
+ "scripts": {
+  "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
+  "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/dy-form/",
+  "copy:files": "cp --parents -p schematics/*/files/** ../../dist/dy-form/",
+  "copy:collection": "cp schematics/collection.json ../../dist/dy-form/schematics/collection.json",
+  "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
+ },
+ "peerDependencies": {
+  "@angular/common": "^10.0.14",
+  "@angular/core": "^10.0.14",
+  "date-fns": "^2.16.1",
+  "lodash": "^4.17.20"
+ },
+ "dependencies": {
+  "tslib": "^2.0.0"
+ }
 }

@@ -17,22 +17,22 @@
 - 面向对象
     - 表单模型、控件模型都基于class实现的，表单模型、控件模型都提供了基类，可以基于基类继承进行拓展
 - 易拓展性
-    - 轻松实现自定控件
+    - 轻松实现自定义控件
 
 # 快速上手
-## 安装
+- 安装
 
 ```
 ng add @supine/dy-form-zorro
 ```
 
-## 在模块中导入 DyFormZorroModule
+- 在模块中导入 DyFormZorroModule
 
-## 通过脚手架生成表单模型
+- 通过脚手架生成表单模型
 ```
-ng g @supine/dy-form-zorro:model LoginModel
+ng g @supine/dy-form:model LoginModel
 ```
-通过上面的命令即可生成 LoginModel 模型内容如下
+- 通过上面的命令即可生成 LoginModel 模型内容如下
 
 ```typescript
 import {BaseFormModel, InputModel, ValidatorRule} from '@supine/dy-form';
@@ -93,7 +93,7 @@ export class LoginModel extends BaseFormModel {
 
 ```
 
-然后修改表单配置来生成成所需的表单
+- 然后修改表单配置来生成成所需的表单
 
 ```typescript
 import {BaseFormModel, InputModel, ValidatorRule} from '@supine/dy-form';
@@ -157,15 +157,17 @@ export class LoginModel extends BaseFormModel {
 }
 
 ```
-然后在HTML中声明动态表单
+- 然后在HTML中声明动态表单
 ```angular2html
 <jd-dy-form-zorro [dyFormRef]="dyFormRef"></jd-dy-form-zorro>
 ```
 
-在组件中定义dyFormRef属性
+- 在组件中定义dyFormRef属性
 
 ```typescript
 dyFormRef = new DyFormRef(LoginModel, {mode: 'vertical'});
 ```
 
-至此就可以看到我们想要的表单啦
+- 至此就可以看到我们想要的表单啦
+  
+![Image text](readme-image/login-dy-form.png)
