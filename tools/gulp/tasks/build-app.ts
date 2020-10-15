@@ -91,6 +91,7 @@ function build(cd: () => void) {
 
     copyFiles(path.join(basePath, 'schematics'), '**/schema.json', path.join(process.cwd(), 'dist', name, 'schematics'));
     copyFiles(path.join(basePath, 'schematics'), 'collection.json', path.join(process.cwd(), 'dist', name, 'schematics'));
+    copyFiles(path.join(basePath, 'schematics'), 'migration.json', path.join(process.cwd(), 'dist', name, 'schematics'));
     copyFiles(path.join(basePath, 'schematics'), '*/files/**', path.join(process.cwd(), 'dist', name, 'schematics'));
     copyFiles(path.join(basePath, 'readme-image'), '**', path.join(process.cwd(), 'dist', name, 'readme-image'));
   });

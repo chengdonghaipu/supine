@@ -1,6 +1,9 @@
 {
  "name": "@supine/dy-form-zorro",
  "schematics": "./schematics/collection.json",
+  "ng-update": {
+    "migrations": "./schematics/migration.json"
+  },
  "version": "PACKAGE_VERSION",
   "keywords": ["Angular", "NZ-ZORRO", "dy-form"],
  "scripts": {

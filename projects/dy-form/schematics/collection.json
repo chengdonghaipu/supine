@@ -5,11 +5,6 @@
       "description": "Add my library to the project.",
       "factory": "./ng-add/index#ngAdd",
       "schema": "./ng-add/schema.json"
-    },
-    "model": {
-      "description": "Generate a formModel in the project.",
-      "factory": "./ng-generate/index#generateFormModel",
-      "schema": "./ng-generate/schema.json"
     }
   }
 }
