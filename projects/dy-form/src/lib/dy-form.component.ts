@@ -267,7 +267,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
           const viewRef = _viewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
           const context = viewRef.context;
 
-          this._setLayoutForControl(viewRef, context.config);
+          this._setLayoutForControl(viewRef, context.model);
         }
       });
     } else {
@@ -275,7 +275,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
         const context = viewRef.context;
 
-        this._setLayoutForControl(viewRef, context.config);
+        this._setLayoutForControl(viewRef, context.model);
       }
     }
   }
@@ -401,7 +401,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const viewRef = outletViewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
 
       const context = viewRef.context;
-      if (context.config.config.uid === uid) {
+      if (context.model.config.uid === uid) {
         // 移除视图
         outletViewContainer.remove(i);
         return true;
@@ -732,32 +732,32 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     const {containerCount} = this.dyFormRef;
 
     const attachContext = (viewRef: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, count: number, renderIndex: number) => {
-      const {config} = viewRef.context;
+      const {model} = viewRef.context;
 
-      const controlName = config.name;
+      const controlName = model.name;
 
       let _$implicit;
 
-      if (config.parent) {
+      if (model.parent) {
         const formGroup = this._getFormGroup(controlName);
-        _$implicit = formGroup.get(config.controlName);
+        _$implicit = formGroup.get(model.controlName);
       } else {
-        _$implicit = this.formArea.get(config.controlName);
+        _$implicit = this.formArea.get(model.controlName);
       }
 
       let combineMode = false;
 
       // 如果是组合模式
-      if (config.type === 'GROUP' && config?.groupMode === 'combine') {
+      if (model.type === 'GROUP' && model?.groupMode === 'combine') {
         combineMode = true;
       }
 
-      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(config.uid)};
+      const tempContext = {count, index: renderIndex, $implicit: _$implicit, config: this._recordControlUIDMap.get(model.uid)};
 
       Object.assign(viewRef.context, tempContext);
 
       if (combineMode) {
-        const groupChildrenMap = this._getGroupChildrenMap(config.name);
+        const groupChildrenMap = this._getGroupChildrenMap(model.name);
 
         viewRef.context.withGroupInfo(groupChildrenMap);
       } else {

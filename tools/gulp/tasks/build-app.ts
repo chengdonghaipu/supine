@@ -7,6 +7,7 @@ import {resolve as resolvePath} from 'path';
 import * as chalk from 'chalk';
 import {copyFiles} from '../util/copy-file';
 import * as fs from 'fs';
+// import {mapDir} from '../util/map-dir';
 
 const packages = ['dy-form', 'dy-form-zorro'];
 /*function copyFile(cb: () => void) {
@@ -114,7 +115,9 @@ function publish(cd: () => void) {
   });
 
   cd();
+
 }
+
 
 task('build:app', series(build));
 task('build:version', series(version));

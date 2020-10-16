@@ -1,6 +1,6 @@
 # DyFormZorro
 
-@supine/dy-form-zorro是基于@supine/dy-form 为nz-zorro适配的开箱即用的动态表单库。
+@supine/dy-form-zorro是基于@supine/dy-form 为ng-zorro适配的开箱即用的动态表单库。
 
 通过引入一组可维护的表单控件模型和动态表单控件组件，它完全自动化了表单UI创建
 

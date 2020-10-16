@@ -1,11 +1,13 @@
 import {BaseModel, ModelPartial} from '@supine/dy-form';
 
 export class InputModelControl<M = any> extends BaseModel<M> {
-
+  /**
+   * type 必须要实现 不同的type代表不同的控件
+   */
   type = 'INPUT';
 
   /**
-   * 只读
+   * 只读 如果为true 表示该控件为只读状态
    */
   readonly = false;
 

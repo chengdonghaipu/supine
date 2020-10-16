@@ -1230,6 +1230,13 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/gulp-strip-debug@^1.1.31":
+  version "1.1.31"
+  resolved "https://registry.npmjs.org/@types/gulp-strip-debug/-/gulp-strip-debug-1.1.31.tgz#1b1acd7860ffaf24acd7956e4ddf048b9b260524"
+  integrity sha512-kGEV3iLB+dEojDOyfilF6Hd9aVKjuBGehAeTeH4wKRc1IRk7aOUJtpy67abrWIJoxTLz8b0sK3qratRwaiyOkw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/gulp@^4.0.7":
   version "4.0.7"
   resolved "https://registry.npm.taobao.org/@types/gulp/download/@types/gulp-4.0.7.tgz?cache=0&sync_timestamp=1601347512470&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fgulp%2Fdownload%2F%40types%2Fgulp-4.0.7.tgz#cf3928fc4d351284453e876b560ed271bababad5"
@@ -1532,6 +1539,23 @@ accepts@~1.3.4, accepts@~1.3.5, accepts@~1.3.7:
   dependencies:
     mime-types "~2.1.24"
     negotiator "0.6.2"
+
+acorn-jsx@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-3.0.1.tgz#afdf9488fb1ecefc8348f6fb22f464e32a58b36b"
+  integrity sha1-r9+UiPsezvyDSPb7IvRk4ypYs2s=
+  dependencies:
+    acorn "^3.0.4"
+
+acorn@^3.0.4:
+  version "3.3.0"
+  resolved "https://registry.npmjs.org/acorn/-/acorn-3.3.0.tgz#45e37fb39e8da3f25baee3ff5369e2bb5f22017a"
+  integrity sha1-ReN/s56No/JbruP/U2niu18iAXo=
+
+acorn@^5.5.0:
+  version "5.7.4"
+  resolved "https://registry.npmjs.org/acorn/-/acorn-5.7.4.tgz#3e8d8a9947d0599a1796d10225d7432f4a4acf5e"
+  integrity sha512-1D++VG7BhrtvQpNbBzovKNc1FLGGEE/oGe7b9xJm/RFHMBeUaUGpluV9RLjZa47YFdPcDAenEYuq9pQPcMdLJg==
 
 acorn@^6.4.1:
   version "6.4.2"
@@ -3956,6 +3980,19 @@ eslint-scope@^4.0.3:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
+espree@^3.5.3:
+  version "3.5.4"
+  resolved "https://registry.npmjs.org/espree/-/espree-3.5.4.tgz#b0f447187c8a8bed944b815a660bddf5deb5d1a7"
+  integrity sha512-yAcIQxtmMiB/jL32dzEp2enBeidsB7xWPLNiw3IIkpVds1P+h7qF9YwJq1yUNzp2OKXgAprs4F61ih66UsoD1A==
+  dependencies:
+    acorn "^5.5.0"
+    acorn-jsx "^3.0.0"
+
+esprima@^2.1:
+  version "2.7.3"
+  resolved "https://registry.npmjs.org/esprima/-/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
+  integrity sha1-luO3DVd59q1JzQMmc9HDEnZ7pYE=
+
 esprima@^4.0.0:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/esprima/download/esprima-4.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fesprima%2Fdownload%2Fesprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
@@ -4717,6 +4754,15 @@ gulp-cli@^2.2.0:
     semver-greatest-satisfied-range "^1.1.0"
     v8flags "^3.2.0"
     yargs "^7.1.0"
+
+gulp-strip-debug@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/gulp-strip-debug/-/gulp-strip-debug-3.0.0.tgz#4b6ec8cb68e6a7f16a43c2bf7d64704a7fb07d10"
+  integrity sha512-rkxC0Z8TnQ6bwh/vsdeVWQErYlomA9CmvArAXN1O7UmU1RwZp97J4YiTU1WoWHZoLxq7erZMBnr/MTusuSGhdQ==
+  dependencies:
+    plugin-error "^1.0.1"
+    strip-debug "^3.0.0"
+    through2 "^2.0.0"
 
 gulp@^4.0.2:
   version "4.0.2"
@@ -7414,6 +7460,16 @@ plugin-error@^0.1.2:
     arr-union "^2.0.1"
     extend-shallow "^1.1.2"
 
+plugin-error@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/plugin-error/-/plugin-error-1.0.1.tgz#77016bd8919d0ac377fdcdd0322328953ca5781c"
+  integrity sha512-L1zP0dk7vGweZME2i+EeakvUNqSrdiI3F91TwEoYiGrAfUXmVv6fJIq4g82PAXxNsWOp0J7ZqQy/3Szz0ajTxA==
+  dependencies:
+    ansi-colors "^1.0.1"
+    arr-diff "^4.0.0"
+    arr-union "^3.1.0"
+    extend-shallow "^3.0.2"
+
 pnp-webpack-plugin@1.6.4:
   version "1.6.4"
   resolved "https://registry.npm.taobao.org/pnp-webpack-plugin/download/pnp-webpack-plugin-1.6.4.tgz?cache=0&sync_timestamp=1589684269502&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fpnp-webpack-plugin%2Fdownload%2Fpnp-webpack-plugin-1.6.4.tgz#c9711ac4dc48a685dabafc86f8b6dd9f8df84149"
@@ -8459,6 +8515,53 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
+rocambole-node-remove@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/rocambole-node-remove/-/rocambole-node-remove-1.0.0.tgz#bd49b13dbe6122758374ffd247d8a739e821486f"
+  integrity sha1-vUmxPb5hInWDdP/SR9inOeghSG8=
+  dependencies:
+    rocambole-token "^1.1.0"
+
+rocambole-node-update@^1.0.0, rocambole-node-update@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/rocambole-node-update/-/rocambole-node-update-1.0.2.tgz#5f1bdc629b5da3986a509d639133eb8c4cffe700"
+  integrity sha512-kaOi0zb+Nm9hAclA0AZIoxblzAJ04J+HnWeG7+PJZYaf12atAAZavgxRjKcnGdidYNA8oQnZl8aoCt3nhFRbQg==
+  dependencies:
+    rocambole-token "^1.2.1"
+
+rocambole-strip-alert@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/rocambole-strip-alert/-/rocambole-strip-alert-1.0.0.tgz#3b255fe6f18d6301f805a14e570b1f1f2dba857f"
+  integrity sha1-OyVf5vGNYwH4BaFOVwsfHy26hX8=
+  dependencies:
+    rocambole-node-update "^1.0.1"
+
+rocambole-strip-console@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/rocambole-strip-console/-/rocambole-strip-console-1.0.0.tgz#2b97e3dfa6e19d4528ebe81a94231dc9e8aaca0b"
+  integrity sha1-K5fj36bhnUUo6+galCMdyeiqygs=
+  dependencies:
+    rocambole-node-update "^1.0.0"
+
+rocambole-strip-debugger@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/rocambole-strip-debugger/-/rocambole-strip-debugger-1.0.1.tgz#bd3e500de967a94228098c118d8a387fc4591bd8"
+  integrity sha512-yBnd7R2/HUmVvhjdTnYC6R573hMizzmLaWUObxRKTGBlFT7aIFx+aMqreI6t10X508S740uz7iyCn6YjzLvrFg==
+  dependencies:
+    rocambole-node-remove "^1.0.0"
+
+rocambole-token@^1.1.0, rocambole-token@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/rocambole-token/-/rocambole-token-1.2.1.tgz#c785df7428dc3cb27ad7897047bd5238cc070d35"
+  integrity sha1-x4XfdCjcPLJ614lwR71SOMwHDTU=
+
+rocambole@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/rocambole/-/rocambole-0.7.0.tgz#f6c79505517dc42b6fb840842b8b953b0f968585"
+  integrity sha1-9seVBVF9xCtvuECEK4uVOw+WhYU=
+  dependencies:
+    esprima "^2.1"
+
 rollup-plugin-sourcemaps@^0.6.0:
   version "0.6.2"
   resolved "https://registry.npm.taobao.org/rollup-plugin-sourcemaps/download/rollup-plugin-sourcemaps-0.6.2.tgz#1eed5a3e07b833dc14c4cdb1e63b300d340f4a74"
@@ -9275,6 +9378,17 @@ strip-bom@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/strip-bom/download/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
   integrity sha1-IzTBjpx1n3vdVv3vfprj1YjmjtM=
+
+strip-debug@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/strip-debug/-/strip-debug-3.0.0.tgz#06333c42a8e80b06d74d6e8a1f96b46d724cf664"
+  integrity sha512-mkGBeXraYkEu2RAZNmGKNpNO2UZJvLzfccR2qyScub/QRzrsSoT59rR3Si8jx7urqlGLPmFd3OaDaLrZzPWzdw==
+  dependencies:
+    espree "^3.5.3"
+    rocambole "^0.7.0"
+    rocambole-strip-alert "^1.0.0"
+    rocambole-strip-console "^1.0.0"
+    rocambole-strip-debugger "^1.0.0"
 
 strip-eof@^1.0.0:
   version "1.0.0"

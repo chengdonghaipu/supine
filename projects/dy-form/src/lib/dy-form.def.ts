@@ -243,7 +243,7 @@ export class DyFormCellDefContext<T> {
   }
 
   constructor(public $implicit: FormControl,
-              public config: T,
+              public model: T,
               public index: number,
               public count: number) {
   }

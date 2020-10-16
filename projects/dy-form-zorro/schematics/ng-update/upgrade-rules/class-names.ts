@@ -1,7 +1,9 @@
 import {
   ClassNameUpgradeData,
-  getVersionUpgradeData, isExportSpecifierNode, isImportSpecifierNode,
-  isNamespaceImportNode,
+  getVersionUpgradeData,
+  // isExportSpecifierNode,
+  // isImportSpecifierNode,
+  // isNamespaceImportNode,
   Migration, UpgradeData
 } from '@angular/cdk/schematics';
 import * as ts from 'typescript';

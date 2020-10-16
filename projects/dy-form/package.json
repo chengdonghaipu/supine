@@ -2,7 +2,7 @@
  "name": "@supine/dy-form",
  "version": "PACKAGE_VERSION",
  "schematics": "./schematics/collection.json",
-  "keywords": ["Angular", "NZ-ZORRO", "dy-form"],
+  "keywords": ["Angular", "NG-ZORRO", "dy-form"],
  "scripts": {
   "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
   "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/dy-form/",

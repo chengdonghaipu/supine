@@ -5,7 +5,7 @@
     "migrations": "./schematics/migration.json"
   },
  "version": "PACKAGE_VERSION",
-  "keywords": ["Angular", "NZ-ZORRO", "dy-form"],
+  "keywords": ["Angular", "NG-ZORRO", "dy-form"],
  "scripts": {
   "build": "node ../../node_modules/.bin/tsc -p tsconfig.schematics.json",
   "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/dy-form-zorro/",
