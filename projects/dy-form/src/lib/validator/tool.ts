@@ -33,7 +33,7 @@ export function ruleOfNotParam(ruleName, rule: string[] | string) {
   }
 }
 
-export function sizeF(ruleName: 'size' | 'max' | 'min', value: any, rule: string[] | string): boolean {
+export function sizeF(ruleName: 'size' | 'max' | 'min' | 'minLength' | 'maxLength', value: any, rule: string[] | string): boolean {
   const _rules = onlyOneRuleParam('size', value, rule);
   if (+_rules[0] + '' !== _rules[0]) {
     throw new RuleError('size 的参数 必须是数字! 例如: size:20');
@@ -41,11 +41,15 @@ export function sizeF(ruleName: 'size' | 'max' | 'min', value: any, rule: string
   if ((isString(value) && isNaN(+value)) || isArray(value)) {
     return ruleName === 'size' && value.length !== +_rules[0] ||
       ruleName === 'max' && value.length > +_rules[0] ||
-      ruleName === 'min' && value.length < +_rules[0];
+      ruleName === 'min' && value.length < +_rules[0] ||
+      ruleName === 'maxLength' && value.length > +_rules[0] ||
+      ruleName === 'minLength' && value.length < +_rules[0];
   } else if (isNumber(value) || !isNaN(+value)) {
     return ruleName === 'size' && +value !== +_rules[0] ||
       ruleName === 'max' && +value > +_rules[0] ||
-      ruleName === 'min' && +value < +_rules[0];
+      ruleName === 'min' && +value < +_rules[0] ||
+      ruleName === 'maxLength' && (value + '').length > +_rules[0] ||
+      ruleName === 'minLength' && (value + '').length < +_rules[0];
   }
   return false;
 }

@@ -64,6 +64,16 @@ export class ValidatorF {
       string: ':attribute 必须是 :size 个字符',
       array: ':attribute 必须包括 :size 项'
     },
+    maxLength: {
+      numeric: ':attribute 最大长度 :maxLength 个字符',
+      string: ':attribute 最大长度 :maxLength 个字符',
+      array: ':attribute 最大长度 :maxLength 项'
+    },
+    minLength: {
+      numeric: ':attribute 最小长度 :minLength 个字符',
+      string: ':attribute 最小长度 :minLength 个字符',
+      array: ':attribute 最小长度 :minLength 项'
+    },
     number: ':attribute 必须是数字',
     float: ':attribute 必须是浮点数',
     filled: ':attribute 字段是必须的',
@@ -79,7 +89,8 @@ export class ValidatorF {
 
   public dataMap: Map<string, any> = new Map<string, any>();
 
-  constructor() {}
+  constructor() {
+  }
 
   /**
    * 该值为 null.
@@ -356,6 +367,11 @@ export class ValidatorF {
     return sizeF('min', value, rule);
   }
 
+  @RuleF()
+  minLength(value: any, rule: string[]): boolean {
+    return sizeF('minLength', value, rule);
+  }
+
   /**
    * 验证中的字段必须小于或等于 value。字符串、数字、数组的计算方式都用 size 方法进行评估。
    * @param value
@@ -365,6 +381,11 @@ export class ValidatorF {
   @RuleF()
   max(value: any, rule: string[]): boolean {
     return sizeF('max', value, rule);
+  }
+
+  @RuleF()
+  maxLength(value: any, rule: string[]): boolean {
+    return sizeF('maxLength', value, rule);
   }
 
   /**
