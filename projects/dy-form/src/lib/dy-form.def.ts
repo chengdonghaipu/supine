@@ -35,12 +35,18 @@ export class DyFormCellOutlet {
 //   }
 // }
 
-@Directive({selector: '[jdDyFormLabelCellDef]'})
+@Directive({
+  selector: '[jdDyFormLabelDef]',
+  // tslint:disable-next-line:no-host-metadata-property
+  host: {
+    class: 'jd-form-label',
+    role: 'form-label',
+  },
+})
 // tslint:disable-next-line:directive-class-suffix
 export class DyFormLabelCellDef {
   constructor(public viewContainer: ViewContainerRef,
-              public elementRef: ElementRef,
-              public template: TemplateRef<DyFormCellDefContext<FormControlConfig>>) {
+              public elementRef: ElementRef) {
   }
 }
 
@@ -52,12 +58,18 @@ export class DyFormLabelCellDef {
 // }
 
 
-@Directive({selector: '[jdDyFormControlCellDef]'})
+@Directive({
+  selector: '[jdDyFormControlDef]',
+  // tslint:disable-next-line:no-host-metadata-property
+  host: {
+    class: 'jd-form-control',
+    role: 'form-control',
+  },
+})
 // tslint:disable-next-line:directive-class-suffix
 export class DyFormControlCellDef {
   constructor(public viewContainer: ViewContainerRef,
-              public elementRef: ElementRef,
-              public template: TemplateRef<DyFormCellDefContext<FormControlConfig>>) {
+              public elementRef: ElementRef) {
   }
 }
 
@@ -229,9 +241,9 @@ export class DyFormColumnDef {
     // this._setNameInput(name);
   }
 
-  // @ContentChild(DyFormLabelCellDef) labelCell: DyFormLabelCellDef;
+  @ContentChild(DyFormLabelCellDef) labelCell: DyFormLabelCellDef;
 
-  // @ContentChild(DyFormControlCellDef) controlCell: DyFormControlCellDef;
+  @ContentChild(DyFormControlCellDef) controlCell: DyFormControlCellDef;
 }
 
 export class DyFormCellDefContext<T> {

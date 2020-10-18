@@ -7,6 +7,7 @@ export function ngAdd(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     addPackageToPackageJson(tree, '@supine/dy-form', '^PACKAGE_VERSION');
     addPackageToPackageJson(tree, '@supine/dy-form-zorro', '^PACKAGE_VERSION');
+    addPackageToPackageJson(tree, '@angular/cdk', '^10.0.0');
     addPackageToPackageJson(tree, 'date-fns', '^2.16.1');
     addPackageToPackageJson(tree, 'lodash', '^4.17.20');
 

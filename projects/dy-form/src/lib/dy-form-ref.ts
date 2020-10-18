@@ -21,6 +21,11 @@ interface InitialData {
   gridBreakpoints?: ControlLayout & { unit: string };
 
   customLayout?: boolean;
+
+  verticalLayout?: {
+    labelCol: number,
+    controlCol: number,
+  };
 }
 
 export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {

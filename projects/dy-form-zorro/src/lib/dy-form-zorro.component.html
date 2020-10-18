@@ -8,7 +8,7 @@
 
 <ng-template #label let-model>
   <nz-form-label [nzRequired]="model.required"
-                 [style.flex]="dyForm?.dyFormRef.labelColLayout[dyForm.breakpoint]"
+                 jdDyFormLabelDef
                  [ngClass]="dyForm.labelClass(model)"
                  [ngStyle]="model.labelStyle"
                  [nzFor]="model.controlName">{{model.label}}
@@ -27,6 +27,7 @@
 
 <ng-template #inputNumberControl let-model let-control=control>
   <nz-input-number [formControl]="control"
+                   class="dy-form-input-number"
                    [nzPlaceHolder]="model.placeHolder"
                    [nzMin]="model.min"
                    [nzStep]="model.step"
@@ -111,6 +112,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [ngStyle]="model.controlStyle"
                      [nzValidateStatus]="control"
                      [ngClass]="dyForm.controlClass(model)">
@@ -131,6 +133,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -144,6 +147,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -157,6 +161,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -170,6 +175,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -183,6 +189,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -196,6 +203,7 @@
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
 
     <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">

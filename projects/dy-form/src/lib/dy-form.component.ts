@@ -41,13 +41,24 @@ import {FormControlConfig} from './models';
 import {debounceTime, distinctUntilChanged, takeUntil} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
+import {BreakpointObserver} from '@angular/cdk/layout';
 
-class RecordControlItemViewTuple {
-  constructor(public record: IterableChangeRecord<FormControlConfig>/*,
+/*class RecordControlItemViewTuple {
+  constructor(public record: IterableChangeRecord<FormControlConfig>/!*,
               public labelView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,
-              public controlView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,*/
+              public controlView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,*!/
   ) {
   }
+}*/
+
+const enum DyFormBreakpoints {
+  XS = '(max-width: 575px)',
+  SM = '(min-width: 576px) and (max-width: 767px)',
+  MD = '(min-width: 768px) and (max-width: 991px)',
+  LG = '(min-width: 992px) and (max-width: 1199px)',
+  XL = '(min-width: 1200px) and (max-width: 1599px)',
+  XXL = '(min-width: 1600px) and (max-width: 1999px)',
+  X3L = '(min-width: 2000px)',
 }
 
 @Component({
@@ -161,6 +172,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
               public _cdf: ChangeDetectorRef,
               private _elementRef: ElementRef<HTMLElement>,
               @Inject(DOCUMENT) _document: any,
+              private _breakpointObserver: BreakpointObserver,
               private _ngZone: NgZone) {
     this.formArea = this._fb.group({});
     this._document = _document;
@@ -249,6 +261,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     const viewContainer = this._formCellOutlet.viewContainer;
     console.log('_restSetLayoutForControl');
 
+    this._updateRowStyle();
     if (!this.dyFormRef.responsiveForm) {
       return;
     }
@@ -825,10 +838,13 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     this._updateRowIndexContext();
 
+    this._updateRowStyle();
+
     Promise.resolve().then(() => {
       this._cdf.markForCheck();
       if (!this._dyFormInit) {
         this._dyFormInit = true;
+        this.dyFormRef.model.initHook();
       }
     });
   }
@@ -914,7 +930,41 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       this._headerRowDefChanged = false;
     }
 
+    this._updateRowStyle();
     console.log('_cacheColumnDefs');
+  }
+
+  private _updateRowStyle() {
+    const labelEls = this._elementRef.nativeElement?.querySelectorAll('.jd-form-label') as NodeListOf<HTMLLabelElement>;
+    const controlEls = this._elementRef.nativeElement?.querySelectorAll('.jd-form-control') as NodeListOf<HTMLElement>;
+
+    if (this.dyFormRef?.responsiveForm) {
+      labelEls?.forEach(value => {
+        this._setStyle(value, {
+          flex: this.dyFormRef.labelColLayout[this.breakpoint]
+        });
+      });
+    } else if (this.dyFormRef?.verticalForm) {
+      const {verticalLayout: {labelCol, controlCol}} = this.dyFormRef;
+
+      const _percentageLabel = percentage(labelCol, this.dyFormRef.column);
+      const _percentageControl = percentage(controlCol, this.dyFormRef.column);
+
+      const xs = this._breakpointObserver.isMatched(DyFormBreakpoints.XS);
+
+      labelEls?.forEach(value => {
+        this._setStyle(value, {
+          flex: xs ? '0 0 100%' : `0 0 ${_percentageLabel}`
+        });
+      });
+      controlEls?.forEach(value => {
+        this._setStyle(value, {
+          flex: xs ? '0 0 100%' : `0 0 ${_percentageControl}`
+        });
+      });
+    }
+    // console.log(labelEls.length, 'labelEls');
+    // console.log(controlEls.length, 'controlEls');
   }
 
   private _cacheColumnDefs() {
