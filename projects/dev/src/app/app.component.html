@@ -1,8 +1,31 @@
+<ng-template #label let-model>
+  <nz-form-label [nzRequired]="model.required"
+                 jdDyFormLabelDef
+                 [ngStyle]="model.labelStyle"
+                 [nzFor]="model.controlName">{{model.label}}
+  </nz-form-label>
+</ng-template>
+
+
 <jd-dy-form-zorro [dyFormRef]="dyFormRef">
-  <ng-container *jdDyFormColumnDef="let model = model name 'LAYOUT_GROUP', let group = groupInfo">
+  <ng-container *jdDyFormColumnDef="let model = model name 'LAYOUT_GROUP', let group = groupInfo, let childControl = childControl">
     <nz-form-item>
-      {{model | json}}
-      {{group | json}}
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+      <nz-form-control
+        jdDyFormControlDef
+        [nzValidateStatus]="childControl.phone"
+        nzErrorTip="Please input your phone number!"
+      >
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select class="phone-select" [ngModel]="'+86'">
+              <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+              <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+            </nz-select>
+          </ng-template>
+          <input [formControl]="childControl.phone" id="'phoneNumber'" nz-input/>
+        </nz-input-group>
+      </nz-form-control>
     </nz-form-item>
   </ng-container>
 </jd-dy-form-zorro>

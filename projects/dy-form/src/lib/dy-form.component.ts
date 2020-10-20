@@ -743,6 +743,28 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
+  private _getGroupChildrenControlMap(childMap: { [key: string]: FormControlConfig }) {
+    const childControlMap: { [key: string]: FormControl } = {};
+
+    for (const childKey in childMap) {
+      const item = childMap[childKey];
+
+      if (item.group || item.layoutGroup) {
+        continue;
+      }
+
+      if (item.parent && !item.group) {
+        const control: FormGroup = this._getFormGroup(item.name, true) as FormGroup;
+
+        childControlMap[item.name] = control.get(item.controlName) as FormControl;
+      } else {
+        childControlMap[item.name] = this.formArea.get(item.controlName) as FormControl;
+      }
+    }
+
+    return childControlMap;
+  }
+
   private _getGroupChildrenMap(groupName: string) {
     const groupChildrenMap: { [key: string]: FormControlConfig } = {};
 
@@ -792,10 +814,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       if (combineMode) {
         const groupChildrenMap = this._getGroupChildrenMap(model.name);
+        const childControl = this._getGroupChildrenControlMap(groupChildrenMap);
 
         viewRef.context.withGroupInfo(groupChildrenMap);
+        viewRef.context.childControl = childControl;
+        console.log(childControl);
       } else {
         viewRef.context.withGroupInfo({});
+        viewRef.context.childControl = {};
       }
     };
 

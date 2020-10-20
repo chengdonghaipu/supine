@@ -20,14 +20,18 @@ export class FormModel extends BaseFormModel {
   mineralName3 = [3];
   @SelectGroupModel({label: '矿', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
   mineralName31 = [3];*/
-  @LayoutGroupModel()
+  @LayoutGroupModel({label: '手机号码'})
   layout;
 
-  @InputModel<FormModel>({label: '用户名', parent: 'layout'})
+  @InputModel<FormModel>({label: '用户名'})
   @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
   username = [null];
 
-  @InputModel<FormModel>({label: '密码', parent: 'layout'})
+  @InputModel<FormModel>({label: '用户名', parent: 'layout'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  phone = [null];
+
+  @InputModel<FormModel>({label: '密码'})
   @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
   password = [null];
   /**

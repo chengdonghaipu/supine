@@ -248,6 +248,7 @@ export class DyFormColumnDef {
 
 export class DyFormCellDefContext<T> {
   groupInfo: { [key: string]: T } = {};
+  childControl: { [key: string]: FormControl } = {};
 
   withGroupInfo(groupInfo: { [key: string]: T }) {
     this.groupInfo = groupInfo;
