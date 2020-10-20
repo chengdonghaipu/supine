@@ -10,7 +10,7 @@ export class GroupModelControl<M = any> extends BaseModel<M> {
    */
   children: string[] = [];
 
-  group = true;
+  readonly group = true;
 
   /**
    * 表单组模式

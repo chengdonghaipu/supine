@@ -6,7 +6,7 @@ import {ModelPartial} from '../type';
 export function GroupModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator {
   const newModel = new Model();
   if (model) {
-    (model as { type: 'GROUP' }).type = 'GROUP';
+    (model as { group: boolean }).group = true;
     merge(newModel, model);
   }
   return BaseDecorator(newModel);

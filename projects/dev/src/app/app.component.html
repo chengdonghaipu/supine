@@ -1,4 +1,11 @@
-<jd-dy-form-zorro [dyFormRef]="dyFormRef"></jd-dy-form-zorro>
+<jd-dy-form-zorro [dyFormRef]="dyFormRef">
+  <ng-container *jdDyFormColumnDef="let model = model name 'LAYOUT_GROUP', let group = groupInfo">
+    <nz-form-item>
+      {{model | json}}
+      {{group | json}}
+    </nz-form-item>
+  </ng-container>
+</jd-dy-form-zorro>
 
 <router-outlet></router-outlet>
 

@@ -6,8 +6,8 @@ import {ModelPartial} from '../type';
 export function LayoutGroupModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator {
   const newModel = new Model();
   if (model) {
-    (model as unknown as { type: 'LAYOUT_GROUP' }).type = 'LAYOUT_GROUP';
     model.groupMode = 'combine';
+    (model as { layoutGroup: boolean }).layoutGroup = true;
     merge(newModel, model);
   }
   return BaseDecorator(newModel);

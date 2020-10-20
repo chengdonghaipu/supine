@@ -1,4 +1,4 @@
-import {BaseFormModel, FormControlConfig, GroupModel, ValidatorRule} from '@supine/dy-form';
+import {BaseFormModel, FormControlConfig, GroupModel, LayoutGroupModel, ValidatorRule} from '@supine/dy-form';
 import {InputGroupModel, InputModel, SelectGroupModel} from '@supine/dy-form-zorro';
 import {Validators} from '@angular/forms';
 
@@ -20,11 +20,14 @@ export class FormModel extends BaseFormModel {
   mineralName3 = [3];
   @SelectGroupModel({label: '矿', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
   mineralName31 = [3];*/
-  @InputModel<FormModel>({label: '用户名'})
+  @LayoutGroupModel()
+  layout;
+
+  @InputModel<FormModel>({label: '用户名', parent: 'layout'})
   @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
   username = [null];
 
-  @InputModel<FormModel>({label: '密码'})
+  @InputModel<FormModel>({label: '密码', parent: 'layout'})
   @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
   password = [null];
   /**

@@ -319,7 +319,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _setLayoutForControl(view: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, config: FormControlConfig) {
     // 获取宿主元素
-    const controlHostEl: HTMLElement = view.rootNodes[0];
+    let controlHostEl: HTMLElement = view.rootNodes[0];
+
+    for (const rootNode of view.rootNodes) {
+      if (rootNode.nodeName !== '#comment') {
+        controlHostEl = rootNode;
+        break;
+      }
+    }
 
     if (!controlHostEl) {
       return;
@@ -434,23 +441,24 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     let isRenderControl = true;
 
     if (item.type === 'GROUP' || item.type === 'LAYOUT_GROUP') {
+      console.log(item.type);
       item.group = true;
     }
 
-    if (item.group && item?.groupMode !== 'combine') {
-      // 非组合模式 不需要渲染控件
+    if (item.layoutGroup || (item.group && item?.groupMode !== 'combine')) {
+      // layoutGroup || 非组合模式 不需要渲染控件
       isRenderControl = false;
     }
 
     // 如果是组合模式
-    if (item.group && item?.groupMode === 'combine') {
+    if (item.layoutGroup || (item.group && item?.groupMode === 'combine')) {
       const groupChildrenMap = this._getGroupChildrenMap(item.name);
       // 组合模式 & 组成员数大于 0 需要渲染控件
       isRenderControl = Object.keys(groupChildrenMap).length > 0;
     }
 
     // 如果为true 则表示为控件
-    if (item.parent && !item.group) {
+    if (item.parent && !item.group && !item.layoutGroup) {
       const parent = this.dyFormRef.optionMap.get(item.parent);
 
       // 如果父级是组合模式 则不单独渲染子控件
@@ -533,7 +541,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _addControl(record: IterableChangeRecord<FormControlConfig>) {
     const config = record.item;
 
-    if (config.type === 'LAYOUT_GROUP') {
+    if (config.type === 'LAYOUT_GROUP' || config.layoutGroup) {
       return;
     }
 
@@ -832,6 +840,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._addControl(record);
 
         if (!this._recordControlUIDMap.get(record.item.uid)) {
+          console.log(record.item.uid, record.item.name, record.item.type, 'record.item.uid');
           this._renderCustomControl(record);
         }
 
