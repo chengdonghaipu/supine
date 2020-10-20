@@ -430,28 +430,30 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     const filterType = ['GROUP'];
 
     const {containerCount} = this.dyFormRef;
-
+    // 是否需要渲染控件
     let isRenderControl = true;
 
-    if (item.type === 'GROUP') {
+    if (item.type === 'GROUP' || item.type === 'LAYOUT_GROUP') {
       item.group = true;
     }
 
     if (item.group && item?.groupMode !== 'combine') {
+      // 非组合模式 不需要渲染控件
       isRenderControl = false;
     }
 
     // 如果是组合模式
     if (item.group && item?.groupMode === 'combine') {
       const groupChildrenMap = this._getGroupChildrenMap(item.name);
+      // 组合模式 & 组成员数大于 0 需要渲染控件
       isRenderControl = Object.keys(groupChildrenMap).length > 0;
     }
 
-
+    // 如果为true 则表示为控件
     if (item.parent && !item.group) {
       const parent = this.dyFormRef.optionMap.get(item.parent);
 
-      // 如果是组合模式 则不单独渲染子控件
+      // 如果父级是组合模式 则不单独渲染子控件
       if (parent?.groupMode === 'combine') {
         isRenderControl = false;
       }
@@ -464,6 +466,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     let outletViewContainer = outlet.viewContainer;
 
     if (containerCount > 1) {
+      /**
+       * 渲染区域
+       */
       this._setHostClass(['jd-dy-form-area-mode'], []);
       const areaViewIndex = this._getAreaViewIndexById(item.areaId);
 
@@ -528,6 +533,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _addControl(record: IterableChangeRecord<FormControlConfig>) {
     const config = record.item;
 
+    if (config.type === 'LAYOUT_GROUP') {
+      return;
+    }
+
     const controlName = config.controlName;
 
     let exit: any = this.formArea.get(controlName);
@@ -550,7 +559,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       const oldAsyncValidators = control.asyncValidator;
       const oldValidators = control.validator;
 
-      console.log(oldValidators, 'oldValidators');
       /**
        * 当修改控件时
        * 先清除验证器 然后根据一些规则 重新生成验证器
@@ -583,8 +591,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     if (exit) {
-      console.log(exit, 'exit');
-
       let isControl = true;
 
       if (config.group) {
@@ -752,8 +758,15 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       let _$implicit;
 
       if (model.parent) {
-        const formGroup = this._getFormGroup(controlName);
-        _$implicit = formGroup.get(model.controlName);
+        const parentOption = this.dyFormRef.optionMap.get(model.parent);
+
+        if (parentOption.type === 'LAYOUT_GROUP') {
+          // 如果是 LAYOUT_GROUP 直接获取自身控件即可
+          _$implicit = this.formArea.get(model.controlName);
+        } else {
+          const formGroup = this._getFormGroup(controlName);
+          _$implicit = formGroup.get(model.controlName);
+        }
       } else {
         _$implicit = this.formArea.get(model.controlName);
       }
@@ -761,7 +774,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       let combineMode = false;
 
       // 如果是组合模式
-      if (model.type === 'GROUP' && model?.groupMode === 'combine') {
+      if ((model.type === 'GROUP' || model.type === 'LAYOUT_GROUP') && model?.groupMode === 'combine') {
         combineMode = true;
       }
 
