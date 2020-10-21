@@ -434,14 +434,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _renderCustomControl(record: IterableChangeRecord<FormControlConfig>) {
     const item = record.item;
 
-    const filterType = ['GROUP'];
-
     const {containerCount} = this.dyFormRef;
     // 是否需要渲染控件
     let isRenderControl = true;
 
     if (item.type === 'GROUP' || item.type === 'LAYOUT_GROUP') {
-      console.log(item.type);
       item.group = true;
     }
 
@@ -866,7 +863,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._addControl(record);
 
         if (!this._recordControlUIDMap.get(record.item.uid)) {
-          console.log(record.item.uid, record.item.name, record.item.type, 'record.item.uid');
           this._renderCustomControl(record);
         }
 

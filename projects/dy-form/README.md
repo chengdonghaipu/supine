@@ -234,8 +234,126 @@ export class LoginModel extends BaseFormModel {
 - 在组件中定义dyFormRef属性
 
 ```typescript
-dyFormRef = new DyFormRef(LoginModel, {mode: 'vertical'});
+import {Component, OnInit} from '@angular/core';
+import {DyFormRef} from '@supine/dy-form';
+import {FormModel} from './form.model';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent implements OnInit {
+  dyFormRef = new DyFormRef(FormModel, {mode: 'vertical'});
+
+  ngOnInit(): void {
+  }
+
+  constructor() {
+    // 执行这行代码才会渲染
+    this.dyFormRef.executeModelUpdate();
+  }
+
+}
 ```
 
 - 至此就可以看到我们想要的表单啦
   
+![Image text](./readme-image/login-dy-form.png)
+- 组件内部我们只需要维护极少数代码就能完成表单的相关操作啦
+  
+# 自定义布局
+
+- 修改模型
+```typescript
+import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+import {InputModel} from '../decorator/input.model';
+
+export class LoginModel extends BaseFormModel {
+  // 布局容器 我们可以指定自定义类型 type=phone  默认值为LAYOUT_GROUP
+  @LayoutGroupModel({type: 'phone'})
+  layout;
+   
+  // parent: 'layout' 指定容器 layout
+  @InputModel<FormModel>({label: '手机号码', parent: 'layout'})
+  @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
+  phone = [null];
+
+  @InputModel<LoginModel>({label: '用户名'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  username = [null];
+
+  @InputModel<LoginModel>({label: '密码'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
+  password = [null];
+
+  /**
+   * 更新表单模型钩子
+   * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+   * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+   * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+   * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+   */
+  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+    return model;
+  }
+
+
+  /**
+   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+   * HTTP模块 目前还没开源
+   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+   */
+  httpRequest() {
+    /* .... */
+  }
+}
+
+```
+- 接下来修改模板
+
+```angular2html
+<!--通用错误提示-->
+<ng-template #errorTpl let-control>
+  <ng-container *ngIf="control.hasError(control.name)">
+    {{control.getError(control.name)}}
+  </ng-container>
+</ng-template>
+<ng-template #label let-model>
+  <nz-form-label [nzRequired]="model.required"
+                 jdDyFormLabelDef
+                 [ngStyle]="model.labelStyle"
+                 [nzFor]="model.controlName">{{model.label}}
+  </nz-form-label>
+</ng-template>
+
+<jd-dy-form-zorro [dyFormRef]="dyFormRef">
+<!--  phone 跟模型中的layout字段的元数据type是相对应的-->
+<!--  groupModel 包含布局容器内所有字控件的配置信息 比如我要访问容器内phone控件的配置可以这样访问 groupModel.phone-->
+<!--  childControl 包含布局容器内所有字控件的formControl 比如我要访问容器内phone控件可以这样访问 childControl.phone-->
+  <ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
+    <nz-form-item>
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
+      <nz-form-control
+        jdDyFormControlDef
+        [nzValidateStatus]="childControl.phone"
+        [nzErrorTip]="errorTpl"
+      >
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select class="phone-select" [ngModel]="'+86'">
+              <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+              <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+            </nz-select>
+          </ng-template>
+          <input [formControl]="childControl.phone" id="'phoneNumber'" nz-input/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+</jd-dy-form-zorro>
+```
+- 预览图如下
+  
+![Image text](./readme-image/layout_preview.png)
+- 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了

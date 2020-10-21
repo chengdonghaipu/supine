@@ -27,8 +27,8 @@ export class FormModel extends BaseFormModel {
   @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
   username = [null];
 
-  @InputModel<FormModel>({label: '用户名', parent: 'layout'})
-  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  @InputModel<FormModel>({label: '手机号码', parent: 'layout'})
+  @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
   phone = [null];
 
   @InputModel<FormModel>({label: '密码'})

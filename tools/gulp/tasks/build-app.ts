@@ -42,6 +42,18 @@ export function tsCompile(binary: 'tsc' | 'ngc', flags: string[]) {
   });
 }
 
+function readme(cd: () => void) {
+  packages.forEach(value => {
+    const packagePath = path.join(process.cwd(), 'dist', value, 'README.md');
+// ![Image text](./readme-image/login-dy-form.png)
+    const strPackage = fs.readFileSync(packagePath).toString().replace(/!\[Image text\]\(.\/readme-image\//g, `![Image text](./${value}/`);
+
+    fs.writeFileSync(packagePath, strPackage, {encoding: 'utf8'});
+  });
+
+  cd();
+}
+
 function version(cd: () => void) {
   const json = require(path.join(process.cwd(), 'package.json'));
 
@@ -94,7 +106,7 @@ function build(cd: () => void) {
     copyFiles(path.join(basePath, 'schematics'), 'collection.json', path.join(process.cwd(), 'dist', name, 'schematics'));
     copyFiles(path.join(basePath, 'schematics'), 'migration.json', path.join(process.cwd(), 'dist', name, 'schematics'));
     copyFiles(path.join(basePath, 'schematics'), '*/files/**', path.join(process.cwd(), 'dist', name, 'schematics'));
-    copyFiles(path.join(basePath, 'readme-image'), '**', path.join(process.cwd(), 'dist', name, 'readme-image'));
+    copyFiles(path.join(basePath, 'readme-image'), '**', path.join(process.cwd(), 'dist', name));
   });
   cd();
 }
@@ -120,7 +132,7 @@ function publish(cd: () => void) {
 
 
 task('build:app', series(build));
-task('build:version', series(version));
+task('build:version', series(version, readme));
 task('build:publish', series(publish));
 // task('build:app:test', series(replaceMapLayerCtor));
 

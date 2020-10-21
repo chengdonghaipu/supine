@@ -6,15 +6,23 @@
   </nz-form-label>
 </ng-template>
 
+<ng-template #errorTpl let-control>
+  <ng-container *ngIf="control.hasError(control.name)">
+    {{control.getError(control.name)}}
+  </ng-container>
+</ng-template>
 
 <jd-dy-form-zorro [dyFormRef]="dyFormRef">
-  <ng-container *jdDyFormColumnDef="let model = model name 'LAYOUT_GROUP', let group = groupInfo, let childControl = childControl">
+<!--  phone 跟模型中的layout字段的元数据type是相对应的-->
+<!--  group 包含布局容器内所有字控件的配置信息 比如我要访问容器内phone控件的配置可以这样访问 group.phone-->
+<!--  childControl 包含布局容器内所有字控件的formControl 比如我要访问容器内phone控件可以这样访问 childControl.phone-->
+  <ng-container *jdDyFormColumnDef="let model = model name 'LAYOUT_GROUP', let groupModel = groupInfo, let childControl = childControl">
     <nz-form-item>
-      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
       <nz-form-control
         jdDyFormControlDef
         [nzValidateStatus]="childControl.phone"
-        nzErrorTip="Please input your phone number!"
+        [nzErrorTip]="errorTpl"
       >
         <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
           <ng-template #addOnBeforeTemplate>

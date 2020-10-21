@@ -168,7 +168,7 @@ export function isF(name, value) {
     }
     case 'phoneNum': {
       // 验证的字段必须是手机号码。
-      _result = /^(-?\d+)(\.\d+)?$/.test(value);
+      _result = /^1[3|4|5|8][0-9]\d{4,8}$/.test(value);
       break;
     }
     case 'telNumber': {
