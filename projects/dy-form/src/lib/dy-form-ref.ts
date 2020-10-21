@@ -127,7 +127,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
     const options = hook(formValue, this.allOptions, ...params);
 
-    console.log((options || this.allOptions).length);
+    // console.log((options || this.allOptions).length);
 
     this.generateAreaOptions(options || this.allOptions);
     this.renderDataNext(options || this.allOptions);
