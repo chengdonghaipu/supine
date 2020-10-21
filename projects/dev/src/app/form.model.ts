@@ -20,7 +20,7 @@ export class FormModel extends BaseFormModel {
   mineralName3 = [3];
   @SelectGroupModel({label: '矿', addOnAfter: 'RGB', optionContent: [{label: 'heihei', value: 'hiehie'}]})
   mineralName31 = [3];*/
-  @LayoutGroupModel({label: '手机号码'})
+  @LayoutGroupModel({label: '手机号码', type: 'phone'})
   layout;
 
   @InputModel<FormModel>({label: '用户名'})
