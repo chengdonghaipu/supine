@@ -1,9 +1,11 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {JdValidator} from './validator/jd-validator';
+import {DyFormModule} from './dy-form.module';
+import {DY_FORM_VALIDATOR} from './injection-token';
 
 export function universal_valid(controlName: string, rules: string, msg?: { [key: string]: any } | string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const validate = new JdValidator();
+    const validate = DyFormModule.Injector.get(DY_FORM_VALIDATOR, new JdValidator());
     const data = {};
 
     if (control.parent) {

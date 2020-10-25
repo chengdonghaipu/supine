@@ -22,4 +22,6 @@ export * from './lib/models';
 export * from './lib/decorator';
 export * from './lib/dy-form-ref';
 export {ModelPartial} from './lib/type';
+export * from './lib/validator';
+export {DY_FORM_VALIDATOR} from './lib/injection-token';
 // export * from './lib/models/base-form.model';

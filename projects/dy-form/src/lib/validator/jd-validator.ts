@@ -2,6 +2,8 @@ import {Registered} from './decorator';
 import {ValidatorF} from './validator-f';
 import {Validator} from './validator';
 
+export {Validator} from './validator';
+
 @Registered({
   declarations: [ValidatorF]
 })

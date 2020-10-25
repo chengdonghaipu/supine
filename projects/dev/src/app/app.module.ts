@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {DyFormModule} from '@supine/dy-form';
+import {DY_FORM_VALIDATOR, DyFormModule, JdValidator} from '@supine/dy-form';
 import {DyFormZorroModule} from '@supine/dy-form-zorro';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -33,7 +33,9 @@ import {NzSelectModule} from 'ng-zorro-antd/select';
     NzSelectModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    {provide: DY_FORM_VALIDATOR, useValue: new JdValidator()}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

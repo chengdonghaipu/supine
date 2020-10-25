@@ -7,6 +7,10 @@ export class ValidationRuleParser {
     // console.log(rules);
     const ruleNameMap = {};
     for (const rulesKey in rules) {
+      // TODO 以后可能会改
+      if (Array.isArray(rules[rulesKey])) {
+        rules[rulesKey] = rules[rulesKey].join('&');
+      }
       if (rulesKey.indexOf('*') > -1) {
         delete rules[rulesKey];
       } else {

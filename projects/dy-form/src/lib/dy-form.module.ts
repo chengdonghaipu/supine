@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { DyFormComponent } from './dy-form.component';
+import {Injector, NgModule} from '@angular/core';
+import {DyFormComponent} from './dy-form.component';
 import {
   DyFormAreaOutlet,
   DyFormAreaDef,
@@ -49,4 +49,10 @@ const export_com = [
     ...export_com
   ]
 })
-export class DyFormModule { }
+export class DyFormModule {
+  static Injector: Injector = null;
+
+  constructor(injector: Injector) {
+    DyFormModule.Injector = injector;
+  }
+}

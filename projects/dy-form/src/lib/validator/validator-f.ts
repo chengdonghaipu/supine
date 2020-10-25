@@ -1,8 +1,8 @@
 import {gt, gte, includes, isArray, isEqual, isInteger, isNumber, isRegExp, isString, lt, lte} from 'lodash';
 import {RuleError} from './errors/rule-error';
 import {isF, isRulesNotEmpty, onlyOneRuleParam, parseRule, ratherDate, requiredF, ruleOfNotParam, sizeF} from './tool';
-import {RuleF} from './decorator/rule';
-import {TypeMsg} from './decorator/typeMsg';
+import {RuleF} from './decorator';
+import {TypeMsg} from './decorator';
 import {format, isDate} from 'date-fns';
 
 export class ValidatorF {
