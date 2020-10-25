@@ -13,26 +13,15 @@
 </ng-template>
 
 <jd-dy-form-zorro [dyFormRef]="dyFormRef">
-<!--  phone 跟模型中的layout字段的元数据type是相对应的-->
-<!--  group 包含布局容器内所有字控件的配置信息 比如我要访问容器内phone控件的配置可以这样访问 group.phone-->
-<!--  childControl 包含布局容器内所有字控件的formControl 比如我要访问容器内phone控件可以这样访问 childControl.phone-->
-  <ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
+  <!--  name 'custom' 对应模型中的 type字段值-->
+  <ng-container *jdDyFormColumnDef="let control; let model = model name 'custom'">
     <nz-form-item>
-      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
-      <nz-form-control
-        jdDyFormControlDef
-        [nzValidateStatus]="childControl.phone"
-        [nzErrorTip]="errorTpl"
-      >
-        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-          <ng-template #addOnBeforeTemplate>
-            <nz-select class="phone-select" [ngModel]="'+86'">
-              <nz-option nzLabel="+86" nzValue="+86"></nz-option>
-              <nz-option nzLabel="+87" nzValue="+87"></nz-option>
-            </nz-select>
-          </ng-template>
-          <input [formControl]="childControl.phone" id="'phoneNumber'" nz-input/>
-        </nz-input-group>
+      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+      <nz-form-control  jdDyFormControlDef
+                        [nzValidateStatus]="control"
+                        [nzErrorTip]="errorTpl">
+        <!--        customPro 为模型中自定义属性-->
+        <input type="text" nz-input [formControl]="control" [placeholder]="model.customPro">
       </nz-form-control>
     </nz-form-item>
   </ng-container>

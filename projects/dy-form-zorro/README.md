@@ -60,8 +60,8 @@ export class LoginModel extends BaseFormModel {
    * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
    */
   httpRequest() {
-    // 获取表单数据 如果不能满足需要 可以在子类实现value的获取
-    // const body = super.value;
+    // 获取表单数据 如果不能满足需要 可以在子类重写value的获取
+    // const body = this.value;
     // 获取提交表单的一些外部参数 比如更新的参数ID  attachValue 通过 model.withAttachValue(数据)进行设置
     // const {mapId, id} = this.attachValue;
     //
@@ -125,8 +125,8 @@ export class LoginModel extends BaseFormModel {
    * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
    */
   httpRequest() {
-    // 获取表单数据 如果不能满足需要 可以在子类实现value的获取
-    // const body = super.value;
+    // 获取表单数据 如果不能满足需要 可以在子类重写value的获取
+    // const body = this.value;
     // 获取提交表单的一些外部参数 比如更新的参数ID  attachValue 通过 model.withAttachValue(数据)进行设置
     // const {mapId, id} = this.attachValue;
     //

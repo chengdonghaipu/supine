@@ -26,7 +26,7 @@
 - 易拓展性
     - 轻松实现自定义控件
 
-# 基于@supine/dy-form 定制不同Angular UI框架的动态表单
+# 基于@supine/dy-form 定制不同Angular UI框架的动态表单(自定义控件)
 - 安装
 
 ```
@@ -146,9 +146,9 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit(): void {
-    // 增加form Footer 可以有多行
+    // 注册form Footer 可以有多行
     this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
-    // 增加form Header 可以有多行
+    // 注册form Header 可以有多行
     this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));
     // 注册表单控件模板
     this._formColumnDefs.forEach(item => this.dyForm.addColumnDef(item));
@@ -193,8 +193,8 @@ export class LoginModel extends BaseFormModel {
    * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
    */
   httpRequest() {
-    // 获取表单数据 如果不能满足需要 可以在子类实现value的获取
-    // const body = super.value;
+    // 获取表单数据 如果不能满足需要 可以在子类重写value的获取
+    // const body = this.value;
     // 获取提交表单的一些外部参数 比如更新的参数ID  attachValue 通过 model.withAttachValue(数据)进行设置
     // const {mapId, id} = this.attachValue;
     //
@@ -357,3 +357,156 @@ export class LoginModel extends BaseFormModel {
   
 ![Image text](./readme-image/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
+
+# 自定义控件
+
+- (1)通过内置装饰器实现(更简单, 推荐临时使用的时候用该方式)
+    - 修改模型
+    ```typescript
+    import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+    import {InputModel} from '../decorator/input.model';
+    
+    export class LoginModel extends BaseFormModel {
+      // customPro 为自定义模型属性 将作为模板上下文属性 在模板中可以访问到
+      // 可以定义多个自定义属性
+      // type 默认为CUSTOM 允许修改
+      @CustomModel({label: '自定义', type: 'custom', customPro: 'customPro'})
+      custom = [null];
+  
+      @InputModel<FormModel>({label: '手机号码'})
+      @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
+      phone = [null];
+    
+      @InputModel<LoginModel>({label: '用户名'})
+      @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+      username = [null];
+    
+      @InputModel<LoginModel>({label: '密码'})
+      @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
+      password = [null];
+    
+      /**
+       * 更新表单模型钩子
+       * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+       * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+       * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+       * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+       */
+      modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+        return model;
+      }
+    
+    
+      /**
+       * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+       * HTTP模块 目前还没开源
+       * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+       */
+      httpRequest() {
+        /* .... */
+      }
+    }
+  ```
+  - 接下来修改模板
+  ```angular2html
+  <!--通用错误提示-->
+  <ng-template #errorTpl let-control>
+    <ng-container *ngIf="control.hasError(control.name)">
+      {{control.getError(control.name)}}
+    </ng-container>
+  </ng-template>
+  <ng-template #label let-model>
+    <nz-form-label [nzRequired]="model.required"
+                   jdDyFormLabelDef
+                   [ngStyle]="model.labelStyle"
+                   [nzFor]="model.controlName">{{model.label}}
+    </nz-form-label>
+  </ng-template>
+  
+  <jd-dy-form-zorro [dyFormRef]="dyFormRef">
+    <!--  name 'custom' 对应模型中的 type字段值-->
+    <ng-container *jdDyFormColumnDef="let control; let model = model name 'custom'">
+      <nz-form-item>
+        <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+        <nz-form-control  jdDyFormControlDef
+                          [nzValidateStatus]="control"
+                          [nzErrorTip]="errorTpl">
+          <!--        customPro 为模型中自定义属性-->
+          <input type="text" nz-input [formControl]="control" [placeholder]="model.customPro">
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+  </jd-dy-form-zorro>
+  ```
+  - 预览图
+  ![Image text](./readme-image/default-custom-preview.png)
+- (2)通过集成基类模型实现(复用的解决方案, 推荐在封装通用的控件时使用)
+  - 基于@supine/dy-form 定制不同Angular UI框架的动态表单 章节其实就是自定义控件
+
+# 在定义控件模型的时候使用表单模型的上下文
+- 模型
+```typescript
+import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+import {InputModel} from '../decorator/input.model';
+
+export class LoginModel extends BaseFormModel {
+  sexModel = {
+    label: '性别',
+    optionContent: [
+      {label: '男', value: 1},
+      {label: '女', value: 1}
+    ]
+  };
+
+  // 不使用表单模型上下文是这样的
+  // @SelectModel<FormModel>({label: '性别', optionContent: [{label: '男', value: 1}, {label: '女', value: 1}]})
+  // 使用表单模型上下文是这样的 当控件模型定义比较复杂的时候用这种方法有着很大的优势
+  @SelectModel<FormModel>({initHook: (that, context) => Object.assign(that, context.sexModel)})
+  sex: [null];
+
+  @InputModel<FormModel>({label: '用户名'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  username = [null];
+
+  @InputModel<FormModel>({label: '手机号码'})
+  @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
+  phone = [null];
+
+  @InputModel<LoginModel>({label: '用户名'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  username = [null];
+
+  @InputModel<LoginModel>({label: '密码'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
+  password = [null];
+
+  /**
+   * 更新表单模型钩子
+   * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+   * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+   * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+   * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+   */
+  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+    return model;
+  }
+
+
+  /**
+   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+   * HTTP模块 目前还没开源
+   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+   */
+  httpRequest() {
+    /* .... */
+  }
+}
+
+```
+- 模板
+```angular2html
+<jd-dy-form-zorro [dyFormRef]="dyFormRef"></jd-dy-form-zorro>
+```
+
+- 预览图
+  ![Image text](./readme-image/form-context-preview.png)

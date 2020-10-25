@@ -119,8 +119,7 @@ export abstract class BaseModel<M = any> {
    */
   controlCol: string | number = 24;
 
-  // TODO 暂时不实现
-  // initHook: (that: this, context: ModelPartial<M>) => void;
+  initHook: (that: this, context: ModelPartial<M>) => void;
 
   protected constructor() {
     this.uid = ++nextUniqueId;

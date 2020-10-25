@@ -438,7 +438,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     // 是否需要渲染控件
     let isRenderControl = true;
 
-    if (item.type === 'GROUP' || item.type === 'LAYOUT_GROUP') {
+    if (item.type === 'GROUP' || item.layoutGroup) {
       item.group = true;
     }
 
@@ -538,7 +538,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _addControl(record: IterableChangeRecord<FormControlConfig>) {
     const config = record.item;
 
-    if (config.type === 'LAYOUT_GROUP' || config.layoutGroup) {
+    if (config.layoutGroup) {
       return;
     }
 
@@ -810,7 +810,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       if (model.parent) {
         const parentOption = this.dyFormRef.optionMap.get(model.parent);
 
-        if (parentOption.type === 'LAYOUT_GROUP' || parentOption.layoutGroup) {
+        if (parentOption.layoutGroup) {
           // 如果是 LAYOUT_GROUP 直接获取自身控件即可
           _$implicit = this.formArea.get(model.controlName);
         } else {
@@ -824,7 +824,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       let combineMode = false;
 
       // 如果是组合模式
-      if ((model.type === 'GROUP' || model.type === 'LAYOUT_GROUP' || model.layoutGroup) && model?.groupMode === 'combine') {
+      if ((model.type === 'GROUP' || model.layoutGroup) && model?.groupMode === 'combine') {
         combineMode = true;
       }
 

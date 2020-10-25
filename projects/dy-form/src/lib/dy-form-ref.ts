@@ -206,9 +206,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
         (value.validators as ValidatorFn[]).push(universal_valid(value.name, rule, msg));
       }
 
-      // if (typeof value.initHook === 'function') {
-      //   value.initHook.bind(_model)(value, _model);
-      // }
+      if (typeof value.initHook === 'function') {
+        value.initHook.bind(_model)(value, _model);
+      }
     });
 
     this._registeredModel(options);
