@@ -259,7 +259,7 @@ export class AppComponent implements OnInit {
 
 - 至此就可以看到我们想要的表单啦
   
-![Image text](./readme-image/login-dy-form.png)
+![Image text](http://120.24.164.28:9999/login-dy-form.png)
 - 组件内部我们只需要维护极少数代码就能完成表单的相关操作啦
   
 # 自定义布局
@@ -355,7 +355,7 @@ export class LoginModel extends BaseFormModel {
 ```
 - 预览图如下
   
-![Image text](./readme-image/layout_preview.png)
+![Image text](http://120.24.164.28:9999/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
 
 # 自定义控件
@@ -439,7 +439,7 @@ export class LoginModel extends BaseFormModel {
   </jd-dy-form-zorro>
   ```
   - 预览图
-  ![Image text](./readme-image/default-custom-preview.png)
+  ![Image text](http://120.24.164.28:9999/default-custom-preview.png)
 - (2)通过集成基类模型实现(复用的解决方案, 推荐在封装通用的控件时使用)
   - 基于@supine/dy-form 定制不同Angular UI框架的动态表单 章节其实就是自定义控件
 
@@ -509,7 +509,7 @@ export class LoginModel extends BaseFormModel {
 ```
 
 - 预览图
-  ![Image text](./readme-image/form-context-preview.png)
+  ![Image text](http://120.24.164.28:9999/form-context-preview.png)
 
 # 验证器
 

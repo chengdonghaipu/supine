@@ -170,4 +170,4 @@ dyFormRef = new DyFormRef(LoginModel, {mode: 'vertical'});
 
 - 至此就可以看到我们想要的表单啦
   
-![Image text](./readme-image/login-dy-form.png)
+![Image text](http://120.24.164.28:9999/login-dy-form-zorro.png)
