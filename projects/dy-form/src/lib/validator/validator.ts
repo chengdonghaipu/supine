@@ -312,7 +312,7 @@ export class Validator {
   }
 
   getNgMsg(key: string): { [key: string]: string | boolean } | null {
-    return this.fails() ? {[key]: this._msg.first(key), error: true} : null;
+    return this.fails() ? {[key]: this._msg.first(key)} : null;
   }
 
   clearMsg(): this {

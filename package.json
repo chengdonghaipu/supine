@@ -1,6 +1,6 @@
 {
   "name": "jd-lib",
-  "version": "10.0.0-rc18",
+  "version": "10.0.0-rc19",
   "keywords": [],
   "scripts": {
     "ng": "ng",

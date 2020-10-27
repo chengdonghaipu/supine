@@ -1,6 +1,7 @@
-import {BaseModel, ModelPartial} from '@supine/dy-form';
+import {ModelPartial} from '@supine/dy-form';
+import {ZorroControlModel} from './zorro-control.model';
 
-export class InputNumberModelControl<M = any> extends BaseModel<M> {
+export class InputNumberModelControl<M = any> extends ZorroControlModel<M> {
 
   type = 'INPUT_NUMBER';
 

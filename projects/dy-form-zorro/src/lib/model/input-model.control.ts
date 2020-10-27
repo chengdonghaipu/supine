@@ -1,8 +1,9 @@
-import {BaseModel, ModelPartial} from '@supine/dy-form';
+import {ModelPartial} from '@supine/dy-form';
+import {ZorroControlModel} from './zorro-control.model';
 
 type InputType = 'text' | 'password';
 
-export class InputModelControl<M = any> extends BaseModel<M> {
+export class InputModelControl<M = any> extends ZorroControlModel<M> {
   /**
    * type 必须要实现 不同的type代表不同的控件
    */

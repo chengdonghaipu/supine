@@ -1,7 +1,7 @@
 <!--通用错误提示-->
 <ng-template #errorTpl let-control>
-  <ng-container *ngIf="control.hasError(control.name)">
-    {{control.getError(control.name)}}
+  <ng-container *ngIf="hasError(control)">
+    {{getError(control)}}
   </ng-container>
 </ng-template>
 
@@ -55,6 +55,7 @@
   <nz-select [formControl]="control"
              class="dy-form-select"
              style="width: 100%;"
+             nzAllowClear
              [nzAllowClear]="model.allowClear"
              [nzSize]="model.size"
              [disabled]="model.disabled"
@@ -114,6 +115,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [ngStyle]="model.controlStyle"
                      [nzValidateStatus]="control"
                      [ngClass]="dyForm.controlClass(model)">
@@ -135,6 +139,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -149,6 +156,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -163,6 +173,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -177,6 +190,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -191,6 +207,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -205,6 +224,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
