@@ -7,6 +7,8 @@ import {NzInputModule} from 'ng-zorro-antd/input';
 import {CommonModule} from '@angular/common';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
+import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
+import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
 
 
 
@@ -19,7 +21,9 @@ import {NzSelectModule} from 'ng-zorro-antd/select';
     NzInputModule,
     CommonModule,
     NzInputNumberModule,
-    NzSelectModule
+    NzSelectModule,
+    NzDatePickerModule,
+    NzTimePickerModule
   ],
   exports: [DyFormZorroComponent]
 })

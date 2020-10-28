@@ -1,5 +1,5 @@
 import {merge} from 'lodash';
-import {SelectGroupModelControl as Model} from '../model/select-group-model.control';
+import {SelectGroupControl as Model} from '../model/select-group.control';
 import {BaseDecorator, ModelPartial} from '@supine/dy-form';
 
 export function SelectGroupModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator {

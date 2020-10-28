@@ -259,7 +259,7 @@ export class AppComponent implements OnInit {
 
 - 至此就可以看到我们想要的表单啦
   
-![Image text](./readme-image/login-dy-form.png)
+![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/login-dy-form.png)
 - 组件内部我们只需要维护极少数代码就能完成表单的相关操作啦
   
 # 自定义布局
@@ -355,7 +355,7 @@ export class LoginModel extends BaseFormModel {
 ```
 - 预览图如下
   
-![Image text](./readme-image/layout_preview.png)
+![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
 
 # 自定义控件
@@ -439,7 +439,7 @@ export class LoginModel extends BaseFormModel {
   </jd-dy-form-zorro>
   ```
   - 预览图
-  ![Image text](./readme-image/default-custom-preview.png)
+  ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/default-custom-preview.png)
 - (2)通过集成基类模型实现(复用的解决方案, 推荐在封装通用的控件时使用)
   - 基于@supine/dy-form 定制不同Angular UI框架的动态表单 章节其实就是自定义控件
 
@@ -453,8 +453,9 @@ export class LoginModel extends BaseFormModel {
   sexModel = {
     label: '性别',
     optionContent: [
+      {label: '保密', value: 0},
       {label: '男', value: 1},
-      {label: '女', value: 1}
+      {label: '女', value: 2},
     ]
   };
 
@@ -471,10 +472,6 @@ export class LoginModel extends BaseFormModel {
   @InputModel<FormModel>({label: '手机号码'})
   @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
   phone = [null];
-
-  @InputModel<LoginModel>({label: '用户名'})
-  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
-  username = [null];
 
   @InputModel<LoginModel>({label: '密码'})
   @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
@@ -509,8 +506,60 @@ export class LoginModel extends BaseFormModel {
 ```
 
 - 预览图
-  ![Image text](./readme-image/form-context-preview.png)
+  ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/form-context-preview.png)
+  
+# 异步验证
 
+- 模型
+```typescript
+import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+import {InputModel} from '../decorator/input.model';
+
+export class LoginModel extends BaseFormModel {
+  /* .... */
+  @InputModel<LoginModel>({label: '用户名'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  username = [null, [], [FormModel.userNameAsyncValidator]];
+
+  static userNameAsyncValidator = (control: FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      setTimeout(() => {
+        if (control.value === 'JasonWood') {
+          // '用户名已存在' 这是用来反馈用户的
+          observer.next({ userName: '用户名已存在' });
+        } else {
+          observer.next(null);
+        }
+          observer.complete();
+        }, 3000);
+  })
+  /* .... */
+  /**
+   * 更新表单模型钩子
+   * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+   * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+   * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+   * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+   */
+  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+    return model;
+  }
+
+
+  /**
+   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+   * HTTP模块 目前还没开源
+   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+   */
+  httpRequest() {
+    /* .... */
+  }
+}
+
+```
+- 预览图
+  ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview0.png)
+  ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview1.png)
 # 验证器
 
 - 简单使用

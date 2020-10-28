@@ -1,5 +1,5 @@
 import {TemplateRef} from '@angular/core';
-import {SelectModelControl} from './select-model.control';
+import {SelectControl} from './select.control';
 import {GroupModel} from './group.model';
 
 export interface SelectOptionContent {
@@ -8,7 +8,7 @@ export interface SelectOptionContent {
   disabled?: boolean;
 }
 
-export class SelectGroupModelControl<M = any> extends SelectModelControl<M> implements GroupModel {
+export class SelectGroupControl<M = any> extends SelectControl<M> implements GroupModel {
   type = 'SELECT_GROUP';
 
   suffixIconPv: TemplateRef<void>;
@@ -26,7 +26,7 @@ export class SelectGroupModelControl<M = any> extends SelectModelControl<M> impl
 
   openChange: (open: boolean) => void = open => {};
 
-  constructor(init?: SelectModelControl) {
+  constructor(init?: SelectControl) {
     super();
     this.init(init);
   }

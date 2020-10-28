@@ -1,5 +1,5 @@
 import {merge} from 'lodash';
-import {SelectModelControl as Model} from '../model/select-model.control';
+import {SelectControl as Model} from '../model/select.control';
 import {BaseDecorator, ModelPartial} from '@supine/dy-form';
 
 export function SelectModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator {

@@ -911,6 +911,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       if (!this._dyFormInit) {
         this._dyFormInit = true;
         this.dyFormRef.model.initHook();
+        // this.formArea.errors
       }
     });
   }

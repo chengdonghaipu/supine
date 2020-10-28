@@ -1,5 +1,5 @@
 import {TemplateRef} from '@angular/core';
-import {BaseModel} from '@supine/dy-form';
+import {ZorroControlModel} from './zorro-control.model';
 
 export interface SelectOptionContent {
   value: any;
@@ -7,7 +7,7 @@ export interface SelectOptionContent {
   disabled?: boolean;
 }
 
-export class SelectModelControl<M = any> extends BaseModel<M> {
+export class SelectControl<M = any> extends ZorroControlModel<M> {
   type = 'SELECT';
 
   optionContent: SelectOptionContent[] = [];
@@ -55,7 +55,7 @@ export class SelectModelControl<M = any> extends BaseModel<M> {
     return `请选择${this.label}`;
   }
 
-  constructor(init?: SelectModelControl) {
+  constructor(init?: SelectControl) {
     super();
     this.init(init);
   }

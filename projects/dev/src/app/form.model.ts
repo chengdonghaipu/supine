@@ -1,13 +1,14 @@
 import {BaseFormModel, CustomModel, FormControlConfig, GroupModel, LayoutGroupModel, ValidatorRule} from '@supine/dy-form';
 import {InputGroupModel, InputModel, SelectGroupModel, SelectModel} from '@supine/dy-form-zorro';
-import {Validators} from '@angular/forms';
+import {FormControl, ValidationErrors, Validators} from '@angular/forms';
+import {Observable, Observer} from 'rxjs';
 
 export class FormModel extends BaseFormModel {
   sexModel = {
     label: '性别',
     optionContent: [
       {label: '男', value: 1},
-      {label: '女', value: 1}
+      {label: '女', value: 2}
     ]
   };
 
@@ -19,7 +20,7 @@ export class FormModel extends BaseFormModel {
 
   @InputModel<FormModel>({label: '用户名'})
   @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
-  username = [null];
+  username = [null, [], [FormModel.userNameAsyncValidator]];
 
   @InputModel<FormModel>({label: '手机号码'})
   @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
@@ -29,6 +30,17 @@ export class FormModel extends BaseFormModel {
   @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
   password = [null];
 
+  static userNameAsyncValidator = (control: FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      setTimeout(() => {
+        if (control.value === 'JasonWood') {
+          observer.next({ userName: '用户名已存在' });
+        } else {
+          observer.next(null);
+        }
+        observer.complete();
+      }, 3000);
+    })
   /**
    * 更新表单模型钩子
    * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null

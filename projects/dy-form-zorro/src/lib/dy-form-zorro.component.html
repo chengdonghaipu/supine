@@ -1,7 +1,7 @@
 <!--通用错误提示-->
 <ng-template #errorTpl let-control>
-  <ng-container *ngIf="control.hasError(control.name)">
-    {{control.getError(control.name)}}
+  <ng-container *ngIf="hasError(control)">
+    {{getError(control)}}
   </ng-container>
 </ng-template>
 
@@ -51,10 +51,80 @@
   </textarea>
 </ng-template>
 
+<ng-template #datePickerControl let-model let-control=control>
+  <nz-date-picker [formControl]="control"
+                  [nzDefaultPickerValue]="model.defaultPickerValue"
+                  [nzDisabledDate]="model.disabledDate"
+                  [nzDropdownClassName]="model.dropdownClassName"
+                  [nzFormat]="model.format"
+                  [nzInputReadOnly]="model.inputReadOnly"
+                  [nzLocale]="model.locale"
+                  [nzMode]="model.mode"
+                  [nzPopupStyle]="model.popupStyle"
+                  [nzRenderExtraFooter]="model.renderExtraFooter"
+                  [nzSuffixIcon]="model.suffixIcon"
+                  (nzOnOpenChange)="model.onOpenChange"
+                  [nzDateRender]="model.dateRender"
+                  [nzDisabledTime]="model.disabledTime"
+                  [nzShowTime]="model.showTime"
+                  [nzShowToday]="model.showToday"
+                  (nzOnOk)="model.onOk"
+                  [nzAllowClear]="model.allowClear">
+  </nz-date-picker>
+</ng-template>
+
+
+<ng-template #rangePickerControl let-model let-control=control>
+  <nz-range-picker [formControl]="control"
+                   [nzDefaultPickerValue]="model.defaultPickerValue"
+                   [nzDisabledDate]="model.disabledDate"
+                   [nzDropdownClassName]="model.dropdownClassName"
+                   [nzFormat]="model.format"
+                   [nzInputReadOnly]="model.inputReadOnly"
+                   [nzLocale]="model.locale"
+                   [nzMode]="model.mode"
+                   [nzPopupStyle]="model.popupStyle"
+                   [nzRenderExtraFooter]="model.renderExtraFooter"
+                   [nzSuffixIcon]="model.suffixIcon"
+                   (nzOnOpenChange)="model.onOpenChange"
+                   [nzDateRender]="model.dateRender"
+                   [nzDisabledTime]="model.disabledTime"
+                   [nzShowTime]="model.showTime"
+                   [nzShowToday]="model.showToday"
+                   [nzRanges]="model.ranges"
+                   [nzSeparator]="model.separator"
+                   (nzOnCalendarChange)="model.onCalendarChange"
+                   (nzOnOk)="model.onOk"
+                   [nzAllowClear]="model.allowClear">
+  </nz-range-picker>
+</ng-template>
+
+<ng-template #timePickerControl let-model let-control=control>
+  <nz-time-picker [formControl]="control"
+                  [nzFormat]="model.format"
+                  [nzAllowEmpty]="model.allowEmpty"
+                  [nzAddOn]="model.addon"
+                  [nzClearText]="model.clearText"
+                  [nzDefaultOpenValue]="model.defaultOpenValue"
+                  [nzDisabledHours]="model.disabledHours"
+                  [nzDisabledMinutes]="model.disabledMinutes"
+                  [nzDisabledSeconds]="model.disabledSeconds"
+                  [nzHideDisabledOptions]="model.hideDisabledOptions"
+                  [nzHourStep]="model.hourStep"
+                  [nzMinuteStep]="model.minuteStep"
+                  [nzSecondStep]="model.secondStep"
+                  [nzPopupClassName]="model.popupClassName"
+                  [nzUse12Hours]="model.use12Hours"
+                  [nzSuffixIcon]="model.suffixIcon"
+                  (nzOpenChange)="model.openChange">
+  </nz-time-picker>
+</ng-template>
+
 <ng-template #selectControl let-model let-control=control>
   <nz-select [formControl]="control"
              class="dy-form-select"
              style="width: 100%;"
+             nzAllowClear
              [nzAllowClear]="model.allowClear"
              [nzSize]="model.size"
              [disabled]="model.disabled"
@@ -114,16 +184,19 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [ngStyle]="model.controlStyle"
                      [nzValidateStatus]="control"
                      [ngClass]="dyForm.controlClass(model)">
-     <!-- <input nz-input
-             [id]="model.name"
-             [placeholder]="model.placeHolder"
-             [formControl]="control"
-             [disabled]="model.disabled"
-             [nzSize]="model.size"
-             [readOnly]="model.readonly"/>-->
+      <!-- <input nz-input
+              [id]="model.name"
+              [placeholder]="model.placeHolder"
+              [formControl]="control"
+              [disabled]="model.disabled"
+              [nzSize]="model.size"
+              [readOnly]="model.readonly"/>-->
       <ng-template [ngTemplateOutlet]="inputControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control}">
       </ng-template>
@@ -135,10 +208,64 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
       <ng-template [ngTemplateOutlet]="formGroupControl"
+                   [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'DATE_PICKER'">
+    <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+
+    <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
+                     [nzValidateStatus]="control"
+                     [ngStyle]="model.controlStyle"
+                     [ngClass]="dyForm.controlClass(model)">
+      <ng-template [ngTemplateOutlet]="datePickerControl"
+                   [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'DATE_PICKER'">
+    <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+
+    <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
+                     [nzValidateStatus]="control"
+                     [ngStyle]="model.controlStyle"
+                     [ngClass]="dyForm.controlClass(model)">
+      <ng-template [ngTemplateOutlet]="timePickerControl"
+                   [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'RANGE_PICKER'">
+    <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+
+    <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
+                     [nzValidateStatus]="control"
+                     [ngStyle]="model.controlStyle"
+                     [ngClass]="dyForm.controlClass(model)">
+      <ng-template [ngTemplateOutlet]="rangePickerControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
       </ng-template>
     </nz-form-control>
@@ -149,6 +276,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -163,6 +293,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -177,6 +310,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -191,6 +327,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
@@ -205,6 +344,9 @@
 
     <nz-form-control [nzErrorTip]="errorTpl"
                      jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">

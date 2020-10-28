@@ -10,6 +10,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import {DyFormColumnDef, DyFormComponent, DyFormFooterDef, DyFormHeaderDef, DyFormRef} from '@supine/dy-form';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'jd-dy-form-zorro',
@@ -28,6 +29,15 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
   @Input() dyFormRef: DyFormRef<any>;
+
+  hasError(control: FormControl) {
+    return control.errors && Object.keys(control.errors).length;
+  }
+
+  getError(control: FormControl) {
+    const errors = Object.getOwnPropertyNames(control.errors);
+    return control.getError(errors[0]);
+  }
 
   constructor() {
   }
