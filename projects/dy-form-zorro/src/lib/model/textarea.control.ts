@@ -1,6 +1,6 @@
 import {InputModelControl} from './input-model.control';
 
-export class TextareaModelControl extends InputModelControl {
+export class TextareaControl extends InputModelControl {
   type = 'TEXTAREA';
 
   /**
@@ -12,7 +12,7 @@ export class TextareaModelControl extends InputModelControl {
    */
   readonly = false;
 
-  constructor(init?: TextareaModelControl) {
+  constructor(init?: TextareaControl) {
     super(init as unknown as InputModelControl);
   }
 }

@@ -1,15 +1,17 @@
-import {ModelPartial} from '@supine/dy-form';
-import {InputNumberModelControl} from './input-number-model.control';
+import {InputModelControl} from './input-model.control';
 import {GroupModel} from './group.model';
 import {TemplateRef} from '@angular/core';
 
-export class InputNumberGroupModelControl<M = any> extends InputNumberModelControl<M> implements GroupModel {
+export class InputGroupControl<M> extends InputModelControl<M> implements GroupModel {
+  type = 'INPUT_GROUP';
 
-  type = 'INPUT_NUMBER_GROUP';
+  /**
+   * 是否用搜索框
+   */
+  search = false;
 
-  constructor(init?: ModelPartial<InputNumberModelControl>) {
-    super();
-    this.init(init);
+  constructor(init?: InputModelControl) {
+    super(init as unknown as InputModelControl);
   }
 
   addOnAfter: string | TemplateRef<void>;
@@ -20,4 +22,5 @@ export class InputNumberGroupModelControl<M = any> extends InputNumberModelContr
   prefixIcon: string | null;
   suffix: string | TemplateRef<void>;
   suffixIcon: string | null;
+
 }

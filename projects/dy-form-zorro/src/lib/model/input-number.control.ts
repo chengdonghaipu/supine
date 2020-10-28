@@ -1,7 +1,7 @@
 import {ModelPartial} from '@supine/dy-form';
 import {ZorroControlModel} from './zorro-control.model';
 
-export class InputNumberModelControl<M = any> extends ZorroControlModel<M> {
+export class InputNumberControl<M = any> extends ZorroControlModel<M> {
 
   type = 'INPUT_NUMBER';
 
@@ -17,7 +17,7 @@ export class InputNumberModelControl<M = any> extends ZorroControlModel<M> {
   // 精度
   precision: number;
 
-  constructor(init?: ModelPartial<InputNumberModelControl>) {
+  constructor(init?: ModelPartial<InputNumberControl>) {
     super();
     this.init(init);
   }

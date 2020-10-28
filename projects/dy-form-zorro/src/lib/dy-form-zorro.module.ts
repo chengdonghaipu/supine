@@ -7,20 +7,22 @@ import {NzInputModule} from 'ng-zorro-antd/input';
 import {CommonModule} from '@angular/common';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
+import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 
 
 
 @NgModule({
   declarations: [DyFormZorroComponent],
-  imports: [
-    DyFormModule,
-    ReactiveFormsModule,
-    NzFormModule,
-    NzInputModule,
-    CommonModule,
-    NzInputNumberModule,
-    NzSelectModule
-  ],
+   imports: [
+      DyFormModule,
+      ReactiveFormsModule,
+      NzFormModule,
+      NzInputModule,
+      CommonModule,
+      NzInputNumberModule,
+      NzSelectModule,
+      NzDatePickerModule
+   ],
   exports: [DyFormZorroComponent]
 })
 export class DyFormZorroModule { }

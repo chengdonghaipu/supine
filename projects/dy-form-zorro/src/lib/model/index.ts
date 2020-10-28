@@ -1,7 +1,8 @@
 export * from './input-model.control';
-export * from './select-group-model.control';
-export * from './number-group-model.control';
-export * from './input-group-model.control';
-export * from './input-number-model.control';
-export * from './textarea-model.control';
-
+export * from './select-group.control';
+export * from './number-group.control';
+export * from './input-group.control';
+export * from './input-number.control';
+export * from './textarea.control';
+export * from './date-picker.control';
+export * from './range-picker.control';

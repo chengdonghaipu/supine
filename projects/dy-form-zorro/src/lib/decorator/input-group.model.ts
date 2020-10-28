@@ -1,5 +1,5 @@
 import {merge} from 'lodash';
-import {InputGroupModelControl as Model} from '../model/input-group-model.control';
+import {InputGroupControl as Model} from '../model/input-group.control';
 import {BaseDecorator, ModelPartial} from '@supine/dy-form';
 
 export function InputGroupModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator {

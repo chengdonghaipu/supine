@@ -1,4 +1,4 @@
-import {InputNumberModelControl as Model} from '../model/input-number-model.control';
+import {InputNumberControl as Model} from '../model/input-number.control';
 import {merge} from 'lodash';
 import {BaseDecorator, ModelPartial} from '@supine/dy-form';
 
