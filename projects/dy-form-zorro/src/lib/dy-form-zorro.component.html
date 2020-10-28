@@ -99,6 +99,27 @@
   </nz-range-picker>
 </ng-template>
 
+<ng-template #timePickerControl let-model let-control=control>
+  <nz-time-picker [formControl]="control"
+                  [nzFormat]="model.format"
+                  [nzAllowEmpty]="model.allowEmpty"
+                  [nzAddOn]="model.addon"
+                  [nzClearText]="model.clearText"
+                  [nzDefaultOpenValue]="model.defaultOpenValue"
+                  [nzDisabledHours]="model.disabledHours"
+                  [nzDisabledMinutes]="model.disabledMinutes"
+                  [nzDisabledSeconds]="model.disabledSeconds"
+                  [nzHideDisabledOptions]="model.hideDisabledOptions"
+                  [nzHourStep]="model.hourStep"
+                  [nzMinuteStep]="model.minuteStep"
+                  [nzSecondStep]="model.secondStep"
+                  [nzPopupClassName]="model.popupClassName"
+                  [nzUse12Hours]="model.use12Hours"
+                  [nzSuffixIcon]="model.suffixIcon"
+                  (nzOpenChange)="model.openChange">
+  </nz-time-picker>
+</ng-template>
+
 <ng-template #selectControl let-model let-control=control>
   <nz-select [formControl]="control"
              class="dy-form-select"
@@ -211,6 +232,23 @@
                      [ngStyle]="model.controlStyle"
                      [ngClass]="dyForm.controlClass(model)">
       <ng-template [ngTemplateOutlet]="datePickerControl"
+                   [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'DATE_PICKER'">
+    <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+
+    <nz-form-control [nzErrorTip]="errorTpl"
+                     jdDyFormControlDef
+                     [nzHasFeedback]="model.hasFeedback"
+                     [nzExtra]="model.extra"
+                     [nzValidatingTip]="model.validatingTip"
+                     [nzValidateStatus]="control"
+                     [ngStyle]="model.controlStyle"
+                     [ngClass]="dyForm.controlClass(model)">
+      <ng-template [ngTemplateOutlet]="timePickerControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
       </ng-template>
     </nz-form-control>

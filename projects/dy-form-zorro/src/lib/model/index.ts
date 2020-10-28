@@ -6,3 +6,4 @@ export * from './input-number.control';
 export * from './textarea.control';
 export * from './date-picker.control';
 export * from './range-picker.control';
+export * from './time-picker.control';
