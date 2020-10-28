@@ -203,6 +203,46 @@
           }
         }
       }
+    },
+    "validator": {
+      "projectType": "library",
+      "root": "projects/validator",
+      "sourceRoot": "projects/validator/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/validator/tsconfig.lib.json",
+            "project": "projects/validator/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/validator/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/validator/src/test.ts",
+            "tsConfig": "projects/validator/tsconfig.spec.json",
+            "karmaConfig": "projects/validator/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/validator/tsconfig.lib.json",
+              "projects/validator/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "dy-form"
 }

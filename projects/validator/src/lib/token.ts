@@ -1,0 +1,2 @@
+
+export const VALIDATOR_RULE = 'VALIDATOR_RULE';

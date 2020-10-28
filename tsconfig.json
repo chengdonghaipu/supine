@@ -24,6 +24,12 @@
     },
     {
       "path": "./projects/dy-form-zorro/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/validator/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/validator/tsconfig.spec.json"
     }
 ]
 }
