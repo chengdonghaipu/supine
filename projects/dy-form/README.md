@@ -193,34 +193,41 @@ export class LoginModel extends BaseFormModel {
    * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
    */
   httpRequest() {
-    // 获取表单数据 如果不能满足需要 可以在子类重写value的获取
-    // const body = this.value;
-    // 获取提交表单的一些外部参数 比如更新的参数ID  attachValue 通过 model.withAttachValue(数据)进行设置
-    // const {mapId, id} = this.attachValue;
-    //
-    // body.id = id;
-    // 组装接口所需要的参数
-    // const tempBody = {
-    //   mapId,
-    //   area_info: body
-    // };
-
-    // 一系列与表单相关的接口
-    // const httpRequestMap: HttpRequestMap = {
-    // update: [this.http.editAreaBaseInfo, [tempBody]]
-    /* UnloadMineralArea: [this.http.setUnLoadMineralArea, [body, mapId]],
-       UnloadWasteArea: [this.http.setUnLoadWasteArea, [body, mapId]],
-       LoadArea: [this.http.setLoadArea, [body, mapId]],
-       Road: [this.http.setRoad, [body, mapId]],
-       PassableArea: [this.http.setPassableArea, [body, mapId]],
-       ImpassableArea: [this.http.setImPassableArea, [body, mapId]],
-       Junction: [this.http.setJunction, [body, mapId]],
-       create: [this.http.createMapUtil, [body, mapId]] */
-    // };
-
-    // const [handle, params] = httpRequestMap[this.actionType];
-    //
-    // return handle(...params);
+    return this.updateValueAndValidity()
+      .pipe(
+        // 如果验证未通过 则过滤掉
+        filter(value => value),
+        map(() => {
+           // 获取表单数据 如果不能满足需要 可以在子类重写value的获取
+           // const body = this.value;
+           // 获取提交表单的一些外部参数 比如更新的参数ID  attachValue 通过 model.withAttachValue(数据)进行设置
+           // const {mapId, id} = this.attachValue;
+           //
+           // body.id = id;
+           // 组装接口所需要的参数
+           // const tempBody = {
+           //   mapId,
+           //   area_info: body
+           // };
+   
+           // 一系列与表单相关的接口
+           // const httpRequestMap: HttpRequestMap = {
+           // update: [this.http.editAreaBaseInfo, [tempBody]]
+           /* UnloadMineralArea: [this.http.setUnLoadMineralArea, [body, mapId]],
+                UnloadWasteArea: [this.http.setUnLoadWasteArea, [body, mapId]],
+                LoadArea: [this.http.setLoadArea, [body, mapId]],
+                Road: [this.http.setRoad, [body, mapId]],
+                PassableArea: [this.http.setPassableArea, [body, mapId]],
+                ImpassableArea: [this.http.setImPassableArea, [body, mapId]],
+                Junction: [this.http.setJunction, [body, mapId]],
+                create: [this.http.createMapUtil, [body, mapId]] */
+             // };
+   
+             // const [handle, params] = httpRequestMap[this.actionType];
+             //
+             // return handle(...params);
+           })
+         );
   }
 }
 

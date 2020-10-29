@@ -1,5 +1,6 @@
 import {AbstractControl, FormGroup} from '@angular/forms';
 import {FormControlConfig} from './base.model';
+import {Observable, of} from 'rxjs';
 
 export abstract class BaseFormModel<T = any> {
   private _initTask = [];
@@ -90,13 +91,17 @@ export abstract class BaseFormModel<T = any> {
     return this;
   }
 
-  updateValueAndValidity(opts?: { onlySelf?: boolean; emitEvent?: boolean; }) {
+  updateValueAndValidity(opts?: { onlySelf?: boolean; emitEvent?: boolean; }): Observable<boolean> {
     if (!this.formGroup) {
-      return;
+      return of(false);
     }
 
     const controls = this.formGroup.controls;
     this._updateValueAndValidity(controls, opts);
+
+    const {valid} = this.formGroup;
+
+    return of(valid);
   }
 
   private _updateValueAndValidity(controls: { [key: string]: AbstractControl }, opts?: { onlySelf?: boolean; emitEvent?: boolean; }) {
