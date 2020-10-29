@@ -30,6 +30,12 @@
     },
     {
       "path": "./projects/validator/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/http/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/http/tsconfig.spec.json"
     }
 ]
 }

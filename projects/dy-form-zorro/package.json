@@ -1,24 +1,28 @@
 {
- "name": "@supine/dy-form-zorro",
- "schematics": "./schematics/collection.json",
+  "name": "@supine/dy-form-zorro",
+  "schematics": "./schematics/collection.json",
   "ng-update": {
     "migrations": "./schematics/migration.json"
   },
- "version": "PACKAGE_VERSION",
-  "keywords": ["Angular", "NG-ZORRO", "dy-form"],
- "scripts": {
-  "build": "node ../../node_modules/.bin/tsc -p tsconfig.schematics.json",
-  "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/dy-form-zorro/",
-  "copy:files": "cp --parents -p schematics/*/files/** ../../dist/dy-form-zorro/",
-  "copy:collection": "cp schematics/collection.json ../../dist/dy-form-zorro/schematics/collection.json",
-  "postbuild": "npm run copy:schemas && npm run copy:collection"
- },
- "peerDependencies": {
-  "@angular/common": "^10.0.14",
-  "@angular/core": "^10.0.14",
-  "@supine/dy-form": "^PACKAGE_VERSION"
- },
- "dependencies": {
-  "tslib": "^2.0.0"
- }
+  "version": "PACKAGE_VERSION",
+  "keywords": [
+    "Angular",
+    "NG-ZORRO",
+    "dy-form"
+  ],
+  "scripts": {
+    "build": "node ../../node_modules/.bin/tsc -p tsconfig.schematics.json",
+    "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/dy-form-zorro/",
+    "copy:files": "cp --parents -p schematics/*/files/** ../../dist/dy-form-zorro/",
+    "copy:collection": "cp schematics/collection.json ../../dist/dy-form-zorro/schematics/collection.json",
+    "postbuild": "npm run copy:schemas && npm run copy:collection"
+  },
+  "peerDependencies": {
+    "@angular/common": "^10.0.14",
+    "@angular/core": "^10.0.14",
+    "@supine/dy-form": "^PACKAGE_VERSION"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
 }

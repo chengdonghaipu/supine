@@ -27,6 +27,10 @@
       "validator": [
         "dist/validator/validator",
         "dist/validator"
+      ],
+      "http": [
+        "dist/http/http",
+        "dist/http"
       ]
     }
   }

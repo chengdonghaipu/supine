@@ -1,0 +1,16 @@
+{
+  "name": "@supine/http",
+  "version": "PACKAGE_VERSION",
+  "keywords": [
+    "Angular",
+    "http",
+    "supine"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^10.0.14",
+    "@angular/core": "^10.0.14"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}
