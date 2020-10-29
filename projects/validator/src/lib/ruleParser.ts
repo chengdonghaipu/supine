@@ -1,4 +1,4 @@
-import {RuleFn} from './type';
+import {GroupRule, RuleFn} from './type';
 
 
 export class RuleParser {
@@ -41,26 +41,54 @@ export class RuleParser {
       }
     });
 
-    andRuleGroup.forEach(value => {
+    return andRuleGroup;
+  }
+
+  private static parseGroupRule(groupRule: any[]) {
+
+    return groupRule.map(value => {
+      return value.map(rule => {
+        const rules = [];
+
+        if (rule.indexOf(':') > -1) {
+          const [key, params] = rule.split(':').map(value1 => String(value1).trim());
+          rules.push(key, params.split(',').map(value1 => String(value1).trim()));
+        } else {
+          rules.push(rule);
+        }
+
+        return rules;
+      });
     });
   }
 
-  private static parseStringRule(rule: string) {
+  private static parseStringRule(rule: string): GroupRule {
+    const andRuleGroup = RuleParser.checkRule(rule);
+
+    return RuleParser.parseGroupRule(andRuleGroup);
   }
 
-  private static parseArrayRule(rule: string[] | RuleFn[] | Array<string | RuleFn>) {
+  private static parseArrayRule(rule: string[] | RuleFn[] | Array<string | RuleFn>): GroupRule {
+    if (rule.every(value => typeof value === 'string')) {
+      return RuleParser.parseStringRule(rule.join('|'));
+    } else if (rule.every(value => typeof value === 'function')) {
+      return rule as RuleFn[];
+    } else {
+      throw Error(`Invalid rule`);
+    }
   }
 
   private static parseRuleFnRule(rule: RuleFn) {
+    return [rule].map(value => [value]);
   }
 
 
-  static exportRule(rule: string | string[] | RuleFn | RuleFn[] | Array<string | RuleFn>) {
-    if (rule instanceof String) {
-      return RuleParser.parseStringRule(rule as string);
-    } else if (rule instanceof Function) {
+  static exportRule(rule: string | string[] | RuleFn | RuleFn[]) {
+    if (typeof rule === 'string') {
+      return RuleParser.parseStringRule(rule);
+    } else if (typeof rule === 'function') {
       return RuleParser.parseRuleFnRule(rule);
-    } else if (rule instanceof Array && rule.every(value => (value instanceof Function) || (typeof value === 'string'))) {
+    } else if (Array.isArray(rule) && rule.every(value => typeof value === 'string')) {
       return RuleParser.parseArrayRule(rule);
     } else {
       throw Error(`Invalid rule`);
@@ -68,4 +96,5 @@ export class RuleParser {
   }
 }
 
-RuleParser.exportRule(['in', (value, ta) => true]);
+console.log(RuleParser.exportRule(['R1:A&R2:B&R3:C,F', 'R4:M,L,O', 'R5&R6', 'R7']));
+console.log(1);
