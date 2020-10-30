@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DyFormRef} from '@supine/dy-form';
 import {FormModel} from './form.model';
-import {JdValidator} from '@supine/dy-form';
+import {ZlValidator} from '@supine/validator';
 
 @Component({
   selector: 'app-root',
@@ -17,19 +17,12 @@ export class AppComponent implements OnInit {
   constructor() {
     // 执行这行代码才会渲染
     this.dyFormRef.executeModelUpdate();
-    const v = new JdValidator();
 
-    // 验证规则
-    const rules = {
-      a: ['required', 'in:12'] // 或者 'required&in:12'
-    };
-    // 被验证的数据
-    const data = {a: 'kl'};
-    v.make(rules, data);
-    if (v.fails()) {
-      // 获取错误信息
-      console.log(v.getMessages());
-    }
+    const validator = new ZlValidator();
+
+    validator.setRule({a: 'in:1,2,3'}).make(null, {a: 'a', b: {a: 'f', f: 'm', m: {a: 'g'}}, c: 'c'});
+
+    console.log(validator);
   }
 
 }

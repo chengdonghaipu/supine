@@ -1,4 +1,4 @@
-import {GroupRule, RuleFn} from './type';
+import {GroupRule, RuleFn, RuleType} from './type';
 
 
 export class RuleParser {
@@ -79,11 +79,11 @@ export class RuleParser {
   }
 
   private static parseRuleFnRule(rule: RuleFn) {
-    return [rule].map(value => [value]);
+    return [rule];
   }
 
 
-  static exportRule(rule: string | string[] | RuleFn | RuleFn[]) {
+  static exportRule(rule: RuleType) {
     if (typeof rule === 'string') {
       return RuleParser.parseStringRule(rule);
     } else if (typeof rule === 'function') {

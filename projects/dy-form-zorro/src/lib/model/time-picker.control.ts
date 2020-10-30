@@ -7,7 +7,7 @@ export class TimePickerControl<M> extends ZorroControlModel<M> {
    * type 必须要实现 不同的type代表不同的控件
    */
   get type() {
-    return 'DATE_PICKER';
+    return 'TIME_PICKER';
   }
 
   // 选择框底部显示自定义的内容

@@ -24,11 +24,11 @@
         "dist/dy-form-zorro/dy-form-zorro",
         "dist/dy-form-zorro"
       ],
-      "validator": [
+      "@supine/validator": [
         "dist/validator/validator",
         "dist/validator"
       ],
-      "http": [
+      "@supine/http": [
         "dist/http/http",
         "dist/http"
       ]
