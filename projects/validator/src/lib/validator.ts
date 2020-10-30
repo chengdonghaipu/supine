@@ -1,4 +1,4 @@
-import {CustomMessage, GroupRule, RuleType, ValidatorMetaData, ValidatorRuleConstructor} from './type';
+import {CustomMessage, GroupRule, RuleFn, RuleType, ValidatorMetaData, ValidatorRuleConstructor} from './type';
 import 'reflect-metadata';
 import {RULE_MAP, TYPE_MESSAGE, VALIDATOR_RULE} from './token';
 import {RuleParser} from './ruleParser';
@@ -102,13 +102,22 @@ export class ZlValidator {
     }
   }
 
-  private paddingMessage(filedName: string, ruleName: string, params, value) {
+  private paddingMessage(filedName: string, ruleName: string, params, value, rule: [RuleFn, ValidatorRuleConstructor<any>]) {
     const customMsg = this.customMessages[`${filedName}.${ruleName}`];
 
     if (customMsg) {
       return customMsg as string;
     }
-    return '';
+
+    const [] = rule;
+
+    const defaultMessage = this.validatorMetaData.typeMessage.get(rule[1]);
+
+    if (defaultMessage) {
+      return defaultMessage(filedName, ruleName, params, value);
+    } else {
+      throw Error(`规则${ruleName} 未提供默认信息提示`);
+    }
   }
 
   private passes() {
@@ -132,12 +141,16 @@ export class ZlValidator {
 
           for (const andRules of orRules) {
             const [ruleName, params] = andRules;
-            const result = ruleMethod[ruleName](value, params, this.dataMap);
 
-            this.addMessage(valuePath, typeof result === 'string' ? result : this.paddingMessage(valuePath, ruleName, params, value));
+            const [ruleFn] = ruleMethod[ruleName];
+            const result = ruleFn(value, params, this.dataMap);
+
             if (result) {
               andResult = true;
               // 未通过
+              this.addMessage(valuePath, typeof result === 'string' ? result :
+                this.paddingMessage(valuePath, ruleName, params, value, ruleMethod[ruleName])
+              );
             }
 
             if (!this.isBatch && result) {
@@ -154,6 +167,7 @@ export class ZlValidator {
         }
       }
     });
+    console.log(this.message);
   }
 }
 
@@ -164,7 +178,7 @@ export function Validator(metaData: { rules: ValidatorRuleConstructor<any>[] }):
 
     const validator = {
       ruleMethod: {},
-      typeMessage: {},
+      typeMessage: new Map(),
     };
 
     rule.forEach(Ctor => {
@@ -174,15 +188,11 @@ export function Validator(metaData: { rules: ValidatorRuleConstructor<any>[] }):
 
       const propertyNames = Object.getOwnPropertyNames(ruleMap);
 
-      propertyNames.forEach(value => validator.ruleMethod[value] = ruleMap[value].bind(ruleFn));
+      propertyNames.forEach(value => validator.ruleMethod[value] = [ruleMap[value].bind(ruleFn), Ctor]);
 
-      const message = Reflect.getMetadata(TYPE_MESSAGE, Ctor) || [];
+      const message = Reflect.getMetadata(TYPE_MESSAGE, Ctor);
 
-      message.forEach(value => {
-        const typeMessage = ruleFn[value] || {};
-
-        Object.assign(validator.typeMessage, typeMessage);
-      });
+      message && validator.typeMessage.set(Ctor, message.bind(ruleFn));
     });
 
     Reflect.defineMetadata(VALIDATOR_RULE, validator, target);

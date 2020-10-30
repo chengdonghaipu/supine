@@ -1,14 +1,16 @@
 import 'reflect-metadata';
 import {TYPE_MESSAGE} from './token';
 
-export function TypeMessage(): PropertyDecorator {
-  return (target, propertyKey) => {
+export function DefaultMessage(): MethodDecorator {
+  return (target, propertyKey, descriptor) => {
     const constructor = typeof target === 'function' ? target : target.constructor;
 
-    const message = Reflect.getMetadata(TYPE_MESSAGE, constructor) || [];
+    const message = Reflect.getMetadata(TYPE_MESSAGE, constructor);
 
-    message.push(propertyKey);
+    if (message) {
+      throw Error(`每个规则类 只允许存在一个生成默认信息提示的方法`);
+    }
 
-    Reflect.defineMetadata(TYPE_MESSAGE, message, constructor);
+    Reflect.defineMetadata(TYPE_MESSAGE, descriptor.value, constructor);
   };
 }
