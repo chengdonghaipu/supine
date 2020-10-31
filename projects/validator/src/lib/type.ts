@@ -5,11 +5,13 @@ export type TargetMap = Map<string, any>;
 
 export type RuleFn<V = any> = (value: V, params: any, targetMap: TargetMap) => boolean | string;
 
+export type CustomRuleFn<V = any> = (value: V, targetMap: TargetMap) => boolean | string;
+
 export type MessageFn = (filedName: string, ruleName: string, params, value) => string;
 
-export type GroupRule = Array<Array<[string, any[]] | [string]>> | RuleFn[];
+export type GroupRule = Array<Array<[string, any[]] | [string]>> | CustomRuleFn[] | Array<{[key: string]: any[] | CustomRuleFn }>;
 
-export type RuleType = string | string[] | RuleFn | RuleFn[];
+export type RuleType = string | string[] | CustomRuleFn | CustomRuleFn[] | Array<{[key: string]: any[] | CustomRuleFn }>;
 
 export type CustomMessage = {[key: string]: string | ({[key: string]: string})};
 

@@ -9,7 +9,7 @@ import {copyFiles} from '../util/copy-file';
 import * as fs from 'fs';
 // import {mapDir} from '../util/map-dir';
 
-const packages = ['dy-form', 'dy-form-zorro'];
+const packages = ['dy-form', 'dy-form-zorro', 'validator'];
 /*function copyFile(cb: () => void) {
   copyFiles(`${process.cwd()}/`, '*.*', `${process.cwd()}/app/`);
   copyFiles(`${process.cwd()}/src/`, '**', `${process.cwd()}/app/src/`);
@@ -74,11 +74,13 @@ function version(cd: () => void) {
 
     fs.writeFileSync(packagePath, strPackage, {encoding: 'utf8'});
 
-    const addPath = path.join(process.cwd(), 'dist', value, 'schematics', 'ng-add', 'index.js');
+    if (value !== 'validator') {
+      const addPath = path.join(process.cwd(), 'dist', value, 'schematics', 'ng-add', 'index.js');
 
-    const str = fs.readFileSync(addPath).toString().replace(/PACKAGE_VERSION/g, vs);
+      const str = fs.readFileSync(addPath).toString().replace(/PACKAGE_VERSION/g, vs);
 
-    fs.writeFileSync(addPath, str);
+      fs.writeFileSync(addPath, str);
+    }
   });
   cd();
 }
@@ -99,13 +101,15 @@ function build(cd: () => void) {
 
     const basePath = path.join(process.cwd(), 'projects', name);
 
-    await tsCompile('tsc', ['-p', path.join(basePath, 'tsconfig.schematics.json')]);
+    if (name !== 'validator') {
+      await tsCompile('tsc', ['-p', path.join(basePath, 'tsconfig.schematics.json')]);
 
+      copyFiles(path.join(basePath, 'schematics'), '**/schema.json', path.join(process.cwd(), 'dist', name, 'schematics'));
+      copyFiles(path.join(basePath, 'schematics'), 'collection.json', path.join(process.cwd(), 'dist', name, 'schematics'));
+      copyFiles(path.join(basePath, 'schematics'), 'migration.json', path.join(process.cwd(), 'dist', name, 'schematics'));
+      copyFiles(path.join(basePath, 'schematics'), '*/files/**', path.join(process.cwd(), 'dist', name, 'schematics'));
+    }
 
-    copyFiles(path.join(basePath, 'schematics'), '**/schema.json', path.join(process.cwd(), 'dist', name, 'schematics'));
-    copyFiles(path.join(basePath, 'schematics'), 'collection.json', path.join(process.cwd(), 'dist', name, 'schematics'));
-    copyFiles(path.join(basePath, 'schematics'), 'migration.json', path.join(process.cwd(), 'dist', name, 'schematics'));
-    copyFiles(path.join(basePath, 'schematics'), '*/files/**', path.join(process.cwd(), 'dist', name, 'schematics'));
     copyFiles(path.join(basePath, 'readme-image'), '**', path.join(process.cwd(), 'dist', name));
   });
   cd();

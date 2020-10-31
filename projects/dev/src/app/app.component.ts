@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
     const validator = new ZlValidator();
 
-    validator.setRule({a: 'in:1,2,3'}).make(null, {a: 'a', b: {a: 'f', f: 'm', m: {a: 'g'}}, c: 'c'});
+    validator.setRule({a: [{in: [100, 1, 20]}]}).make(null, {a: 100, b: {a: 'f', f: 'm', m: {a: 'g'}}, c: 'c'});
 
     console.log(validator);
   }

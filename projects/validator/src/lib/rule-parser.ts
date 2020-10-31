@@ -1,4 +1,4 @@
-import {GroupRule, RuleFn, RuleType} from './type';
+import {CustomRuleFn, GroupRule, RuleType} from './type';
 
 
 export class RuleParser {
@@ -45,8 +45,7 @@ export class RuleParser {
   }
 
   private static parseGroupRule(groupRule: any[]) {
-
-    return groupRule.map(value => {
+    const result = groupRule.map(value => {
       return value.map(rule => {
         const rules = [];
 
@@ -60,6 +59,7 @@ export class RuleParser {
         return rules;
       });
     });
+    return result;
   }
 
   private static parseStringRule(rule: string): GroupRule {
@@ -68,17 +68,21 @@ export class RuleParser {
     return RuleParser.parseGroupRule(andRuleGroup);
   }
 
-  private static parseArrayRule(rule: string[] | RuleFn[] | Array<string | RuleFn>): GroupRule {
+  private static parseArrayRule(rule: string[] | CustomRuleFn[]): GroupRule {
     if (rule.every(value => typeof value === 'string')) {
       return RuleParser.parseStringRule(rule.join('|'));
     } else if (rule.every(value => typeof value === 'function')) {
-      return rule as RuleFn[];
+      return rule as CustomRuleFn[];
     } else {
       throw Error(`Invalid rule`);
     }
   }
 
-  private static parseRuleFnRule(rule: RuleFn) {
+  private static parseObjectArrayRule(rule: Array<{[key: string]: any[] | CustomRuleFn }>): GroupRule {
+    return rule;
+  }
+
+  private static parseRuleFnRule(rule: CustomRuleFn) {
     return [rule];
   }
 
@@ -88,13 +92,13 @@ export class RuleParser {
       return RuleParser.parseStringRule(rule);
     } else if (typeof rule === 'function') {
       return RuleParser.parseRuleFnRule(rule);
-    } else if (Array.isArray(rule) && rule.every(value => typeof value === 'string')) {
-      return RuleParser.parseArrayRule(rule);
+    } else if (Array.isArray(rule) && rule.every(value => typeof value !== 'object')) {
+      return RuleParser.parseArrayRule(rule as string[] | CustomRuleFn[]);
+    } else if (Array.isArray(rule) && rule.every(value => (typeof value === 'object') && !Array.isArray(value))) {
+      return RuleParser.parseObjectArrayRule(rule as Array<{[key: string]: any[] | CustomRuleFn }>);
     } else {
       throw Error(`Invalid rule`);
     }
   }
 }
 
-console.log(RuleParser.exportRule(['R1:A&R2:B&R3:C,F', 'R4:M,L,O', 'R5&R6', 'R7']));
-console.log(1);

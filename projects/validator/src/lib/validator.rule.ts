@@ -1,11 +1,72 @@
 import {DefaultMessage} from './type-message';
 import {Rule} from './rule';
+import {isArray, isBoolean, isFloat, isNumber, isObject, isString} from './typeof';
+import {CheckParamNotException} from './exception';
 
+function regExp(ruleName: string, value) {
+  // tslint:disable-next-line:variable-name
+  let _result = false;
+  switch (name) {
+    case 'alpha': {
+      // 验证的字段必须完全是字母的字符
+      _result = /^[a-zA-Z]+$/.test(value);
+      break;
+    }
+    case 'alphaDash': {
+      // 验证的字段可能具有字母、数字、破折号（ - ）以及下划线（ _ ）。
+      _result = /^[a-zA-Z0-9-_]+$/.test(value);
+      break;
+    }
+    case 'chsDash': {
+      // 只允许汉字、字母、数字和下划线_及破折号-
+      _result = /^[\u4e00-\u9fa5a-zA-Z0-9_-]+$/.test(value);
+      break;
+    }
+    case 'chs': {
+      // 只允许汉字
+      _result = /^[\u4e00-\u9fa5]+$/.test(value);
+      break;
+    }
+    case 'chsAlpha': {
+      // 只允许汉字、字母
+      _result = /^[\u4e00-\u9fa5a-zA-Z]+$/.test(value);
+      break;
+    }
+    case 'chsAlphaNum': {
+      // 只允许汉字、字母和数字
+      _result = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/.test(value);
+      break;
+    }
+    case 'alphaNum': {
+      // 验证的字段必须完全是字母、数字。
+      _result = /^[a-zA-Z0-9]+$/.test(value);
+      break;
+    }
+    case 'email': {
+      // 验证的字段必须是邮箱。
+      _result = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(value);
+      break;
+    }
+    case 'phoneNum': {
+      // 验证的字段必须是手机号码。
+      _result = /^1[3|4|5|8][0-9]\d{4,8}$/.test(value);
+      break;
+    }
+    case 'telNumber': {
+      // 验证的字段必须是电话号码。
+      _result = /^(-?\d+)(\.\d+)?$/.test(value);
+      break;
+    }
+  }
+  return _result;
+}
 
 export class ValidatorRule {
-
   @DefaultMessage()
   defaultMessage(filedName: string, ruleName: string, params, value): string {
+    if (!params) {
+      params = [];
+    }
     const typeMsg = {
       accepted: `${filedName} 必须是yes、on或者1或者true`,
       after: `${filedName} 必须是 ${params[0]} 之后的一个日期`,
@@ -30,6 +91,7 @@ export class ValidatorRule {
       email: `${filedName} 必须是一个合法的电子邮件地址`,
       in: `${filedName} 必须是 ${params.join(',')} 其中之一`,
       integer: `${filedName} 必须是个整数`,
+      safeInteger: `${filedName} 必须是safeInteger`,
       json: `${filedName} 必须是一个合法的 JSON 字符串`,
       max: {
         number: `${filedName} 最大数字为 ${params[1]}`,
@@ -45,14 +107,6 @@ export class ValidatorRule {
       numeric: `${filedName} 必须是数字`,
       regex: `${filedName} 格式是无效的`,
       required: `${filedName} 字段是必须的`,
-      // requiredIf: `当 ${params[0]} 是 ${params[1]} 的时候 ${filedName} 字段是必须的`,
-      // requiredUnless: `${filedName} 字段是必须的，除非 :other 是在 :values 中`,
-      // requiredWith: '当 :values 中有任意一个字段存在时 ${filedName} 字段是必须的 ',
-      // requiredWithAll: '当 :values 都存在的时候 ${filedName} 字段是必须的 ',
-      // requiredWithout:
-      //   '当 :values 中有任意一个字段不存在时 ${filedName} 字段是必须的 ',
-      // requiredWithoutAll:
-      //   '当 没有一个 :values 是存在的时候 ${filedName} 字段是必须的 ',
       same: `${filedName} 和 ${params[0]} 的值 必须匹配`,
       size: {
         number: `${filedName} 必须是 ${params[0]} 位`,
@@ -98,9 +152,229 @@ export class ValidatorRule {
     return typeMsg[ruleName];
   }
 
+  /**
+   * 字段是必填的
+   * @param value
+   * @param params
+   */
   @Rule()
-  in(value: any, params: string[]) {
-    console.log(value, params);
-    return true;
+  required(value, params) {
+    CheckParamNotException('required', params);
+    return value === null || value === '' || (isArray(value) && !value.length) ||
+      (isObject(value) && !Object.keys(value).length);
+  }
+
+  /**
+   * 只允许为数组类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  array(value, params) {
+    CheckParamNotException('array', params);
+    return !Array.isArray(value);
+  }
+
+  /**
+   * 只允许为数字类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  number(value, params) {
+    CheckParamNotException('number', params);
+    return !isNumber(value);
+  }
+
+  /**
+   * 必须为boolean
+   * @param value
+   * @param params
+   */
+  @Rule()
+  boolean(value, params) {
+    CheckParamNotException('boolean', params);
+    return !isBoolean(value);
+  }
+
+  /**
+   * 只允许为字符串
+   * @param value
+   * @param params
+   */
+  @Rule()
+  string(value, params) {
+    CheckParamNotException('string', params);
+    return !isString(value);
+  }
+
+  /**
+   * 只允许是数字 可以是字符串数字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  numeric(value, params) {
+    CheckParamNotException('numeric', params);
+    return !(!isNaN(+value) && (isNumber(value) || isString(value)));
+  }
+
+  /**
+   * 验证的字段必须完全是浮点数
+   * @param value
+   * @param params
+   */
+  @Rule()
+  float(value, params) {
+    CheckParamNotException('float', params);
+    return !isFloat(value);
+  }
+
+  /**
+   * 整型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  integer(value, params) {
+    CheckParamNotException('integer', params);
+    return !Number.isInteger(value);
+  }
+
+  /**
+   * safeInteger
+   * @param value
+   * @param params
+   */
+  @Rule()
+  safeInteger(value, params) {
+    CheckParamNotException('safeInteger', params);
+    return !Number.isSafeInteger(value);
+  }
+
+  /**
+   * 只允许汉字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  chs(value, params) {
+    CheckParamNotException('chs', params);
+    return !regExp('chs', value);
+  }
+
+  /**
+   * 只允许汉字、字母
+   * @param value
+   * @param params
+   */
+  @Rule()
+  chsAlpha(value, params) {
+    CheckParamNotException('chsAlpha', params);
+    return !regExp('chsAlpha', value);
+  }
+
+  /**
+   * 验证的字段必须完全是汉字、字母和数字。
+   * @param value
+   * @param params
+   */
+  @Rule()
+  chsAlphaNum(value, params) {
+    CheckParamNotException('chsAlphaNum', params);
+    return !regExp('chsAlphaNum', value);
+  }
+
+  /**
+   * 验证的字段必须是邮箱
+   * @param value
+   * @param params
+   */
+  @Rule()
+  email(value, params) {
+    CheckParamNotException('email', params);
+    return !regExp('email', value);
+  }
+
+  /**
+   * 验证的字段必须是手机号码
+   * @param value
+   * @param params
+   */
+  @Rule()
+  phoneNum(value, params) {
+    CheckParamNotException('phoneNum', params);
+    return !regExp('phoneNum', value);
+  }
+
+  /**
+   * 只允许汉字、字母、数字和下划线_及破折号-
+   * @param value
+   * @param params
+   */
+  @Rule()
+  chsDash(value, params) {
+    CheckParamNotException('chsDash', params);
+    return !regExp('chsDash', value);
+  }
+
+  /**
+   * 验证的字段可能具有字母、数字、破折号（ - ）以及下划线（ _ ）。
+   * @param value
+   * @param params
+   */
+  @Rule()
+  alphaDash(value, params) {
+    CheckParamNotException('alphaDash', params);
+    return !regExp('alphaDash', value);
+  }
+
+  /**
+   * 验证的字段必须完全是字母的字符
+   * @param value
+   * @param params
+   */
+  @Rule()
+  alpha(value, params) {
+    CheckParamNotException('alpha', params);
+    return !regExp('alpha', value);
+  }
+
+  /**
+   * 只包含字母、数字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  alphaNum(value, params) {
+    CheckParamNotException('alphaNum', params);
+    return !regExp('alphaNum', value);
+  }
+
+  /**
+   * 验证的字段必须是电话号码
+   * @param value
+   * @param  params
+   * @returns boolean
+   */
+  @Rule()
+  telNumber(value, params) {
+    CheckParamNotException('telNumber', params);
+    return !regExp('telNumber', value);
+  }
+
+  @Rule()
+  in(value, params: any[]) {
+    return !params.includes(value);
+  }
+
+  @Rule()
+  notIn(value, params: any[]) {
+    return !this.in(value, params);
+  }
+
+  @Rule()
+  max(value: any, params: string[]) {
+    return false;
   }
 }

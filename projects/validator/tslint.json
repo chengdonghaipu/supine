@@ -2,6 +2,7 @@
   "extends": "../../tslint.json",
   "rules": {
     "no-unused-expression": false,
+    "forin": false,
     "directive-selector": [
       true,
       "attribute",
