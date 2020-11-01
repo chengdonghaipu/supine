@@ -1,12 +1,12 @@
 import {DefaultMessage} from './type-message';
 import {Rule} from './rule';
-import {isArray, isBoolean, isFloat, isNumber, isObject, isString} from './typeof';
-import {CheckParamNotException} from './exception';
+import {isArray, isBase64, isBaseStr, isBoolean, isDate, isFloat, isHash, isIP, isNumber, isObject, isString} from './typeof';
+import {CheckParamIncludeException, CheckParamNotException, CheckParamSizeException} from './exception';
 
 function regExp(ruleName: string, value) {
   // tslint:disable-next-line:variable-name
   let _result = false;
-  switch (name) {
+  switch (ruleName) {
     case 'alpha': {
       // 验证的字段必须完全是字母的字符
       _result = /^[a-zA-Z]+$/.test(value);
@@ -83,6 +83,7 @@ export class ValidatorRule {
         array: `${filedName}元素个数 必须在 ${params[0]} 到 ${params[1]} 之间`
       },
       boolean: `${filedName} 必须是 true 或 false`,
+      booleanString: `${filedName} 必须是 'true' 或 'false'`,
       confirmed: `${filedName} 和确认字段 ${params[0]} 不一致`,
       dateFormat: `${filedName} 与给定的格式 ${params[0]} 不符合`,
       different: `${filedName} 必须不同于 ${params[0]}`,
@@ -90,8 +91,11 @@ export class ValidatorRule {
       digitsBetween: `${filedName} 必须在 ${params[0]} 和 ${params[1]} 位之间`,
       email: `${filedName} 必须是一个合法的电子邮件地址`,
       in: `${filedName} 必须是 ${params.join(',')} 其中之一`,
+      contains: `${filedName} 必须包含 ${params[0]}`,
+      notContains: `${filedName} 不能包含 ${params[0]}`,
       integer: `${filedName} 必须是个整数`,
       safeInteger: `${filedName} 必须是safeInteger`,
+      date: `${filedName} 必须是 Date`,
       json: `${filedName} 必须是一个合法的 JSON 字符串`,
       max: {
         number: `${filedName} 最大数字为 ${params[1]}`,
@@ -125,6 +129,13 @@ export class ValidatorRule {
       },
       number: `${filedName} 必须是数字`,
       float: `${filedName} 必须是浮点数`,
+      hash: `${filedName} 必须符合 hash[${params[0]}] 规则`,
+      base32: `${filedName} 必须符合 base32 规则`,
+      base58: `${filedName} 必须符合 base58 规则`,
+      base64: `${filedName} 必须符合 base64 规则`,
+      base64UrlSafe: `${filedName} 必须符合 base64UrlSafe 规则`,
+      ipV4: `${filedName} 必须符合 IPV4 规则`,
+      ipV6: `${filedName} 必须符合 IPV6 规则`,
       chs: `${filedName} 只能是汉字`,
       chsAlpha: `${filedName} 只能是汉字、字母`,
       chsAlphaNum: `${filedName} 只能是汉字、字母和数字`,
@@ -198,6 +209,17 @@ export class ValidatorRule {
   }
 
   /**
+   * 必须为 'true' || 'false'
+   * @param value
+   * @param params
+   */
+  @Rule()
+  booleanString(value, params) {
+    CheckParamNotException('booleanString', params);
+    return !(value === 'true' || value === 'false');
+  }
+
+  /**
    * 只允许为字符串
    * @param value
    * @param params
@@ -217,6 +239,17 @@ export class ValidatorRule {
   numeric(value, params) {
     CheckParamNotException('numeric', params);
     return !(!isNaN(+value) && (isNumber(value) || isString(value)));
+  }
+
+  /**
+   * 必须是 Date类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  date(value, params) {
+    CheckParamNotException('date', params);
+    return !(isDate(value));
   }
 
   /**
@@ -250,6 +283,72 @@ export class ValidatorRule {
   safeInteger(value, params) {
     CheckParamNotException('safeInteger', params);
     return !Number.isSafeInteger(value);
+  }
+
+  /**
+   * 必须符合 base32 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  base32(value, params) {
+    CheckParamNotException('base32', params);
+    return !isBaseStr(value, 32);
+  }
+
+  /**
+   * 必须符合 base58 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  base58(value, params) {
+    CheckParamNotException('base58', params);
+    return !isBaseStr(value, 58);
+  }
+
+  /**
+   * 必须符合 base64 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  base64(value, params) {
+    CheckParamNotException('base64', params);
+    return !isBase64(value, false);
+  }
+
+  /**
+   * 必须符合 base64UrlSafe 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  base64UrlSafe(value, params) {
+    CheckParamNotException('base64UrlSafe', params);
+    return !isBase64(value, true);
+  }
+
+  /**
+   * 必须符合 IPV4 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  ipV4(value, params) {
+    CheckParamNotException('ipV4', params);
+    return !isIP(value, '4');
+  }
+
+  /**
+   * 必须符合 IPV6 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  ipV6(value, params) {
+    CheckParamNotException('ipV6', params);
+    return !isIP(value, '6');
   }
 
   /**
@@ -363,13 +462,55 @@ export class ValidatorRule {
     return !regExp('telNumber', value);
   }
 
+  /**
+   * 包含 某个字符串片段
+   * @param value
+   * @param params
+   */
   @Rule()
-  in(value, params: any[]) {
+  contains(value, params) {
+    CheckParamSizeException('contains', 1, params);
+    if (!isString(value)) {
+      return true;
+    }
+    return !(value.indexOf(params[0]) > -1);
+  }
+
+  /**
+   * 不包含 某个字符串片段
+   * @param value
+   * @param params
+   */
+  @Rule()
+  notContains(value, params) {
+    CheckParamSizeException('notContains', 1, params);
+    if (!isString(value)) {
+      return true;
+    }
+    return !this.contains(value, params);
+  }
+
+  /**
+   * hash 校验
+   * @param value
+   * @param params
+   */
+  @Rule()
+  hash(value, params: unknown[]) {
+    CheckParamSizeException('hash', 1, params);
+    CheckParamIncludeException('hash', [
+      'md5', 'md4', 'sha1', 'sha256', 'sha384', 'sha512', 'ripemd128', 'ripemd160', 'tiger128', 'tiger160', 'tiger192', 'crc32', 'crc32b'
+    ], params);
+    return !isHash(value, params[0]);
+  }
+
+  @Rule()
+  in(value, params: unknown[]) {
     return !params.includes(value);
   }
 
   @Rule()
-  notIn(value, params: any[]) {
+  notIn(value, params: unknown[]) {
     return !this.in(value, params);
   }
 
