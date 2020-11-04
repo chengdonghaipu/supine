@@ -2,6 +2,7 @@ import {DefaultMessage} from './type-message';
 import {Rule} from './rule';
 import {isArray, isBase64, isBaseStr, isBoolean, isDate, isFloat, isHash, isIP, isNumber, isObject, isString} from './typeof';
 import {CheckParamIncludeException, CheckParamNotException, CheckParamSizeException} from './exception';
+import {TargetMap} from './type';
 
 function regExp(ruleName: string, value) {
   // tslint:disable-next-line:variable-name
@@ -515,7 +516,25 @@ export class ValidatorRule {
   }
 
   @Rule()
-  max(value: any, params: string[]) {
-    return false;
+  max(value: unknown, params: string[]) {
+    CheckParamSizeException('max', 1, params);
+    const max = +params[0];
+    return !(isNumber(value) && value <= max);
+  }
+
+  @Rule()
+  min(value: unknown, params: string[]) {
+    CheckParamSizeException('min', 1, params);
+    const min = +params[0];
+    return !(isNumber(value) && value <= min);
+  }
+
+  @Rule()
+  same(value: unknown, params: string[], targetMap: TargetMap) {
+    CheckParamSizeException('same', 1, params);
+    const other = params[0];
+
+    const otherValue = targetMap.get(other);
+    return !(value === otherValue);
   }
 }
