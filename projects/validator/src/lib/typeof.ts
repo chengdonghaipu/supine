@@ -177,3 +177,8 @@ export function isHash(str, algorithm) {
   const hash = new RegExp('^[a-fA-F0-9]{'.concat(lengths[algorithm], '}$'));
   return hash.test(str);
 }
+
+export function toDate(date) {
+  date = isDate(date) ? +date : Date.parse(date);
+  return !isNaN(date) ? new Date(date) : null;
+}

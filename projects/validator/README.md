@@ -1,37 +1,101 @@
 # 验证器
-
+- 安装
+```shell script
+# npm
+npm install @supine/validator
+# yarn
+yarn add @supine/validator
+```
 - 简单使用
 ```js
-import {JdValidator} from '@supine/validator';
+import {ZlValidator} from '@supine/validator';
 
-const v = new JdValidator();
-    // 验证规则
-    const rules = {
-      a: ['required', 'in:12,13'] // 或者 'required&in:12,13'
-    };
+const validator = new ZlValidator();
     // 被验证的数据
-    const data = {a: 'kl'};
-    v.make(rules, data);
-    if (v.fails()) {
+    const data = {id: '100'};
+    validator
+      .setRule({id: 'in:100,2,3'}) // 设置校验规则
+      .setTarget(data) // 设置被校验的数据
+      .make();
+    // 判断验证是否通过
+    if (validator.fails()) {
       // 获取错误信息
-      console.log(v.getMessages()); // a 必须在 12,13 范围内
+      console.log(v.getMessages());
     }
 ```
+- 支持的规则书写形式
+  - 字符串数组
+  ```js
+    // 相当于max||min 满足其中之一即可
+    validator.setRule({id: ['max:30', 'min:10']})
+  ```
+  - 字符串
+  ```js
+    // &意味着 两个条件必须同时满足
+    validator.setRule({id: 'max:30&in:20,10'})
+  ```
+  - 函数
+  ```js
+    function max(value, targetMap: TargetMap): boolean {/**/}
+    validator.setRule({id: max})
+  ```
+  - 函数数组
+  ```js
+    function max(value, targetMap: TargetMap): boolean {/**/}
+    function min(value, targetMap: TargetMap): boolean {/**/}
+    // 相当于max||min 满足其中之一即可
+    validator.setRule({id: [max, min]})
+  ```
+  - 对象
+  ```js
+    function max(value, targetMap: TargetMap): boolean {/**/}
+    // 两个条件必须同时满足
+    // in和max均为规则名称 max使用了自定义校验 将不会使用内置max校验规则
+    // [10, 14, 15, 16] 为规则参数
+    validator.setRule({id: {in: [10, 14, 15, 16], max}})
+  ```
+  - 对象数组
+  ```js
+    function max(value, targetMap: TargetMap): boolean {/**/}
+    // 数组组的对象中的所有规则必须同时满足
+    // in和max均为规则名称 max使用了自定义校验 将不会使用内置max校验规则
+    // [10, 14, 15, 16] 为规则参数
+    validator.setRule({id: [{in: [10, 14, 15, 16], max}]})
+  ```
 - 批量验证
 
 ```js
-import {JdValidator} from '@supine/dy-form';
+import {ZlValidator} from '@supine/validator';
 
-const v = new JdValidator();
-    // 验证规则
-    const rules = {
-      a: ['required', 'in:12'] // 或者 'required&in:12'
-    };
+const validator = new ZlValidator();
     // 被验证的数据
-    const data = {a: '121'};
-    // 批量验证  默认为false
-    v.batch(true).make(rules, data);
-    if (v.fails()) {
+    const data = {id: '100'};
+    validator
+      .batch(true) // 将会对所有的规则都会进行校验 即便已经知道验证结果了
+      .setRule({id: 'in:100,2,3&max:20&min:10'}) // 设置校验规则
+      .setTarget(data) // 设置被校验的数据
+      .make();
+    // 判断验证是否通过
+    if (validator.fails()) {
+      // 获取错误信息
+      console.log(v.getMessages());
+    }
+```
+
+- 嵌套验证
+
+```js
+import {ZlValidator} from '@supine/validator';
+
+const validator = new ZlValidator();
+    // 被验证的数据
+    const data = {id: '100', child: {id: '300'}};
+    validator
+      .setRule({'child.id': 'in:100,2,3'}) // 设置校验规则
+      .setTarget(data) // 设置被校验的数据
+      .make();
+    // 判断验证是否通过
+    if (validator.fails()) {
       // 获取错误信息
       console.log(v.getMessages());
     }
@@ -39,390 +103,145 @@ const v = new JdValidator();
 - 自定义验证信息
 
 ```js
-import {JdValidator} from '@supine/dy-form';
+import {ZlValidator} from '@supine/validator';
 
-const v = new JdValidator();
-    // 验证规则
-    const rules = {
-      a: ['required', 'in:12, 13'] // 或者 'required&in:12,13'
-    };
+const validator = new ZlValidator();
     // 被验证的数据
-    const data = {a: '121'};
-    // 批量验证  默认为false
-    v.batch(true).make(rules, data,
-     // 自定义验证规则信息提示
-     {
-      'a.required': '字段a是必填的',
-      'a.in': '字段a只能是12,13中的一个值'
-    });
-    if (v.fails()) {
+    const data = {id: '100', child: {id: '300'}};
+    validator
+      .setRule({'child.id': 'in:100,2,3'}) // 设置校验规则
+      .setTarget(data) // 设置被校验的数据
+      .setMessage({'id.in': 'id 必须为100,2,3其中之一'})
+      .make();
+    // 判断验证是否通过
+    if (validator.fails()) {
       // 获取错误信息
       console.log(v.getMessages());
     }
 ```
-- 嵌套验证
 
-```js
-import {JdValidator} from '@supine/dy-form';
+- 内置校验规则
 
-const v = new JdValidator();
-    // 验证规则
-    const rules = {
-      'a.b': ['required', 'in:12, 13'] // 或者 'required&in:12,13'
-    };
-    // 被验证的数据
-    const data = {a: {
-      b: '123'
-    }};
-    // 批量验证  默认为false
-    v.batch(true).make(rules, data,
-     // 自定义验证规则
-     {
-      'a.b.required': '字段a.b是必填的',
-      'a.b.in': '字段a.b只能是12,13中的一个值'
-    });
-    if (v.fails()) {
-      // 获取错误信息
-      console.log(v.getMessages());
-    }
+|  规则名称   | 参数  | 描述 |
+|  ----  | ----  | ---- |
+| **required**  | 无 | 字段是必填的 |
+| **array**  | 无 | 只允许为数组类型 |
+| **number**  | 无 | 只允许为数字类型 |
+| **boolean**  | 无 | 必须为boolean类型 |
+| **booleanString**  | 无 | 必须为 'true' || 'false' |
+| **string**  | 无 | 只允许为字符串 |
+| **numeric**  | 无 | 只允许是数字 可以是字符串数字 |
+| **date**  | 无 | 必须是 Date类型 |
+| **float**  | 无 | 验证的字段必须完全是浮点数 |
+| **integer**  | 无 | 整型 |
+| **safeInteger**  | 无 | safeInteger |
+| **base32**  | 无 | 必须符合 base32 规则 |
+| **base58**  | 无 | 必须符合 base58 规则 |
+| **base64**  | 无 | 必须符合 base64 规则 |
+| **base64UrlSafe**  | 无 | 必须符合 base64UrlSafe 规则 |
+| **ipV4**  | 无 | 必须符合 IPV4 规则 |
+| **ipV6**  | 无 | 必须符合 ipV6 规则 |
+| **chs**  | 无 | 只允许汉字 |
+| **chsAlpha**  | 无 | 只允许汉字、字母 |
+| **chsAlphaNum**  | 无 | 验证的字段必须完全是汉字、字母和数字。 |
+| **email**  | 无 | 验证的字段必须是邮箱 |
+| **phoneNum**  | 无 | 验证的字段必须是手机号码 |
+| **chsDash**  | 无 | 只允许汉字、字母、数字和下划线_及破折号- |
+| **alphaDash**  | 无 | 验证的字段可能具有字母、数字、破折号- 以及下划线 _  |
+| **alpha**  | 无 | 验证的字段必须完全是字母的字符 |
+| **alphaNum**  | 无 | 只包含字母、数字 |
+| **telNumber**  | 无 | 验证的字段必须是电话号码 |
+| **ascii**  | 无 | 验证是否符合ascii |
+| **fullWidth**  | 无 | 检查字符串是否包含全角字符 |
+| **halfWidth**  | 无 | 检查字符串是否包含半角字符 |
+| **hexadecimal**  | 无 | 检查字符串是否为十六进制数字 |
+| **hexColor**  | 无 | 检查字符串是否为十六进制颜色 |
+| **hsl**  | 无 | 检查字符串是否为HSL |
+| **contains**  | 一个参数['contains:hello'] | 包含 hello字符串片段 |
+| **notContains**  | 一个参数['notContains:hello'] | 不包含 hello字符串片段 |
+| **hash**  | 一个参数['hash:md5'] 支持的hash有['md5', 'md4', 'sha1', 'sha256', 'sha384', 'sha512', 'ripemd128','ripemd160', 'tiger128', 'tiger160', 'tiger192', 'crc32', 'crc32b'] | 验证符合md5格式hash |
+| **in**  | 多个参数['in:10,15,16,17'] | 验证值要在10,15,16,17之中 |
+| **notIn**  | 多个参数['in:10,15,16,17'] | 验证值不能在10,15,16,17之中 |
+| **max**  | 一个参数['max:10'] | 验证一个数字最大只能为10 |
+| **min**  | 一个参数['min:10'] | 验证一个数字最小只能为10 |
+| **same**  | 一个参数['same:other'] | 被验证字段对应的值需要跟other字段对应的值相同 |
+| **equal**  | 一个参数['equal:12'] | 被验证字段对应的值需要等于12 |
+| **after**  | 一个参数['after:2020-10-10'] | 被验证字段对应的值必须是 2020-10-10 之后的一个日期 |
+| **afterOrEqual**  | 一个参数['afterOrEqual:2020-10-10'] | 被验证字段对应的值必须是 2020-10-10 之后或者相同的一个日期 |
+| **before**  | 一个参数['before:2020-10-10'] | 被验证字段对应的值必须是 2020-10-10 之前的一个日期 |
+| **beforeOrEqual**  | 一个参数['beforeOrEqual:2020-10-10'] | 被验证字段对应的值必须是 2020-10-10 之前或者相同的一个日期 |
+
+- 单独使用内置规则
+
+```typescript
+import {ValidatorRule} from '@supine/validator';
+
+ValidatorRule.base64('hfk')
 ```
-- Validator 根验证器
-  
-  Validator没有任何内置的验证规则  可以基于Validator来拓展自定义规则
-  
-  JdValidator就是基于Validator拓展而来的
-  
-  - API
-    ```
-    // 批量验证
-    batch(isBatch: boolean = false): this
-    // 验证
-    make(rules?: { [key: string]: any },
-                data?: { [key: string]: any },
-                messages?: { [key: string]: any }): boolean
-                
-    // 设置规则(会重置规则)
-    setRules(rules): this
-    // 增加规则(不会重置规则)
-    addRules(rules): this
-    // 判断规则是否已经存在
-    hasRule(ruleName: string): boolean
-    // 清空所有错误信息
-    clearMsg(): this
-    // 获取错误信息
-    getMessages(): { [key: string]: string[] }
-    // 判断是否验证通过 false为验证通过 true为失败
-    fails(): boolean
-    // 新增错误信息
-    addMsg(key: string, _msg: string)
-    // 添加验证后回调。
-    registerAfterF(callback: (that: this) => void)
-    ```
-- 添加验证后回调钩子
-  ```js
-     const v = new JdValidator();
-     
-         v.registerAfterF(that => {
-           // 一些操作...  比如在一条件下添加错误信息  或者清除错误信息
-         });
-  ```
-- 自定义验证规则
 
- ```js
-     import {AfterF, JdValidator, Registered, RuleF, TypeMsg, Validator, ValidatorF} from '@supine/dy-form';
-     import {ValidatorFs} from './validator-fs';
-     
-     @Registered({
-       // 如果希望使用内置校验规则 可以将内置规则也放到这 ValidatorF
-       declarations: [ValidatorFs, ValidatorF] // 自定义验证规则(批量)
-     })
-     // 如果希望使用内置规则 可以 继承 JdValidator 或者在 @Registered 的 declarations 里添加 ValidatorF
-     // 如果不希望使用内置规则 那么 继承 Validator(根验证器)
-     export class Validators extends Validator {
-       // 也可以在这里添加验证规则 验证后的回调钩子 默认的错误信息提示
-       // 验证规则和默认的错误信息使用跟在ValidatorFs中的使用是一模一样的
-       // 验证规则默认提示信息
-       // 不推荐使用
-       @TypeMsg()
-       typeMsg = {
-         accepted: ':attribute 必须是yes、on或者1或者true',  // :attribute  是占位符  将会用被验证的属性名替代
-       };
-     
-       @RuleF()
-       hello(value: any, rule: string[], dataMap: Map<string, any>): string {
-         if (!rule[0]) { // 获取参数
-           // 如果不存在参数  那么说明规则使用错误  可以报错提示!
-         }
-         // 获取参数字段的值
-         const otherFieldValue = dataMap.get(rule[0]);
-         return otherFieldValue === 'hello' ? '' : '错误原因...';
-       }
-     }
-  ```
-   - ValidatorFs.ts 代码
-   ```js
-     //  ValidatorFs.ts 代码
-     import {RuleF, TypeMsg} from '@supine/dy-form';
-     
-     export class ValidatorFs {
-       // 验证规则默认提示信息
-       // 不推荐使用
-       @TypeMsg()
-       typeMsg = {
-         accepted: ':attribute 必须是yes、on或者1或者true',  // :attribute  是占位符  将会用被验证的属性名替代
-       };
-     
-       /**
-        * @param value 被验证的数据 不用担心是怎么传过来的 因为这个是验证器做的事
-        * @param {string[]} rule 验证的规则 不用担心是怎么传过来的 因为这个是验证器做的事
-        * @param {Map<string, any>} dataMap 解析后数据 可以根据属性名获取对应的数据
-        * @returns {string} 返回值可以为string 或者 boolean 当为 string 时
-        * 自动将返回值作为自定义错误信息提示 如果验证失败请返回失败原因(字符串) 如果验证通过 请返回空字符''
-        * 当为 boolean 时 为true说明验证失败 为false说明验证通过
-        * 方法名hello 为验证规则的名称  后面可以跟参数 比如 hello:otherField
-        * 装饰器 @RuleF() 告诉验证 该方法为验证规则  如果没有声明该装饰器的方法  将不会拓展该规则
-        * 例子: 实现hello规则 当otherField的值为hello 该规则才通过 否则失败
-        */
-       @RuleF()
-       hello(value: any, rule: string[], dataMap: Map<string, any>): string {
-         if (!rule[0]) { // 获取参数
-           // 如果不存在参数  那么说明规则使用错误  可以报错提示!
-         }
-         // 获取参数字段的值
-         const otherFieldValue = dataMap.get(rule[0]);
-         return otherFieldValue === 'hello' ? '' : '错误原因...';
-       }
-     }
-   ```
-- JdValidator 内置的验证规则
+# 自定义验证规则
+- 自定义规则
+```typescript
+import {ZlValidator, DefaultMessage, Rule} from '@supine/validator';
+export class XXValidatorRule {
+  // 验证规则默认提示信息
+  @DefaultMessage()
+  defaultMessage(filedName: string, ruleName: string, params, value): string {
+    if (!params) {
+      params = [];
+    }
+    const typeMsg = {
+      array: `${filedName} 必须是数组`,
+      required: `${filedName} 字段是必须的`,
+    };
 
-    - required ()
-      ```
-      参数: 无
-      使用: required
-      ```
-    - requiredWith (只要在指定的其他字段中有任意一个字段存在时，被验证的字段就必须存在并且不能为空)
-      ```
-      参数: filed1,filed2...
-      使用: requiredWith: filed1,filed2...
-      ```
-    - requiredWithAll (只有当所有的其他指定字段全部存在时，被验证的字段才必须存在并且不能为空)
-      ```
-      参数: filed1,filed2...
-      使用: requiredWithAll: filed1,filed2...
-      ```
-    - requiredWithout (只要在其他指定的字段中有任意一个字段不存在，被验证的字段就必须存在且不为空)
-      ```
-      参数: filed1,filed2...
-      使用: requiredWithout: filed1,filed2...
-      ```
-    - requiredWithoutAll (只有当所有的其他指定的字段都不存在时，被验证的字段才必须存在且不为空)
-      ```
-      参数: filed1,filed2...
-      使用: requiredWithoutAll: filed1,filed2...
-      ```
-    - requiredIf (如果指定的其它字段（ filed1 ）等于任何一个 value 时，被验证的字段必须存在且不为空)
-      ```
-      参数: filed1,value1...
-      使用: requiredIf: filed1,value1...
-      ```
-    - requiredUnless (如果指定的其它字段（ filed ）等于任何一个 value 时，被验证的字段不必存在)
-      ```
-      参数: filed1,value1...
-      使用: requiredUnless: filed1,value1...
-      ```
-    - filled (验证的字段在存在时不能为空)
-      ```
-      参数: 无
-      使用: filled
-      ```
-    - accepted (验证的字段必须为 yes、 on、 1、或 true。这在确认「服务条款」是否同意时相当有用)
-      ```
-      参数: 无
-      使用: accepted
-      ```
-    - present (验证的字段必须存在于输入数据中，但可以为空)
-      ```
-      参数: 无
-      使用: present
-      ```
-    - confirmed (验证的字段必须和 filed 的字段值一致。例如，如果要验证的字段是 password，输入中必须存在匹配的 filed 字段)
-      ```
-      参数: filed
-      使用: confirmed: filed
-      ```
-    - same (给定字段必须与验证的字段匹配)
-      ```
-      参数: filed
-      使用: same: filed
-      ```
-    - different (验证的字段值必须与字段 (field) 的值不同)
-      ```
-      参数: filed
-      使用: different: filed
-      ```
-    - before (验证的字段必须是给定日期之前的值)
-      ```
-      参数: filed
-      使用: before: filed
-      ```
-    - after (验证的字段必须是给定日期之后的值)
-      ```
-      参数: filed
-      使用: after: filed
-      ```
-    - beforeOrEqual (验证的字段必须是给定日期之前或等于之前的值)
-      ```
-      参数: filed
-      使用: beforeOrEqual: filed
-      ```
-    - afterOrEqual (验证的字段必须是给定日期之后或等于之后的值)
-      ```
-      参数: filed
-      使用: afterOrEqual: filed
-      ```
-    - dateEqual (验证的字段必须等于给定的日期)
-      ```
-      参数: filed
-      使用: dateEqual: filed
-      ```
-    - dateFormat (验证的字段必须与给定的格式相匹配)
-      ```
-      参数: filed
-      使用: dateFormat: filed
-      ```
-    - gt (验证的字段的值大于other字段值)
-      ```
-      参数: filed
-      使用: gt: filed
-      ```
-    - lt (验证的字段的值小于other字段值)
-      ```
-      参数: filed
-      使用: lt: filed
-      ```
-    - gte (验证的字段的值大于等于other字段值)
-      ```
-      参数: value
-      使用: gte: value
-      ```
-    - lte (验证的字段的值小于等于other字段值)
-      ```
-      参数: value
-      使用: lte: value
-      ```
-    - min (验证中的字段必须具有最小值。字符串、数字、数组的计算方式都用 size 方法进行评估)
-      ```
-      参数: value
-      使用: min: value
-      ```
-    - max (验证中的字段必须小于或等于 value。字符串、数字、数组的计算方式都用 size 方法进行评估)
-      ```
-      参数: value
-      使用: max: value
-      ```
-    - minLength (验证中的字段必须具有最小长度。字符串、数字(会转换为字符串计算)、数组的计算方式都用 size 方法进行评估)
-      ```
-      参数: value
-      使用: maxLength: value
-      ```
-    - maxLength (验证中的字段必须满足最大长度 字符串、数字(会转换为字符串计算)、数组的计算方式都用 size 方法进行评估)
-      ```
-      参数: value
-      使用: maxLength: value
-      ```
-    - between (验证的字段的大小必须在给定的 min 和 max 之间。字符串、数字、数组的计算方式都用 size 方法进行评估)
-      ```
-      参数: min,max
-      使用: between: min,max
-      ```
-    - size (验证的字段必须具有与给定值匹配的大小。对于字符串来说，value 对应于字符数。对于数字来说，value 对应于给定的整数值 对于数组来说， size 对应的是数组的 count 值)
-      ```
-      参数: value
-      使用: size: value
-      ```
-    - numeric (数字)
-      ```
-      参数: 无
-      使用: numeric
-      ```
-    - integer (整型)
-      ```
-      参数: 无
-      使用: integer
-      ```
-    - array (数组)
-      ```
-      参数: 无
-      使用: array
-      ```
-    - in (验证的字段必须包含在给定的值列表中)
-      ```
-      参数: value1,value2...
-      使用: in: value1,value2...
-      ```
-    - notIn (验证的字段不能包含在给定的值列表中)
-      ```
-      参数: value1,value2...
-      使用: notIn: value1,value2...
-      ```
-    - alpha (验证的字段必须完全是字母的字符)
-      ```
-      参数: 无
-      使用: alpha
-      ```
-    - alphaDash (验证的字段可能具有字母、数字、破折号(-) 以及下划线(_)
-      ```
-      参数: 无
-      使用: alphaDash
-      ```
-    - alphaNum (只包含字母、数字)
-      ```
-      参数: 无
-      使用: alphaNum
-      ```
-    - chsDash (只允许汉字、字母、数字和下划线_及破折号-)
-      ```
-      参数: 无
-      使用: chsDash
-      ```
-    - chs (只允许汉字)
-      ```
-      参数: 无
-      使用: chs
-      ```
-    - chsAlpha (只允许汉字、字母)
-      ```
-      参数: 无
-      使用: chsAlpha
-      ```
-    - chsAlphaNum (验证的字段必须完全是汉字、字母和数字)
-      ```
-      参数: 无
-      使用: chsAlphaNum
-      ```
-    - email (验证的字段必须是邮箱)
-      ```
-      参数: 无
-      使用: email
-      ```
-    - float (验证的字段必须完全是浮点数)
-      ```
-      参数: 无
-      使用: float
-      ```
-    - phoneNum (验证的字段必须是手机号码)
-      ```
-      参数: 无
-      使用: phoneNum
-      ```
-    - telNumber (验证的字段必须是电话号码)
-      ```
-      参数: 无
-      使用: telNumber
-      ```
-    - regex (验证的字段必须与给定的正则表达式匹配 注意： 当使用 regex 规则时，你必须使用数组，而不是使用 | 分隔符，特别是如果正则表达式包含 | 字符)
-      ```
-      参数: reg
-      使用: requiredWith: reg
-      ```
+    return typeMsg[ruleName];
+  }
+
+  /**
+  * @param value 被验证的数据 不用担心是怎么传过来的 因为这个是验证器做的事
+  * @param {string[]} rule 验证的规则 不用担心是怎么传过来的 因为这个是验证器做的事
+  * @param {Map<string, any>} dataMap 解析后数据 可以根据属性名获取对应的数据
+  * @returns {string} 返回值可以为string 或者 boolean 当为 string 时
+  * 自动将返回值作为自定义错误信息提示 如果验证失败请返回失败原因(字符串) 如果验证通过 请返回空字符''
+  * 当为 boolean 时 为true说明验证失败 为false说明验证通过
+  * 方法名hello 为验证规则的名称  后面可以跟参数 比如 hello:otherField
+  * 装饰器 @Rule() 告诉验证 该方法为验证规则  如果没有声明该装饰器的方法  将不会拓展该规则
+  * 例子: 实现hello规则 当otherField的值为hello 该规则才通过 否则失败
+  */
+  @Rule()
+  required(value, params, targetMap: TargetMap) {
+    CheckParamNotException('required', params);
+    return value === null || value === '' || (isArray(value) && !value.length) ||
+      (isObject(value) && !Object.keys(value).length);
+  }
+
+  /**
+   * 只允许为数组类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  array(value, params, targetMap: TargetMap) {
+    CheckParamNotException('array', params);
+    return !Array.isArray(value);
+  }
+}
+```
+
+- 注册自定义规则
+
+```typescript
+import {ZlValidator, ValidatorRule} from '@supine/validator';
+import {XXValidatorRule} from './XXValidatorRule'
+/**
+ * ValidatorRule 内置的验证规则  如有需要可以加进来
+ * XXValidatorRule 就是上面自定义的 规则
+ */
+@Validator({
+  rules: [ValidatorRule, XXValidatorRule]
+})
+class XXValidator extends ZlValidator {
+  
+}
+```

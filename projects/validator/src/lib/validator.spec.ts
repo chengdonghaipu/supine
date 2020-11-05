@@ -1,5 +1,5 @@
 import {async} from '@angular/core/testing';
-import {ZlValidator} from './validator';
+import {Validator, ZlValidator} from './validator';
 
 const data = {
   id: 100,

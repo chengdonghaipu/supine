@@ -1,6 +1,6 @@
 import {DefaultMessage} from './type-message';
 import {Rule} from './rule';
-import {isArray, isBase64, isBaseStr, isBoolean, isDate, isFloat, isHash, isIP, isNumber, isObject, isString} from './typeof';
+import {isArray, isBase64, isBaseStr, isBoolean, isDate, isFloat, isHash, isIP, isNumber, isObject, isString, toDate} from './typeof';
 import {CheckParamIncludeException, CheckParamNotException, CheckParamSizeException} from './exception';
 import {TargetMap} from './type';
 
@@ -43,9 +43,42 @@ function regExp(ruleName: string, value) {
       _result = /^[a-zA-Z0-9]+$/.test(value);
       break;
     }
+    case 'fullWidth': {
+      // 检查字符串是否包含全角字符
+      _result = /[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]/.test(value);
+      break;
+    }
+    case 'halfWidth': {
+      // 检查字符串是否包含半角字符
+      _result = /[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]/.test(value);
+      break;
+    }
     case 'email': {
       // 验证的字段必须是邮箱。
       _result = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(value);
+      break;
+    }
+    case 'hexadecimal': {
+      // 检查字符串是否为十六进制数字。
+      _result = /^(0x|0h)?[0-9A-F]+$/i.test(value);
+      break;
+    }
+    case 'hexColor': {
+      // 检查字符串是否为十六进制颜色。
+      _result = /^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$/i.test(value);
+      break;
+    }
+    case 'HSL': {
+      const hslcomma = /^(hsl)a?\(\s*((\+|\-)?([0-9]+(\.[0-9]+)?(e(\+|\-)?[0-9]+)?|\.[0-9]+(e(\+|\-)?[0-9]+)?))(deg|grad|rad|turn|\s*)(\s*,\s*(\+|\-)?([0-9]+(\.[0-9]+)?(e(\+|\-)?[0-9]+)?|\.[0-9]+(e(\+|\-)?[0-9]+)?)%){2}\s*(,\s*((\+|\-)?([0-9]+(\.[0-9]+)?(e(\+|\-)?[0-9]+)?|\.[0-9]+(e(\+|\-)?[0-9]+)?)%?)\s*)?\)$/i;
+      const hslspace = /^(hsl)a?\(\s*((\+|\-)?([0-9]+(\.[0-9]+)?(e(\+|\-)?[0-9]+)?|\.[0-9]+(e(\+|\-)?[0-9]+)?))(deg|grad|rad|turn|\s)(\s*(\+|\-)?([0-9]+(\.[0-9]+)?(e(\+|\-)?[0-9]+)?|\.[0-9]+(e(\+|\-)?[0-9]+)?)%){2}\s*(\/\s*((\+|\-)?([0-9]+(\.[0-9]+)?(e(\+|\-)?[0-9]+)?|\.[0-9]+(e(\+|\-)?[0-9]+)?)%?)\s*)?\)$/i;
+
+      // 检查字符串是否为HSL。
+      _result = hslcomma.test(value) || hslspace.test(value);
+      break;
+    }
+    case 'ascii': {
+      // 验证的字段必须是邮箱。
+      _result = /^[\x00-\x7F]+$/.test(value);
       break;
     }
     case 'phoneNum': {
@@ -63,6 +96,504 @@ function regExp(ruleName: string, value) {
 }
 
 export class ValidatorRule {
+  /**
+   * 字段是必填的
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static required(value, params?) {
+    CheckParamNotException('required', params);
+    return value === null || value === '' || (isArray(value) && !value.length) ||
+      (isObject(value) && !Object.keys(value).length);
+  }
+
+  /**
+   * 只允许为数组类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static array(value, params?) {
+    CheckParamNotException('array', params);
+    return !Array.isArray(value);
+  }
+
+  /**
+   * 只允许为数字类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static number(value, params?) {
+    CheckParamNotException('number', params);
+    return !isNumber(value);
+  }
+
+  /**
+   * 必须为boolean
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static boolean(value, params?) {
+    CheckParamNotException('boolean', params);
+    return !isBoolean(value);
+  }
+
+  /**
+   * 必须为 'true' || 'false'
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static booleanString(value, params?) {
+    CheckParamNotException('booleanString', params);
+    return !(value === 'true' || value === 'false');
+  }
+
+  /**
+   * 只允许为字符串
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static string(value, params?) {
+    CheckParamNotException('string', params);
+    return !isString(value);
+  }
+
+  /**
+   * 只允许是数字 可以是字符串数字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static numeric(value, params?) {
+    CheckParamNotException('numeric', params);
+    return !(!isNaN(+value) && (isNumber(value) || isString(value)));
+  }
+
+  /**
+   * 必须是 Date类型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static date(value, params?) {
+    CheckParamNotException('date', params);
+    return !(isDate(value));
+  }
+
+  /**
+   * 验证的字段必须完全是浮点数
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static float(value, params?) {
+    CheckParamNotException('float', params);
+    return !isFloat(value);
+  }
+
+  /**
+   * 整型
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static integer(value, params?) {
+    CheckParamNotException('integer', params);
+    return !Number.isInteger(value);
+  }
+
+  /**
+   * safeInteger
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static safeInteger(value, params?) {
+    CheckParamNotException('safeInteger', params);
+    return !Number.isSafeInteger(value);
+  }
+
+  /**
+   * 必须符合 base32 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static base32(value, params?) {
+    CheckParamNotException('base32', params);
+    return !isBaseStr(value, 32);
+  }
+
+  /**
+   * 必须符合 base58 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static base58(value, params?) {
+    CheckParamNotException('base58', params);
+    return !isBaseStr(value, 58);
+  }
+
+  /**
+   * 必须符合 base64 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static base64(value, params?) {
+    CheckParamNotException('base64', params);
+    return !isBase64(value, false);
+  }
+
+  /**
+   * 必须符合 base64UrlSafe 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static base64UrlSafe(value, params?) {
+    CheckParamNotException('base64UrlSafe', params);
+    return !isBase64(value, true);
+  }
+
+  /**
+   * 必须符合 IPV4 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static ipV4(value, params?) {
+    CheckParamNotException('ipV4', params);
+    return !isIP(value, '4');
+  }
+
+  /**
+   * 必须符合 IPV6 规则
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static ipV6(value, params?) {
+    CheckParamNotException('ipV6', params);
+    return !isIP(value, '6');
+  }
+
+  /**
+   * 只允许汉字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static chs(value, params?) {
+    CheckParamNotException('chs', params);
+    return !regExp('chs', value);
+  }
+
+  /**
+   * 只允许汉字、字母
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static chsAlpha(value, params?) {
+    CheckParamNotException('chsAlpha', params);
+    return !regExp('chsAlpha', value);
+  }
+
+  /**
+   * 验证的字段必须完全是汉字、字母和数字。
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static chsAlphaNum(value, params?) {
+    CheckParamNotException('chsAlphaNum', params);
+    return !regExp('chsAlphaNum', value);
+  }
+
+  /**
+   * 验证的字段必须是邮箱
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static email(value, params?) {
+    CheckParamNotException('email', params);
+    return !regExp('email', value);
+  }
+
+  /**
+   * 验证的字段必须是手机号码
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static phoneNum(value, params?) {
+    CheckParamNotException('phoneNum', params);
+    return !regExp('phoneNum', value);
+  }
+
+  /**
+   * 只允许汉字、字母、数字和下划线_及破折号-
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static chsDash(value, params?) {
+    CheckParamNotException('chsDash', params);
+    return !regExp('chsDash', value);
+  }
+
+  /**
+   * 验证的字段可能具有字母、数字、破折号（ - ）以及下划线（ _ ）。
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static alphaDash(value, params?) {
+    CheckParamNotException('alphaDash', params);
+    return !regExp('alphaDash', value);
+  }
+
+  /**
+   * 验证的字段必须完全是字母的字符
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static alpha(value, params?) {
+    CheckParamNotException('alpha', params);
+    return !regExp('alpha', value);
+  }
+
+  /**
+   * 只包含字母、数字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static alphaNum(value, params?) {
+    CheckParamNotException('alphaNum', params);
+    return !regExp('alphaNum', value);
+  }
+
+  /**
+   * 验证的字段必须是电话号码
+   * @param value
+   * @param  params
+   * @returns boolean
+   */
+  @Rule()
+  static telNumber(value, params?) {
+    CheckParamNotException('telNumber', params);
+    return !regExp('telNumber', value);
+  }
+
+  /**
+   * 验证是否符合ascii
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static ascii(value, params?) {
+    CheckParamNotException('ascii', params);
+
+    return !regExp('ascii', value);
+  }
+
+  /**
+   * 检查字符串是否包含全角字符
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static fullWidth(value, params?) {
+    CheckParamNotException('fullWidth', params);
+
+    return !regExp('fullWidth', value);
+  }
+
+  /**
+   * 检查字符串是否包含半角字符
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static halfWidth(value, params?) {
+    CheckParamNotException('halfWidth', params);
+
+    return !regExp('halfWidth', value);
+  }
+
+  /**
+   * 检查字符串是否为十六进制数字
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static hexadecimal(value, params?) {
+    CheckParamNotException('hexadecimal', params);
+
+    return !regExp('hexadecimal', value);
+  }
+
+  /**
+   * 检查字符串是否为十六进制颜色。
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static hexColor(value, params?) {
+    CheckParamNotException('hexColor', params);
+
+    return !regExp('hexColor', value);
+  }
+
+  /**
+   * 检查字符串是否为HSL
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static hsl(value, params?) {
+    CheckParamNotException('hsl', params);
+
+    return !regExp('hsl', value);
+  }
+
+  /**
+   * 包含 某个字符串片段
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static contains(value, params: [string]) {
+    CheckParamSizeException('contains', 1, params);
+    if (!isString(value)) {
+      return true;
+    }
+    return !(value.indexOf(params[0]) > -1);
+  }
+
+  /**
+   * 不包含 某个字符串片段
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static notContains(value, params: [string]) {
+    CheckParamSizeException('notContains', 1, params);
+    if (!isString(value)) {
+      return true;
+    }
+    return !ValidatorRule.contains(value, params);
+  }
+
+  /**
+   * hash 校验
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static hash(value, params: [string]) {
+    CheckParamSizeException('hash', 1, params);
+    CheckParamIncludeException('hash', [
+      'md5', 'md4', 'sha1', 'sha256', 'sha384', 'sha512', 'ripemd128', 'ripemd160', 'tiger128', 'tiger160', 'tiger192', 'crc32', 'crc32b'
+    ], params);
+    return !isHash(value, params[0]);
+  }
+
+  @Rule()
+  static in(value, params: unknown[]) {
+    return !params.includes(value);
+  }
+
+  @Rule()
+  static notIn(value, params: unknown[]) {
+    return !ValidatorRule.in(value, params);
+  }
+
+  @Rule()
+  static max(value: unknown, params: [string | number]) {
+    CheckParamSizeException('max', 1, params);
+    const max = +params[0];
+    return !(isNumber(value) && value <= max);
+  }
+
+  @Rule()
+  static min(value: unknown, params: [string | number]) {
+    CheckParamSizeException('min', 1, params);
+    const min = +params[0];
+    return !(isNumber(value) && value <= min);
+  }
+
+  @Rule()
+  static same(value: unknown, params: [string], targetMap: TargetMap) {
+    CheckParamSizeException('same', 1, params);
+    const other = params[0];
+
+    const otherValue = targetMap.get(other);
+    return !(value === otherValue);
+  }
+
+  @Rule()
+  static equal(value: unknown, params: [any]) {
+    CheckParamSizeException('equal', 1, params);
+    const otherValue = params[0];
+
+    return !(value === otherValue);
+  }
+
+  @Rule()
+  static after(value: unknown, params: [string | Date | number]) {
+    CheckParamSizeException('after', 1, params);
+    const otherValue = params[0];
+    const comparison = toDate(otherValue);
+    const original = toDate(value);
+    const result = !!(original && comparison && original > comparison);
+
+    return !result;
+  }
+
+  @Rule()
+  static afterOrEqual(value: unknown, params: [string | Date | number]) {
+    CheckParamSizeException('afterOrEqual', 1, params);
+    const otherValue = params[0];
+    const comparison = toDate(otherValue);
+    const original = toDate(value);
+    const result = !!(original && comparison && original >= comparison);
+
+    return !result;
+  }
+
+  @Rule()
+  static before(value: unknown, params: [string | Date | number]) {
+    CheckParamSizeException('before', 1, params);
+    const otherValue = params[0];
+    const comparison = toDate(otherValue);
+    const original = toDate(value);
+    const result = !!(original && comparison && original < comparison);
+
+    return !result;
+  }
+
+  @Rule()
+  static beforeOrEqual(value: unknown, params: [string | Date | number]) {
+    CheckParamSizeException('beforeOrEqual', 1, params);
+    const otherValue = params[0];
+    const comparison = toDate(otherValue);
+    const original = toDate(value);
+    const result = !!(original && comparison && original <= comparison);
+
+    return !result;
+  }
+
   @DefaultMessage()
   defaultMessage(filedName: string, ruleName: string, params, value): string {
     if (!params) {
@@ -76,6 +607,13 @@ export class ValidatorRule {
       alphaDash: `${filedName} 只能包含字母、数字、中划线或下划线`,
       alphaNum: `${filedName} 只能包含字母、数字`,
       array: `${filedName} 必须是数组`,
+      ascii: `${filedName} 必须是ascii中的字符`,
+      fullWidth: `${filedName} 必须否包含全角字符`,
+      halfWidth: `${filedName} 必须否包含半角字符`,
+      hexadecimal: `${filedName} 必须是十六进制数字`,
+      hexColor: `${filedName} 必须是十六进制颜色`,
+      hsl: `${filedName} 必须符合HSL格式`,
+      identityCard: `${filedName} 必须符合HSL格式`,
       before: `${filedName} 必须是 ${params[0]} 之前的一个日期`,
       beforeOrEqual: `${filedName} 必须是 ${params[0]} 之前或相同的一个日期`,
       between: {
@@ -140,11 +678,11 @@ export class ValidatorRule {
       chs: `${filedName} 只能是汉字`,
       chsAlpha: `${filedName} 只能是汉字、字母`,
       chsAlphaNum: `${filedName} 只能是汉字、字母和数字`,
-      egt: `${filedName} 必须大于等于 ${params[0]}`,
-      gt: `${filedName} 必须大于 ${params[0]}`,
-      elt: `${filedName} 必须小于等于 ${params[0]}`,
-      lt: `${filedName} 必须小于 ${params[0]}`,
-      eq: `${filedName} 必须等于 ${params[0]}`
+      // egt: `${filedName} 必须大于等于 ${params[0]}`,
+      // gt: `${filedName} 必须大于 ${params[0]}`,
+      // elt: `${filedName} 必须小于等于 ${params[0]}`,
+      // lt: `${filedName} 必须小于 ${params[0]}`,
+      equal: `${filedName} 必须等于 ${params[0]}`
     };
 
     const filter = ['minLength', 'maxLength', 'size', 'min', 'max', 'between'];
@@ -162,379 +700,5 @@ export class ValidatorRule {
     }
 
     return typeMsg[ruleName];
-  }
-
-  /**
-   * 字段是必填的
-   * @param value
-   * @param params
-   */
-  @Rule()
-  required(value, params) {
-    CheckParamNotException('required', params);
-    return value === null || value === '' || (isArray(value) && !value.length) ||
-      (isObject(value) && !Object.keys(value).length);
-  }
-
-  /**
-   * 只允许为数组类型
-   * @param value
-   * @param params
-   */
-  @Rule()
-  array(value, params) {
-    CheckParamNotException('array', params);
-    return !Array.isArray(value);
-  }
-
-  /**
-   * 只允许为数字类型
-   * @param value
-   * @param params
-   */
-  @Rule()
-  number(value, params) {
-    CheckParamNotException('number', params);
-    return !isNumber(value);
-  }
-
-  /**
-   * 必须为boolean
-   * @param value
-   * @param params
-   */
-  @Rule()
-  boolean(value, params) {
-    CheckParamNotException('boolean', params);
-    return !isBoolean(value);
-  }
-
-  /**
-   * 必须为 'true' || 'false'
-   * @param value
-   * @param params
-   */
-  @Rule()
-  booleanString(value, params) {
-    CheckParamNotException('booleanString', params);
-    return !(value === 'true' || value === 'false');
-  }
-
-  /**
-   * 只允许为字符串
-   * @param value
-   * @param params
-   */
-  @Rule()
-  string(value, params) {
-    CheckParamNotException('string', params);
-    return !isString(value);
-  }
-
-  /**
-   * 只允许是数字 可以是字符串数字
-   * @param value
-   * @param params
-   */
-  @Rule()
-  numeric(value, params) {
-    CheckParamNotException('numeric', params);
-    return !(!isNaN(+value) && (isNumber(value) || isString(value)));
-  }
-
-  /**
-   * 必须是 Date类型
-   * @param value
-   * @param params
-   */
-  @Rule()
-  date(value, params) {
-    CheckParamNotException('date', params);
-    return !(isDate(value));
-  }
-
-  /**
-   * 验证的字段必须完全是浮点数
-   * @param value
-   * @param params
-   */
-  @Rule()
-  float(value, params) {
-    CheckParamNotException('float', params);
-    return !isFloat(value);
-  }
-
-  /**
-   * 整型
-   * @param value
-   * @param params
-   */
-  @Rule()
-  integer(value, params) {
-    CheckParamNotException('integer', params);
-    return !Number.isInteger(value);
-  }
-
-  /**
-   * safeInteger
-   * @param value
-   * @param params
-   */
-  @Rule()
-  safeInteger(value, params) {
-    CheckParamNotException('safeInteger', params);
-    return !Number.isSafeInteger(value);
-  }
-
-  /**
-   * 必须符合 base32 规则
-   * @param value
-   * @param params
-   */
-  @Rule()
-  base32(value, params) {
-    CheckParamNotException('base32', params);
-    return !isBaseStr(value, 32);
-  }
-
-  /**
-   * 必须符合 base58 规则
-   * @param value
-   * @param params
-   */
-  @Rule()
-  base58(value, params) {
-    CheckParamNotException('base58', params);
-    return !isBaseStr(value, 58);
-  }
-
-  /**
-   * 必须符合 base64 规则
-   * @param value
-   * @param params
-   */
-  @Rule()
-  base64(value, params) {
-    CheckParamNotException('base64', params);
-    return !isBase64(value, false);
-  }
-
-  /**
-   * 必须符合 base64UrlSafe 规则
-   * @param value
-   * @param params
-   */
-  @Rule()
-  base64UrlSafe(value, params) {
-    CheckParamNotException('base64UrlSafe', params);
-    return !isBase64(value, true);
-  }
-
-  /**
-   * 必须符合 IPV4 规则
-   * @param value
-   * @param params
-   */
-  @Rule()
-  ipV4(value, params) {
-    CheckParamNotException('ipV4', params);
-    return !isIP(value, '4');
-  }
-
-  /**
-   * 必须符合 IPV6 规则
-   * @param value
-   * @param params
-   */
-  @Rule()
-  ipV6(value, params) {
-    CheckParamNotException('ipV6', params);
-    return !isIP(value, '6');
-  }
-
-  /**
-   * 只允许汉字
-   * @param value
-   * @param params
-   */
-  @Rule()
-  chs(value, params) {
-    CheckParamNotException('chs', params);
-    return !regExp('chs', value);
-  }
-
-  /**
-   * 只允许汉字、字母
-   * @param value
-   * @param params
-   */
-  @Rule()
-  chsAlpha(value, params) {
-    CheckParamNotException('chsAlpha', params);
-    return !regExp('chsAlpha', value);
-  }
-
-  /**
-   * 验证的字段必须完全是汉字、字母和数字。
-   * @param value
-   * @param params
-   */
-  @Rule()
-  chsAlphaNum(value, params) {
-    CheckParamNotException('chsAlphaNum', params);
-    return !regExp('chsAlphaNum', value);
-  }
-
-  /**
-   * 验证的字段必须是邮箱
-   * @param value
-   * @param params
-   */
-  @Rule()
-  email(value, params) {
-    CheckParamNotException('email', params);
-    return !regExp('email', value);
-  }
-
-  /**
-   * 验证的字段必须是手机号码
-   * @param value
-   * @param params
-   */
-  @Rule()
-  phoneNum(value, params) {
-    CheckParamNotException('phoneNum', params);
-    return !regExp('phoneNum', value);
-  }
-
-  /**
-   * 只允许汉字、字母、数字和下划线_及破折号-
-   * @param value
-   * @param params
-   */
-  @Rule()
-  chsDash(value, params) {
-    CheckParamNotException('chsDash', params);
-    return !regExp('chsDash', value);
-  }
-
-  /**
-   * 验证的字段可能具有字母、数字、破折号（ - ）以及下划线（ _ ）。
-   * @param value
-   * @param params
-   */
-  @Rule()
-  alphaDash(value, params) {
-    CheckParamNotException('alphaDash', params);
-    return !regExp('alphaDash', value);
-  }
-
-  /**
-   * 验证的字段必须完全是字母的字符
-   * @param value
-   * @param params
-   */
-  @Rule()
-  alpha(value, params) {
-    CheckParamNotException('alpha', params);
-    return !regExp('alpha', value);
-  }
-
-  /**
-   * 只包含字母、数字
-   * @param value
-   * @param params
-   */
-  @Rule()
-  alphaNum(value, params) {
-    CheckParamNotException('alphaNum', params);
-    return !regExp('alphaNum', value);
-  }
-
-  /**
-   * 验证的字段必须是电话号码
-   * @param value
-   * @param  params
-   * @returns boolean
-   */
-  @Rule()
-  telNumber(value, params) {
-    CheckParamNotException('telNumber', params);
-    return !regExp('telNumber', value);
-  }
-
-  /**
-   * 包含 某个字符串片段
-   * @param value
-   * @param params
-   */
-  @Rule()
-  contains(value, params) {
-    CheckParamSizeException('contains', 1, params);
-    if (!isString(value)) {
-      return true;
-    }
-    return !(value.indexOf(params[0]) > -1);
-  }
-
-  /**
-   * 不包含 某个字符串片段
-   * @param value
-   * @param params
-   */
-  @Rule()
-  notContains(value, params) {
-    CheckParamSizeException('notContains', 1, params);
-    if (!isString(value)) {
-      return true;
-    }
-    return !this.contains(value, params);
-  }
-
-  /**
-   * hash 校验
-   * @param value
-   * @param params
-   */
-  @Rule()
-  hash(value, params: unknown[]) {
-    CheckParamSizeException('hash', 1, params);
-    CheckParamIncludeException('hash', [
-      'md5', 'md4', 'sha1', 'sha256', 'sha384', 'sha512', 'ripemd128', 'ripemd160', 'tiger128', 'tiger160', 'tiger192', 'crc32', 'crc32b'
-    ], params);
-    return !isHash(value, params[0]);
-  }
-
-  @Rule()
-  in(value, params: unknown[]) {
-    return !params.includes(value);
-  }
-
-  @Rule()
-  notIn(value, params: unknown[]) {
-    return !this.in(value, params);
-  }
-
-  @Rule()
-  max(value: unknown, params: string[]) {
-    CheckParamSizeException('max', 1, params);
-    const max = +params[0];
-    return !(isNumber(value) && value <= max);
-  }
-
-  @Rule()
-  min(value: unknown, params: string[]) {
-    CheckParamSizeException('min', 1, params);
-    const min = +params[0];
-    return !(isNumber(value) && value <= min);
-  }
-
-  @Rule()
-  same(value: unknown, params: string[], targetMap: TargetMap) {
-    CheckParamSizeException('same', 1, params);
-    const other = params[0];
-
-    const otherValue = targetMap.get(other);
-    return !(value === otherValue);
   }
 }
