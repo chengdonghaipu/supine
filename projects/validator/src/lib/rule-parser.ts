@@ -1,5 +1,8 @@
 import {CustomRuleFn, GroupRule, RuleType} from './type';
 
+function isPlainObject(target: any) {
+  return target !== null && !Array.isArray(target) && typeof target === 'object';
+}
 
 export class RuleParser {
   private static checkRule(rule: string) {
@@ -94,8 +97,10 @@ export class RuleParser {
       return RuleParser.parseRuleFnRule(rule);
     } else if (Array.isArray(rule) && rule.every(value => typeof value !== 'object')) {
       return RuleParser.parseArrayRule(rule as string[] | CustomRuleFn[]);
-    } else if (Array.isArray(rule) && rule.every(value => (typeof value === 'object') && !Array.isArray(value))) {
+    } else if (Array.isArray(rule) && rule.every(value => isPlainObject(value))) {
       return RuleParser.parseObjectArrayRule(rule as Array<{[key: string]: any[] | CustomRuleFn }>);
+    } else if (isPlainObject(rule)) {
+      return RuleParser.parseObjectArrayRule([rule] as Array<{[key: string]: any[] | CustomRuleFn }>);
     } else {
       throw Error(`Invalid rule`);
     }
