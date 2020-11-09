@@ -1,3 +1,6 @@
+import {ParamType} from './type';
+import {isArray, isBoolean, isDate, isFunction, isNull, isNumber, isObject, isRegExp, isString, isUndefined} from './typeof';
+
 class RuleNotException extends Error {
 
   constructor(ruleName: string) {
@@ -27,6 +30,13 @@ class ParamIncludeException extends Error {
   }
 }
 
+class ParamTypeException extends Error {
+
+  constructor(ruleName: string, paramType: string[]) {
+    super(`规则${ruleName} 参数列表类型只能为 ${paramType.join(',')}`);
+  }
+}
+
 
 export function CheckRuleNotException(rule, ruleName: string) {
   if (rule) {
@@ -48,9 +58,31 @@ export function CheckParamSizeException(ruleName, paramSize: number, params) {
   }
   throw new ParamSizeException(ruleName, paramSize);
 }
+
 export function CheckParamIncludeException(ruleName, paramContains: string[], params) {
   if (params && params.length === 1 && paramContains.includes(params[0])) {
     return;
   }
   throw new ParamIncludeException(ruleName, paramContains);
+}
+
+export function CheckParamTypeException(ruleName, paramTypes: ParamType[], params) {
+  const methodMap = {
+    String: isString,
+    Number: (value) => isNumber(+value) && !isNaN(+value),
+    Boolean: (value) => isBoolean(value) || (value === 'true' || value === 'false'),
+    Undefined: isUndefined,
+    Null: isNull,
+    Array: isArray,
+    Function: isFunction,
+    Object: isObject,
+    RegExp: isRegExp,
+    Date: isDate,
+  };
+
+  paramTypes.forEach((value, index) => {
+    if (!methodMap[value](params[index])) {
+      throw new ParamTypeException(ruleName, paramTypes);
+    }
+  });
 }

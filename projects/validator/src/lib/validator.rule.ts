@@ -1,7 +1,7 @@
 import {DefaultMessage} from './type-message';
 import {Rule} from './rule';
 import {isArray, isBase64, isBaseStr, isBoolean, isDate, isFloat, isHash, isIP, isNumber, isObject, isString, toDate} from './typeof';
-import {CheckParamIncludeException, CheckParamNotException, CheckParamSizeException} from './exception';
+import {CheckParamIncludeException, CheckParamNotException, CheckParamSizeException, CheckParamTypeException} from './exception';
 import {TargetMap} from './type';
 
 function regExp(ruleName: string, value) {
@@ -468,6 +468,32 @@ export class ValidatorRule {
   }
 
   /**
+   * 字符最大长度
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static maxLength(value, params: [number]) {
+    CheckParamSizeException('maxLength', 1, params);
+    CheckParamTypeException('minLength', ['Number'], params);
+
+    return !(isString(value) && value.length <= params[0]);
+  }
+
+  /**
+   * 字符最小长度
+   * @param value
+   * @param params
+   */
+  @Rule()
+  static minLength(value, params: [number]) {
+    CheckParamSizeException('minLength', 1, params);
+    CheckParamTypeException('minLength', ['Number'], params);
+
+    return !(isString(value) && value.length >= params[0]);
+  }
+
+  /**
    * 包含 某个字符串片段
    * @param value
    * @param params
@@ -475,6 +501,7 @@ export class ValidatorRule {
   @Rule()
   static contains(value, params: [string]) {
     CheckParamSizeException('contains', 1, params);
+    CheckParamTypeException('minLength', ['String'], params);
     if (!isString(value)) {
       return true;
     }
@@ -489,6 +516,7 @@ export class ValidatorRule {
   @Rule()
   static notContains(value, params: [string]) {
     CheckParamSizeException('notContains', 1, params);
+    CheckParamTypeException('minLength', ['String'], params);
     if (!isString(value)) {
       return true;
     }
@@ -511,17 +539,20 @@ export class ValidatorRule {
 
   @Rule()
   static in(value, params: unknown[]) {
+    CheckParamTypeException('minLength', ['Array'], params);
     return !params.includes(value);
   }
 
   @Rule()
   static notIn(value, params: unknown[]) {
+    CheckParamTypeException('minLength', ['Array'], params);
     return !ValidatorRule.in(value, params);
   }
 
   @Rule()
   static max(value: unknown, params: [string | number]) {
     CheckParamSizeException('max', 1, params);
+    CheckParamTypeException('minLength', ['Number'], params);
     const max = +params[0];
     return !(isNumber(value) && value <= max);
   }
@@ -529,6 +560,7 @@ export class ValidatorRule {
   @Rule()
   static min(value: unknown, params: [string | number]) {
     CheckParamSizeException('min', 1, params);
+    CheckParamTypeException('minLength', ['Number'], params);
     const min = +params[0];
     return !(isNumber(value) && value <= min);
   }
@@ -536,6 +568,7 @@ export class ValidatorRule {
   @Rule()
   static same(value: unknown, params: [string], targetMap: TargetMap) {
     CheckParamSizeException('same', 1, params);
+    CheckParamTypeException('minLength', ['String'], params);
     const other = params[0];
 
     const otherValue = targetMap.get(other);

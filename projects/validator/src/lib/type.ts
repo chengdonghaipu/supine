@@ -25,3 +25,5 @@ export interface ValidatorMetaData {
   ruleMethod: { [key: string]: [RuleFn, ValidatorRuleConstructor<any>] };
   typeMessage: Map<ValidatorRuleConstructor<any>, MessageFn>;
 }
+
+export type ParamType = 'String' | 'Number' | 'Boolean' | 'Undefined' | 'Null' | 'Array' | 'function' | 'Object' | 'RegExp' | 'Date';

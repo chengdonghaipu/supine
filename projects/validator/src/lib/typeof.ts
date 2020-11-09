@@ -29,7 +29,7 @@ export function isArray(value) {
 
 // 是否是函数
 export function isFunction(value) {
-  return Object.prototype.toString.call(value) === '[object function]';
+  return Object.prototype.toString.call(value) === '[object Function]';
 }
 
 // 是否是对象
