@@ -9,7 +9,7 @@ import {copyFiles} from '../util/copy-file';
 import * as fs from 'fs';
 // import {mapDir} from '../util/map-dir';
 
-const packages = ['dy-form', 'dy-form-zorro', 'validator'];
+const packages = ['validator', 'dy-form', 'dy-form-zorro'];
 /*function copyFile(cb: () => void) {
   copyFiles(`${process.cwd()}/`, '*.*', `${process.cwd()}/app/`);
   copyFiles(`${process.cwd()}/src/`, '**', `${process.cwd()}/app/src/`);

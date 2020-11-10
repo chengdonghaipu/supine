@@ -26,6 +26,10 @@
 - 易拓展性
     - 轻松实现自定义控件
 
+#相关库
+- 基于@supine/dy-form适配NG-ZORRO的动态表单库[@supine/dy-form-zorro](https://www.npmjs.com/package/@supine/dy-form-zorro)
+- 轻量级、易拓展验证库(文档中涉及的验证参考该文档)[@supine/validator](https://www.npmjs.com/package/@supine/validator)
+
 # 基于@supine/dy-form 定制不同Angular UI框架的动态表单(自定义控件)
 - 安装
 
@@ -569,7 +573,8 @@ export class LoginModel extends BaseFormModel {
   ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview1.png)
 
 # 在dy-form中使用自定义验证器
-```haml
+```typescript
+import {DY_FORM_VALIDATOR} from '@supine/dy-form';
 @NgModule({
   declarations: [
     /* ... */

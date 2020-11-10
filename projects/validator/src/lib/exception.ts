@@ -66,7 +66,7 @@ export function CheckParamIncludeException(ruleName, paramContains: string[], pa
   throw new ParamIncludeException(ruleName, paramContains);
 }
 
-export function CheckParamTypeException(ruleName, paramTypes: ParamType[], params) {
+export function CheckParamTypeException(ruleName, paramTypes: ParamType[] | ParamType, params) {
   const methodMap = {
     String: isString,
     Number: (value) => isNumber(+value) && !isNaN(+value),
@@ -80,9 +80,13 @@ export function CheckParamTypeException(ruleName, paramTypes: ParamType[], param
     Date: isDate,
   };
 
-  paramTypes.forEach((value, index) => {
-    if (!methodMap[value](params[index])) {
-      throw new ParamTypeException(ruleName, paramTypes);
-    }
-  });
+  if (Array.isArray(paramTypes)) {
+    paramTypes.forEach((value, index) => {
+      if (!methodMap[value](params[index])) {
+        throw new ParamTypeException(ruleName, paramTypes);
+      }
+    });
+  } else if (!methodMap[paramTypes](params)) {
+    throw new ParamTypeException(ruleName, [paramTypes]);
+  }
 }

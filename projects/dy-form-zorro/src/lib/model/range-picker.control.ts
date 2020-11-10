@@ -3,6 +3,7 @@ import {ModelPartial} from '@supine/dy-form';
 
 
 export class RangePickerControl<M> extends DateControl<M> {
+  // @ts-ignore
   get type() {
     return 'RANGE_PICKER';
   }

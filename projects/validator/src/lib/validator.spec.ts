@@ -79,4 +79,19 @@ describe('Validator', () => {
 
     expect(!!message['child.aa']).toBeTrue();
   });
+  it(`嵌套校验`, () => {
+    const validator = new ZlValidator();
+
+    validator
+      .setRule({'child.id': ['required&in:1003,2,3']})
+      .setTarget(data)
+      .setMessage({
+        'child.id.in': 'required&in:1003,2,3'
+      })
+      .make();
+
+    const message = validator.getMessage();
+    console.log(message, 'message');
+    expect(validator.fails()).toBeTrue();
+  });
 });

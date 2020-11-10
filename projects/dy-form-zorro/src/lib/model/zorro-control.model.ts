@@ -1,7 +1,7 @@
 import {BaseModel} from '@supine/dy-form';
 
 export class ZorroControlModel<M> extends BaseModel<M> {
-  readonly type: string;
+  type: string;
 
   // 对应 nzValidatingTip
   validatingTip: string;

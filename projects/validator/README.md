@@ -36,19 +36,19 @@ const validator = new ZlValidator();
   ```
   - 函数
   ```js
-    function max(value, targetMap: TargetMap): boolean {/**/}
+    function max(value, targetMap: TargetMap): boolean | string {/**/}
     validator.setRule({id: max})
   ```
   - 函数数组
   ```js
-    function max(value, targetMap: TargetMap): boolean {/**/}
-    function min(value, targetMap: TargetMap): boolean {/**/}
+    function max(value, targetMap: TargetMap): boolean | string {/**/}
+    function min(value, targetMap: TargetMap): boolean | string {/**/}
     // 相当于max||min 满足其中之一即可
     validator.setRule({id: [max, min]})
   ```
   - 对象
   ```js
-    function max(value, targetMap: TargetMap): boolean {/**/}
+    function max(value, targetMap: TargetMap): boolean | string {/**/}
     // 两个条件必须同时满足
     // in和max均为规则名称 max使用了自定义校验 将不会使用内置max校验规则
     // [10, 14, 15, 16] 为规则参数
@@ -56,7 +56,7 @@ const validator = new ZlValidator();
   ```
   - 对象数组
   ```js
-    function max(value, targetMap: TargetMap): boolean {/**/}
+    function max(value, targetMap: TargetMap): boolean | string {/**/}
     // 数组组的对象中的所有规则必须同时满足
     // in和max均为规则名称 max使用了自定义校验 将不会使用内置max校验规则
     // [10, 14, 15, 16] 为规则参数
@@ -128,7 +128,7 @@ const validator = new ZlValidator();
 | **array**  | 无 | 只允许为数组类型 |
 | **number**  | 无 | 只允许为数字类型 |
 | **boolean**  | 无 | 必须为boolean类型 |
-| **booleanString**  | 无 | 必须为 'true' || 'false' |
+| **booleanString**  | 无 | 必须为 'true' 或者 'false' |
 | **string**  | 无 | 只允许为字符串 |
 | **numeric**  | 无 | 只允许是数字 可以是字符串数字 |
 | **date**  | 无 | 必须是 Date类型 |

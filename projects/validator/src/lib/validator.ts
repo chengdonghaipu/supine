@@ -105,6 +105,8 @@ export class ZlValidator {
   }
 
   make(rules?: { [key: string]: RuleType }, data?, message?: CustomMessage) {
+    // 校验前清除验证信息
+    this.clearMessage();
     // 解析并设置规则
     this.setRule(rules);
     // 解析数据

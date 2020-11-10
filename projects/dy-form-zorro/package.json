@@ -20,7 +20,8 @@
   "peerDependencies": {
     "@angular/common": "^10.0.14",
     "@angular/core": "^10.0.14",
-    "@supine/dy-form": "^PACKAGE_VERSION"
+    "@supine/dy-form": "^PACKAGE_VERSION",
+    "@supine/validator": "^PACKAGE_VERSION"
   },
   "dependencies": {
     "tslib": "^2.0.0"

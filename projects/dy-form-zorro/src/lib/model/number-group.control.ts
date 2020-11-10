@@ -4,7 +4,7 @@ import {GroupModel} from './group.model';
 import {TemplateRef} from '@angular/core';
 
 export class InputNumberGroupControl<M = any> extends InputNumberControl<M> implements GroupModel {
-
+  // @ts-ignore
   get type() {
     return 'INPUT_NUMBER_GROUP';
   }

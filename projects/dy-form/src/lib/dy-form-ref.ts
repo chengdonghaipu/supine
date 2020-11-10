@@ -197,11 +197,11 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
         // tslint:disable-next-line:prefer-const
         let {rule, msg} = ruleObj;
 
-        if (Array.isArray(rule)) {
+       /* if (Array.isArray(rule)) {
           rule = rule.join('&');
         }
 
-        value.required = /required/.test(rule);
+        value.required = /required/.test(rule);*/
 
         (value.validators as ValidatorFn[]).push(universal_valid(value.name, rule, msg));
       }

@@ -5,7 +5,7 @@ import {ControlLayout} from './type';
 let nextUniqueId = 0;
 
 export abstract class BaseModel<M = any> {
-  abstract readonly type: string;
+  abstract type: string;
 
   private _placeHolder: string;
 
