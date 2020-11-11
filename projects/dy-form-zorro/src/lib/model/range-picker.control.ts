@@ -3,9 +3,17 @@ import {ModelPartial} from '@supine/dy-form';
 
 
 export class RangePickerControl<M> extends DateControl<M> {
-  // @ts-ignore
+  private _type;
+
+  /**
+   * type 必须要实现 不同的type代表不同的控件
+   */
   get type() {
     return 'RANGE_PICKER';
+  }
+
+  set type(value) {
+    this._type = value;
   }
 
   // 预设时间范围快捷选择

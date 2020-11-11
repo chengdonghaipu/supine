@@ -4,9 +4,17 @@ import {GroupModel} from './group.model';
 import {TemplateRef} from '@angular/core';
 
 export class InputNumberGroupControl<M = any> extends InputNumberControl<M> implements GroupModel {
-  // @ts-ignore
+  private _type;
+
+  /**
+   * type 必须要实现 不同的type代表不同的控件
+   */
   get type() {
     return 'INPUT_NUMBER_GROUP';
+  }
+
+  set type(value) {
+    this._type = value;
   }
 
   constructor(init?: ModelPartial<InputNumberControl>) {

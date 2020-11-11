@@ -3,12 +3,17 @@ import {TemplateRef} from '@angular/core';
 import {ZorroControlModel} from './zorro-control.model';
 
 export class TimePickerControl<M> extends ZorroControlModel<M> {
+  private _type;
+
   /**
    * type 必须要实现 不同的type代表不同的控件
    */
-  // @ts-ignore
   get type() {
     return 'TIME_PICKER';
+  }
+
+  set type(value) {
+    this._type = value;
   }
 
   // 选择框底部显示自定义的内容

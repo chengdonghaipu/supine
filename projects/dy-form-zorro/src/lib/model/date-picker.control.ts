@@ -3,12 +3,17 @@ import {DateControl} from './date.control';
 import {TemplateRef} from '@angular/core';
 
 export class DatePickerControl<M> extends DateControl<M> {
+  private _type;
+
   /**
    * type 必须要实现 不同的type代表不同的控件
    */
-  // @ts-ignore
   get type() {
     return 'DATE_PICKER';
+  }
+
+  set type(value) {
+    this._type = value;
   }
 
   // 自定义日期单元格的内容（month-picker/year-picker不支持）
