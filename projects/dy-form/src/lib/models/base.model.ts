@@ -7,7 +7,7 @@ let nextUniqueId = 0;
 export abstract class BaseModel<M = any> {
   abstract type: string;
 
-  private _placeHolder: string;
+  protected _placeHolder: string;
 
   private _labelClass: string[] | ((value: any, context: ModelPartial<M>) => string[]) = [];
 

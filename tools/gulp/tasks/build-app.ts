@@ -1,4 +1,4 @@
-import {task, series} from 'gulp';
+import {task, series, parallel} from 'gulp';
 // import { watchFiles } from '../util/watch-files';
 import './clean';
 import * as path from 'path';
@@ -85,6 +85,35 @@ function version(cd: () => void) {
   cd();
 }
 
+function watchAllLibs() {
+  function watchLib(name: string) {
+    return (cd: () => void) => {
+      console.log(['build', name, '--watch']);
+      const result = spawnSync('ng', ['build', name, '--watch'],
+        {
+          cwd: process.cwd(),
+          shell: true,
+          env: process.env,
+          stdio: 'pipe'
+        });
+      if (result.status !== 0) {
+        console.log(result);
+      }
+      cd();
+      /*result.on('close', () => {
+        console.log('close', name);
+        cd();
+      });
+
+      result.on('data', args => {
+        console.log(args);
+      });*/
+    };
+  }
+
+  return packages.map(value => watchLib(value));
+}
+
 function build(cd: () => void) {
   packages.forEach(async (name) => {
     const result = spawnSync('ng', ['build', name, '--prod'],
@@ -135,6 +164,7 @@ function publish(cd: () => void) {
 }
 
 
+task('build:watch:libs', parallel(...watchAllLibs()));
 task('build:app', series(build));
 task('build:version', series(version, readme));
 task('build:publish', series(publish));

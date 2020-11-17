@@ -1,6 +1,6 @@
 import {InputModelControl} from './input-model.control';
 
-export class TextareaControl extends InputModelControl {
+export class TextareaControl<M = any> extends InputModelControl<M> {
   type = 'TEXTAREA';
 
   /**

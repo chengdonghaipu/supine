@@ -69,7 +69,6 @@ import {BaseDecorator, ModelPartial} from '@supine/dy-form';
 export function InputModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator {
   const newModel = new Model();
   if (model) {
-    (model as { type: 'INPUT' }).type = 'INPUT';
     Object.assign(newModel, model);
   }
   return BaseDecorator(newModel);
@@ -82,17 +81,28 @@ export function InputModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator
 <!--模板-->
 <!--通用错误提示-->
 <ng-template #errorTpl let-control>
-  <ng-container *ngIf="control.hasError(control.name)">
-    {{control.getError(control.name)}}
+  <ng-container *ngIf="hasError(control)">
+    {{getError(control)}}
   </ng-container>
 </ng-template>
 <ng-template #label let-model>
   <nz-form-label [nzRequired]="model.required"
+                 jdDyFormLabelDef
                  [style.flex]="dyForm?.dyFormRef.labelColLayout[dyForm.breakpoint]"
                  [ngClass]="dyForm.labelClass(model)"
                  [ngStyle]="model.labelStyle"
                  [nzFor]="model.controlName">{{model.label}}
   </nz-form-label>
+</ng-template>
+<ng-template #inputControl let-model let-control=control>
+  <input nz-input
+         [id]="model.name"
+         [placeholder]="model.placeHolder"
+         [formControl]="control"
+         [disabled]="model.disabled"
+         [nzSize]="model.size"
+         [type]="model.inputType"
+         [readOnly]="model.readonly"/>
 </ng-template>
 <jd-dy-form [dyFormRef]="dyFormRef" #dyForm>
   <!-- INPUT 就是上面实现的input模型的type属性
@@ -101,10 +111,16 @@ export function InputModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator
    -->
   <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'INPUT'">
     <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
-     <nz-form-control [nzErrorTip]="errorTpl"
+     <nz-form-control jdDyFormControlDef
+                      [nzHasFeedback]="model.hasFeedback"
+                      [nzExtra]="model.extra"
+                      [nzValidatingTip]="model.validatingTip"
                       [ngStyle]="model.controlStyle"
                       [nzValidateStatus]="control"
                       [ngClass]="dyForm.controlClass(model)">
+        <ng-template [ngTemplateOutlet]="inputControl"
+                     [ngTemplateOutletContext]="{$implicit: model, control: control}">
+        </ng-template>
     </nz-form-control>
   </nz-form-item>
 </jd-dy-form>
@@ -142,6 +158,15 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
   @Input() dyFormRef: DyFormRef<any>;
+
+  hasError(control: FormControl) {
+    return control.errors && Object.keys(control.errors).length;
+  }
+
+  getError(control: FormControl) {
+    const errors = Object.getOwnPropertyNames(control.errors);
+    return control.getError(errors[0]);
+  }
 
   constructor() {
   }
@@ -286,7 +311,7 @@ export class LoginModel extends BaseFormModel {
   layout;
    
   // parent: 'layout' 指定容器 layout
-  @InputModel<FormModel>({label: '手机号码', parent: 'layout'})
+  @InputModel<LoginModel>({label: '手机号码', parent: 'layout'})
   @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
   phone = [null];
 
@@ -384,7 +409,7 @@ export class LoginModel extends BaseFormModel {
       @CustomModel({label: '自定义', type: 'custom', customPro: 'customPro'})
       custom = [null];
   
-      @InputModel<FormModel>({label: '手机号码'})
+      @InputModel<LoginModel>({label: '手机号码'})
       @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
       phone = [null];
     

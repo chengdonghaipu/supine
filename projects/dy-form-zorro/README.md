@@ -6,10 +6,13 @@
 
 ## 主要特性
 - 解耦
-```
+
 传统的Angular表单开发需要成百上千行HTML，在组件内部维护大量与表单相关的代码，不利于后期维护，可读性不强。
-@supine/dy-form最核心的思想就是将与表单相关的业务集中到表单模型中解决，从而减弱与组件的耦合性
-```
+[@supine/dy-form](https://www.npmjs.com/package/@supine/dy-form)
+最核心的思想就是将与表单相关的业务集中到表单模型中解决，从而减弱与组件的耦合性
+
+更多文档请参考[@supine/dy-form](https://www.npmjs.com/package/@supine/dy-form)
+
 - 高可读性
     - 所有控件配置都在表单模型中，表单结构一目了然
 - 快速开发
@@ -19,10 +22,16 @@
 - 易拓展性
     - 轻松实现自定义控件
 
+#相关库
+- 基于@supine/dy-form[@supine/dy-form](https://www.npmjs.com/package/@supine/dy-form)
+- 轻量级、易拓展验证库(文档中涉及的验证参考该文档)[@supine/validator](https://www.npmjs.com/package/@supine/validator)
+
+
 # 快速上手
 - 安装
 
-```
+```shell script
+ng add ng-zorro-antd # 如果项目中没有ng-zorro-antd 则需要安装ng-zorro-antd
 ng add @supine/dy-form-zorro
 ```
 
@@ -173,8 +182,114 @@ export class LoginModel extends BaseFormModel {
 
 ```typescript
 dyFormRef = new DyFormRef(LoginModel, {mode: 'vertical'});
+
+ngOnInit(): void {
+   // 执行这行代码才会渲染
+   this.dyFormRef.executeModelUpdate();
+}
 ```
 
 - 至此就可以看到我们想要的表单啦
   
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/login-dy-form-zorro.png)
+
+# 自定义布局
+
+- 修改模型
+```typescript
+import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+import {InputModel} from '../decorator/input.model';
+
+export class LoginModel extends BaseFormModel {
+  // 布局容器 我们可以指定自定义类型 type=phone  默认值为LAYOUT_GROUP
+  @LayoutGroupModel({type: 'phone'})
+  layout;
+   
+  // parent: 'layout' 指定容器 layout
+  @InputModel<FormModel>({label: '手机号码', parent: 'layout'})
+  @ValidatorRule(['required&phoneNum'], {required: '用户名字段是必填的', phoneNum: '请填写正确的手机号码'})
+  phone = [null];
+
+  @InputModel<LoginModel>({label: '用户名'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+  username = [null];
+
+  @InputModel<LoginModel>({label: '密码'})
+  @ValidatorRule(['required&max:15&min:4'], {required: '密码字段是必填的', max: '密码长度最多为15个字符', min: '密码长度最少为4个字符'})
+  password = [null];
+
+  /**
+   * 更新表单模型钩子
+   * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+   * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+   * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+   * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+   */
+  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+    return model;
+  }
+
+
+  /**
+   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+   * HTTP模块 目前还没开源
+   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+   */
+  httpRequest() {
+    /* .... */
+  }
+}
+
+```
+- 接下来修改模板
+
+```angular2html
+<jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
+<!--  phone 跟模型中的layout字段的元数据type是相对应的-->
+<!--  groupModel 包含布局容器内所有字控件的配置信息 比如我要访问容器内phone控件的配置可以这样访问 groupModel.phone-->
+<!--  childControl 包含布局容器内所有字控件的formControl 比如我要访问容器内phone控件可以这样访问 childControl.phone-->
+  <ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
+    <nz-form-item>
+      <ng-template [ngTemplateOutlet]="dyFormZorro.labelTpl" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
+      <nz-form-control
+        jdDyFormControlDef
+        [nzValidateStatus]="childControl.phone"
+        [nzErrorTip]="dyFormZorro.errorTpl"
+      >
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select class="phone-select" [ngModel]="'+86'">
+              <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+              <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+            </nz-select>
+          </ng-template>
+          <input [formControl]="childControl.phone" id="'phoneNumber'" nz-input/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+</jd-dy-form-zorro>
+```
+- 预览图如下
+  
+![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/layout_preview.png)
+- 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
+
+#所支持的控件
+
+|  名称   | 描述 |
+|  ----  | ---- |
+| **InputModel**  | 输入框 |
+| **InputGroupModel**  | 数字输入框组 |
+| **InputNumberModel**  | 数字输入框 |
+| **InputNumberGroupModel**  | 数字输入框组 |
+| **textarea**  | 文本域 |
+| **SelectModel**  | 下拉框 |
+| **SelectGroupModel**  | 下拉框组 |
+| **DatePickerModel**  | 日期选择框 |
+| **RangePickerModel**  | 日期范围选择 |
+| **TimePickerModel**  | 时间选择 |
+
+- 预览图如下
+  
+![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/all_model_preview.png)

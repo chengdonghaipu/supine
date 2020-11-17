@@ -39,7 +39,7 @@ export function generateFormModel(options: FormModelSchema): Rule {
       applyTemplates({
         classify: strings.classify,
         dasherize: strings.dasherize,
-        name: options.name
+        name: options.name + 'Model'
       }),
       move(normalize(options.path as string))
     ]);

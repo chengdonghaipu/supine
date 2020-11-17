@@ -27,6 +27,11 @@ export class DatePickerControl<M> extends DateControl<M> {
   // 点击确定按钮的回调
   onOk: (date: Date) => void;
 
+
+  get placeHolder() {
+    return this._placeHolder;
+  }
+
   constructor(init?: ModelPartial<DatePickerControl<M>>) {
     super();
     this.init(init);

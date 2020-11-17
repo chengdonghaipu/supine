@@ -16,7 +16,7 @@ export abstract class BaseFormModel<T = any> {
   formGroup: FormGroup;
 
   get option() {
-    return this.options;
+    return this.options || [];
   }
 
   get value() {
@@ -27,6 +27,10 @@ export abstract class BaseFormModel<T = any> {
   get getRawValue() {
     const value = this.formGroup.getRawValue();
     return this.filter(value);
+  }
+
+  get<M extends FormControlConfig>(name: string): M {
+    return this.option.find(value => value.name === name) as unknown as M;
   }
 
   protected filter(value) {

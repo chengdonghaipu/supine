@@ -25,7 +25,7 @@ export class DateControl<M> extends ZorroControlModel<M> {
   // 在面板中添加额外的页脚
   renderExtraFooter: TemplateRef<any> | string | (() => TemplateRef<any> | string);
   // 自定义的后缀图标
-  suffixIcon: string | TemplateRef<any>;
+  suffixIcon: string | TemplateRef<any> = 'calendar';
   // 弹出日历和关闭日历的回调
   onOpenChange: (open: boolean) => void;
 }

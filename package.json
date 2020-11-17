@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "watch:lib": "gulp build:watch:libs",
     "build": "gulp build:app && gulp build:version",
     "publish": "gulp build:publish",
     "lint": "ng lint",

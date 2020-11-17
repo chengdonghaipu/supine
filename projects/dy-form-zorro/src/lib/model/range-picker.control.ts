@@ -29,6 +29,10 @@ export class RangePickerControl<M> extends DateControl<M> {
 
   onOk: (date: Date[]) => void;
 
+  get placeHolder() {
+    return this._placeHolder;
+  }
+
   constructor(init?: ModelPartial<RangePickerControl<M>>) {
     super();
     this.init(init);

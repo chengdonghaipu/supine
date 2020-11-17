@@ -25,6 +25,6 @@ import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
     NzDatePickerModule,
     NzTimePickerModule
   ],
-  exports: [DyFormZorroComponent]
+  exports: [DyFormZorroComponent, DyFormModule]
 })
 export class DyFormZorroModule { }

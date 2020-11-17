@@ -1,27 +1,22 @@
-<ng-template #label let-model>
-  <nz-form-label [nzRequired]="model.required"
-                 jdDyFormLabelDef
-                 [ngStyle]="model.labelStyle"
-                 [nzFor]="model.controlName">{{model.label}}
-  </nz-form-label>
-</ng-template>
-
-<ng-template #errorTpl let-control>
-  <ng-container *ngIf="control.hasError(control.name)">
-    {{control.getError(control.name)}}
-  </ng-container>
-</ng-template>
-
-<jd-dy-form-zorro [dyFormRef]="dyFormRef">
+<jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
   <!--  name 'custom' 对应模型中的 type字段值-->
-  <ng-container *jdDyFormColumnDef="let control; let model = model name 'custom'">
+  <ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
     <nz-form-item>
-      <ng-template [ngTemplateOutlet]="label" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
-      <nz-form-control  jdDyFormControlDef
-                        [nzValidateStatus]="control"
-                        [nzErrorTip]="errorTpl">
-        <!--        customPro 为模型中自定义属性-->
-        <input type="text" nz-input [formControl]="control" [placeholder]="model.customPro">
+      <ng-template [ngTemplateOutlet]="dyFormZorro.labelTpl" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
+      <nz-form-control
+        jdDyFormControlDef
+        [nzValidateStatus]="childControl.phone"
+        [nzErrorTip]="dyFormZorro.errorTpl"
+      >
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select class="phone-select" [ngModel]="'+86'">
+              <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+              <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+            </nz-select>
+          </ng-template>
+          <input [formControl]="childControl.phone" id="'phoneNumber'" nz-input/>
+        </nz-input-group>
       </nz-form-control>
     </nz-form-item>
   </ng-container>

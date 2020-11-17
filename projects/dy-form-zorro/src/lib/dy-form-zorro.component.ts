@@ -5,7 +5,7 @@ import {
   ContentChildren,
   Input,
   OnInit,
-  QueryList,
+  QueryList, TemplateRef,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
@@ -21,6 +21,26 @@ import {FormControl} from '@angular/forms';
 })
 export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;
+
+  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<any>;
+
+  @ViewChild('label', {static: true}) labelTpl: TemplateRef<any>;
+
+  @ViewChild('inputControl', {static: true}) inputTpl: TemplateRef<any>;
+
+  @ViewChild('inputNumberControl', {static: true}) inputNumberTpl: TemplateRef<any>;
+
+  @ViewChild('textAreaControl', {static: true}) textAreaTpl: TemplateRef<any>;
+
+  @ViewChild('datePickerControl', {static: true}) datePickerTpl: TemplateRef<any>;
+
+  @ViewChild('rangePickerControl', {static: true}) rangePickerTpl: TemplateRef<any>;
+
+  @ViewChild('timePickerControl', {static: true}) timePickerTpl: TemplateRef<any>;
+
+  @ViewChild('selectControl', {static: true}) selectTpl: TemplateRef<any>;
+
+  @ViewChild('formGroupControl', {static: true}) formGroupTpl: TemplateRef<any>;
 
   @ContentChildren(DyFormHeaderDef, {descendants: true}) _formHeaderDefs: QueryList<DyFormHeaderDef>;
 

@@ -56,7 +56,7 @@ export class TimePickerControl<M> extends ZorroControlModel<M> {
 
 
   get placeHolder() {
-    return '请选择时间';
+    return this._placeHolder || `请选择${this.label}时间`;
   }
 
   constructor(init?: ModelPartial<TimePickerControl<M>>) {
