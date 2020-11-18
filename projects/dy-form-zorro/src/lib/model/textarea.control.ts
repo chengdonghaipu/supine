@@ -1,7 +1,9 @@
 import {InputModelControl} from './input-model.control';
+import {Const} from '@supine/dy-form';
 
 export class TextareaControl<M = any> extends InputModelControl<M> {
-  type = 'TEXTAREA';
+  @Const('TEXTAREA')
+  type: string;
 
   /**
    * 自适应内容高度

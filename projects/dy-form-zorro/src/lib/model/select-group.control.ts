@@ -1,6 +1,7 @@
 import {TemplateRef} from '@angular/core';
 import {SelectControl} from './select.control';
 import {GroupModel} from './group.model';
+import {Const} from '@supine/dy-form';
 
 export interface SelectOptionContent {
   value: any;
@@ -9,7 +10,8 @@ export interface SelectOptionContent {
 }
 
 export class SelectGroupControl<M = any> extends SelectControl<M> implements GroupModel {
-  type = 'SELECT_GROUP';
+  @Const('SELECT_GROUP')
+  type: string;
 
   suffixIconPv: TemplateRef<void>;
 

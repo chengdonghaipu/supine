@@ -275,7 +275,7 @@ export class LoginModel extends BaseFormModel {
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
 
-#所支持的控件
+#内置控件
 
 |  名称   | 描述 |
 |  ----  | ---- |

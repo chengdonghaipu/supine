@@ -1,20 +1,14 @@
-import {ModelPartial} from '@supine/dy-form';
+import {Const, ModelPartial} from '@supine/dy-form';
 import {DateControl} from './date.control';
 import {TemplateRef} from '@angular/core';
 
 export class DatePickerControl<M> extends DateControl<M> {
-  private _type;
-
   /**
    * type 必须要实现 不同的type代表不同的控件
    */
-  get type() {
-    return 'DATE_PICKER';
-  }
+  @Const('DATE_PICKER')
+  type: string;
 
-  set type(value) {
-    this._type = value;
-  }
 
   // 自定义日期单元格的内容（month-picker/year-picker不支持）
   dateRender: TemplateRef<Date> | string | ((d: Date) => TemplateRef<Date> | string);

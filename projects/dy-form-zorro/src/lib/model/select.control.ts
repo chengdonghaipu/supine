@@ -1,5 +1,6 @@
 import {TemplateRef} from '@angular/core';
 import {ZorroControlModel} from './zorro-control.model';
+import {Const} from '@supine/dy-form';
 
 export interface SelectOptionContent {
   value: any;
@@ -8,7 +9,8 @@ export interface SelectOptionContent {
 }
 
 export class SelectControl<M = any> extends ZorroControlModel<M> {
-  type = 'SELECT';
+  @Const('SELECT')
+  type: string;
 
   optionContent: SelectOptionContent[] = [];
 

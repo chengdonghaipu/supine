@@ -1,9 +1,11 @@
 import {InputModelControl} from './input-model.control';
 import {GroupModel} from './group.model';
 import {TemplateRef} from '@angular/core';
+import {Const} from '@supine/dy-form';
 
 export class InputGroupControl<M> extends InputModelControl<M> implements GroupModel {
-  type = 'INPUT_GROUP';
+  @Const('INPUT_GROUP')
+  type: string;
 
   /**
    * 是否用搜索框

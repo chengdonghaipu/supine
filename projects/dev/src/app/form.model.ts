@@ -18,13 +18,13 @@ export class FormModel extends BaseFormModel {
   @InputModel<FormModel>({label: 'input'})
   input = [null];
 
-  @InputGroupModel<FormModel>({label: 'inputGroup'})
+  @InputGroupModel<FormModel>({label: 'inputGroup', addOnAfter: 'KG'})
   inputGroup = [null];
 
   @InputNumberModel<FormModel>({label: 'inputNumber'})
   inputNumber = [null];
 
-  @InputNumberGroupModel<FormModel>({label: 'inputNumberGroup'})
+  @InputNumberGroupModel<FormModel>({label: 'inputNumberGroup', addOnAfter: '天'})
   inputNumberGroup = [null];
 
   @TextareaModel<FormModel>({label: 'textarea'})
@@ -33,7 +33,7 @@ export class FormModel extends BaseFormModel {
   @SelectModel<FormModel>({label: 'select', optionContent: [{label: '男', value: 1}, {label: '女', value: 1}]})
   select = [null];
 
-  @SelectGroupModel<FormModel>({label: 'selectGroup', optionContent: [{label: '男', value: 1}, {label: '女', value: 1}]})
+  @SelectGroupModel<FormModel>({label: 'selectGroup', optionContent: [{label: '男', value: 1}, {label: '女', value: 1}], addOnAfter: 'SU'})
   selectGroup = [null];
 
   @DatePickerModel<FormModel>({label: 'datePicker'})

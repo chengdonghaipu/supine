@@ -1,20 +1,13 @@
 import {DateControl} from './date.control';
-import {ModelPartial} from '@supine/dy-form';
+import {Const, ModelPartial} from '@supine/dy-form';
 
 
 export class RangePickerControl<M> extends DateControl<M> {
-  private _type;
-
   /**
    * type 必须要实现 不同的type代表不同的控件
    */
-  get type() {
-    return 'RANGE_PICKER';
-  }
-
-  set type(value) {
-    this._type = value;
-  }
+  @Const('RANGE_PICKER')
+  type: string;
 
   // 预设时间范围快捷选择
   ranges: { [key: string]: Date[] } | { [key: string]: () => Date[] };

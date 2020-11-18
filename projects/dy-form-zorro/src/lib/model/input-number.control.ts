@@ -1,9 +1,9 @@
-import {ModelPartial} from '@supine/dy-form';
+import {Const, ModelPartial} from '@supine/dy-form';
 import {ZorroControlModel} from './zorro-control.model';
 
 export class InputNumberControl<M = any> extends ZorroControlModel<M> {
-
-  type = 'INPUT_NUMBER';
+  @Const('INPUT_NUMBER')
+  type: string;
 
   formatter: (value: number | string) => string | number = undefined;
 

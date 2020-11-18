@@ -1,20 +1,13 @@
-import {ModelPartial} from '@supine/dy-form';
+import {Const, ModelPartial} from '@supine/dy-form';
 import {TemplateRef} from '@angular/core';
 import {ZorroControlModel} from './zorro-control.model';
 
 export class TimePickerControl<M> extends ZorroControlModel<M> {
-  private _type;
-
   /**
    * type 必须要实现 不同的type代表不同的控件
    */
-  get type() {
-    return 'TIME_PICKER';
-  }
-
-  set type(value) {
-    this._type = value;
-  }
+  @Const('TIME_PICKER')
+  type: string;
 
   // 选择框底部显示自定义的内容
   addon: TemplateRef<void>;
