@@ -1,7 +1,13 @@
 {
   "name": "jd-lib",
   "version": "10.0.0-rc38",
-  "keywords": [],
+  "keywords": [
+    "validator",
+    "Angular",
+    "NG-ZORRO",
+    "dy-form-zorro",
+    "dy-form"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
