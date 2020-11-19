@@ -1,4 +1,16 @@
-# DyForm
+#文档内容
+- [介绍](#DyForm)
+- [相关库](#相关库)
+- [定制动态表单](#定制动态表单)
+- [使用定制好的的动态表单](#使用定制好的的动态表单)
+- [自定义控件布局](#自定义布局)
+- [自定义控件](#自定义控件)
+- [在定义控件模型的时候使用表单模型的上下文](#在定义控件模型的时候使用表单模型的上下文)
+- [自定义验证](#自定义验证)
+- [填充表单](#填充表单)
+- [动态控制表单模型](#动态控制表单模型)
+
+#DyForm
 
 @supine/dy-form是基于Angular表单封装的动态表单库。
 
@@ -30,7 +42,8 @@
 - 基于@supine/dy-form适配NG-ZORRO的动态表单库[@supine/dy-form-zorro](https://www.npmjs.com/package/@supine/dy-form-zorro)
 - 轻量级、易拓展验证库(文档中涉及的验证参考该文档)[@supine/validator](https://www.npmjs.com/package/@supine/validator)
 
-# 基于@supine/dy-form 定制不同Angular UI框架的动态表单(自定义控件)
+#定制动态表单
+基于@supine/dy-form 定制不同Angular UI框架的动态表单(自定义控件)
 - 安装
 
 ```
@@ -189,7 +202,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
 - 按照以上的步骤即可封装一个完整的动态表单来
 
 
-# 使用封装好的的动态表单
+#使用定制好的的动态表单
 
 - 定义表单模型
 ```typescript
@@ -299,7 +312,7 @@ export class AppComponent implements OnInit {
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/login-dy-form.png)
 - 组件内部我们只需要维护极少数代码就能完成表单的相关操作啦
   
-# 自定义布局
+#自定义布局
 
 - 修改模型
 ```typescript
@@ -395,7 +408,7 @@ export class LoginModel extends BaseFormModel {
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
 
-# 自定义控件
+#自定义控件
 
 - (1)通过内置装饰器实现(更简单, 推荐临时使用的时候用该方式)
     - 修改模型
@@ -480,7 +493,7 @@ export class LoginModel extends BaseFormModel {
 - (2)通过集成基类模型实现(复用的解决方案, 推荐在封装通用的控件时使用)
   - 基于@supine/dy-form 定制不同Angular UI框架的动态表单 章节其实就是自定义控件
 
-# 在定义控件模型的时候使用表单模型的上下文
+#在定义控件模型的时候使用表单模型的上下文
 - 模型
 ```typescript
 import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
@@ -545,59 +558,125 @@ export class LoginModel extends BaseFormModel {
 - 预览图
   ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/form-context-preview.png)
   
-# 异步验证
+# 自定义验证
+- 自定义同步验证器
+    - 模型
+    ```typescript
+    import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+    import {InputModel} from '../decorator/input.model';
+    
+    export class LoginModel extends BaseFormModel {
+      /* .... */
+      @InputModel<LoginModel>({label: '用户名'})
+      @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+      username = [null, [FormModel.userNameValidator], []];
+    
+      static userNameValidator = (control: FormControl): ValidationErrors | null => {
+           if (control.value === 'JasonWood') {
+              // '用户名已存在' 这是用来反馈用户的
+              return { userName: '用户名已存在' };
+           } else {
+              return null
+           }
+      }
+      
+      /* .... */
+      /**
+       * 更新表单模型钩子
+       * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+       * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+       * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+       * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+       */
+      modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+        return model;
+      }
+    
+    
+      /**
+       * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+       * HTTP模块 目前还没开源
+       * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+       */
+      httpRequest() {
+        /* .... */
+      }
+    }
+    
+    ```
 
-- 模型
+- 自定义异步验证器
+    - 模型
+    ```typescript
+    import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+    import {InputModel} from '../decorator/input.model';
+    
+    export class LoginModel extends BaseFormModel {
+      /* .... */
+      @InputModel<LoginModel>({label: '用户名'})
+      @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
+      username = [null, [], [FormModel.userNameAsyncValidator]];
+    
+      static userNameAsyncValidator = (control: FormControl) =>
+        new Observable((observer: Observer<ValidationErrors | null>) => {
+          setTimeout(() => {
+            if (control.value === 'JasonWood') {
+              // '用户名已存在' 这是用来反馈用户的
+              observer.next({ userName: '用户名已存在' });
+            } else {
+              observer.next(null);
+            }
+              observer.complete();
+            }, 3000);
+      })
+      /* .... */
+      /**
+       * 更新表单模型钩子
+       * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+       * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+       * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+       * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+       */
+      modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+        return model;
+      }
+    
+    
+      /**
+       * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+       * HTTP模块 目前还没开源
+       * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+       */
+      httpRequest() {
+        /* .... */
+      }
+    }
+    
+    ```
+    - 预览图
+      ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview0.png)
+      ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview1.png)
+- 拓展内置验证器校验规则 - ***这种方式复用性强，对复用性有要求的可以用这种方式***  
+***自定义的详细描述请参考*** [validator](https://github.com/chengdonghaipu/supine/tree/master/projects/validator)
 ```typescript
-import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
-import {InputModel} from '../decorator/input.model';
-
-export class LoginModel extends BaseFormModel {
-  /* .... */
-  @InputModel<LoginModel>({label: '用户名'})
-  @ValidatorRule(['required&max:15&min:4'], {required: '用户名字段是必填的', max: '用户名长度最多为15个字符', min: '用户名长度最少为4个字符'})
-  username = [null, [], [FormModel.userNameAsyncValidator]];
-
-  static userNameAsyncValidator = (control: FormControl) =>
-    new Observable((observer: Observer<ValidationErrors | null>) => {
-      setTimeout(() => {
-        if (control.value === 'JasonWood') {
-          // '用户名已存在' 这是用来反馈用户的
-          observer.next({ userName: '用户名已存在' });
-        } else {
-          observer.next(null);
-        }
-          observer.complete();
-        }, 3000);
-  })
-  /* .... */
-  /**
-   * 更新表单模型钩子
-   * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
-   * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
-   * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
-   * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
-   */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
-    return model;
-  }
-
-
-  /**
-   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
-   * HTTP模块 目前还没开源
-   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
-   */
-  httpRequest() {
-    /* .... */
-  }
+import {DY_FORM_VALIDATOR} from '@supine/dy-form';
+@NgModule({
+  declarations: [
+    /* ... */
+  ],
+  imports: [
+    /* ... */
+  ],
+  providers: [
+    // XValidator这就是基于ZlValidator拓展的验证器
+    // 自定义验证规则 在定义验证规则有详细描述
+    {provide: DY_FORM_VALIDATOR, useValue: XValidator}
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {
 }
-
 ```
-- 预览图
-  ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview0.png)
-  ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/async_validator_preview1.png)
-
 # 填充表单
 ```typescript
   ngOnInit(): void {
@@ -611,7 +690,8 @@ export class LoginModel extends BaseFormModel {
   }
 ```
 
-# modelUpdateHook(不常用，但很有用) - 动态控制表单模型
+#动态控制表单模型
+modelUpdateHook(不常用，但很有用) - 动态控制表单模型
 - 表单模型
 ```typescript
 import {
@@ -804,23 +884,3 @@ export class AppComponent implements OnInit {
   ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/model_update_hook_preview0.png)
   ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/model_update_hook_preview1.png)
 
-# 在dy-form中使用自定义验证器
-```typescript
-import {DY_FORM_VALIDATOR} from '@supine/dy-form';
-@NgModule({
-  declarations: [
-    /* ... */
-  ],
-  imports: [
-    /* ... */
-  ],
-  providers: [
-    // XValidator这就是基于Validator拓展的验证器
-    // 自定义验证规则 在定义验证规则有详细描述
-    {provide: DY_FORM_VALIDATOR, useValue: XValidator}
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule {
-}
-```
