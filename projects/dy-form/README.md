@@ -816,7 +816,7 @@ import {DY_FORM_VALIDATOR} from '@supine/dy-form';
   providers: [
     // XValidator这就是基于Validator拓展的验证器
     // 自定义验证规则 在定义验证规则有详细描述
-    {provide: DY_FORM_VALIDATOR, useValue: new XValidator()}
+    {provide: DY_FORM_VALIDATOR, useValue: XValidator}
   ],
   bootstrap: [AppComponent]
 })
