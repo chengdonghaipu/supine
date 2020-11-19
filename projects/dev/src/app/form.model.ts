@@ -59,6 +59,7 @@ export class MapUtilFormModel extends BaseFormModel {
   @ValidatorRule(['required&maxLength:20'], {maxLength: '最大输入20个字符', required: '请输入单元名称'})
   name = [null];
 
+  // 隐藏控件
   @InputModel({label: '区域编号', hide: true})
   areaId = [null];
 
