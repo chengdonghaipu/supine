@@ -42,7 +42,7 @@ registerLocaleData(zh);
     FormsModule
   ],
   providers: [
-    {provide: DY_FORM_VALIDATOR, useValue: new ZlValidator()},
+    {provide: DY_FORM_VALIDATOR, useValue: ZlValidator},
     { provide: NZ_I18N, useValue: zh_CN }
   ],
   bootstrap: [AppComponent]

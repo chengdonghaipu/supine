@@ -1,8 +1,7 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {DyFormModule} from './dy-form.module';
 import {DY_FORM_VALIDATOR} from './injection-token';
-import {ZlValidator, RuleType} from '@supine/validator';
-import {cloneDeep} from 'lodash';
+import {ZlValidator, RuleType, ValidatorRuleConstructor} from '@supine/validator';
 
 export function universal_valid(
   controlName: string,
@@ -10,7 +9,9 @@ export function universal_valid(
   msg?: { [key: string]: any },
   property?: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const validate = DyFormModule.Injector.get(DY_FORM_VALIDATOR, new ZlValidator()) as ZlValidator;
+    const validateCtor = DyFormModule.Injector.get(DY_FORM_VALIDATOR, ZlValidator) as ValidatorRuleConstructor<ZlValidator>;
+
+    const validate = new validateCtor();
 
     const path = property || controlName;
     const data = Object.assign({}, control.root.value, {[path]: control.value});
@@ -22,6 +23,8 @@ export function universal_valid(
       }
     }
 
+    validate.clearMessage();
+
     validate
       .setMessage(msg)
       .setTarget(data)
@@ -30,7 +33,6 @@ export function universal_valid(
 
     if (validate.fails()) {
       const message = validate.getMessage();
-
       return {[controlName]: message[path][0]};
     } else {
       return null;

@@ -1,6 +1,7 @@
 import {AbstractControl, FormGroup} from '@angular/forms';
 import {FormControlConfig} from './base.model';
 import {Observable, of} from 'rxjs';
+import {isObject} from '@supine/validator';
 
 export abstract class BaseFormModel<T = any> {
   private _initTask = [];
@@ -82,6 +83,10 @@ export abstract class BaseFormModel<T = any> {
     onlySelf?: boolean;
     emitEvent?: boolean;
   }) {
+    if (!value && isObject(value) && Object.keys(isObject).length) {
+      return this;
+    }
+
     if (value && !this.formGroup) {
       this._initTask.push([this.patchValue.bind(this), [value]]);
     } else {

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {DyFormRef} from '@supine/dy-form';
-import {FormModel} from './form.model';
-import {ZlValidator} from '@supine/validator';
+import {MapUtilFormModel} from './form.model';
 
 @Component({
   selector: 'app-root',
@@ -9,20 +8,15 @@ import {ZlValidator} from '@supine/validator';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  dyFormRef = new DyFormRef(FormModel, {mode: 'vertical'});
+  dyFormRef = new DyFormRef(MapUtilFormModel, {mode: 'vertical'});
 
   ngOnInit(): void {
   }
 
   constructor() {
-    // 执行这行代码才会渲染
+    // 附加类型
+    this.dyFormRef.model.withActionType('UnloadWasteArea');
+    // 执行这行代码才会渲染  会执行表单模型中的modelUpdateHook
     this.dyFormRef.executeModelUpdate();
-
-    const validator = new ZlValidator();
-
-    validator.setRule({a: [{in: [100, 1, 20]}]}).make(null, {a: 100, b: {a: 'f', f: 'm', m: {a: 'g'}}, c: 'c'});
-
-    console.log(validator);
   }
-
 }
