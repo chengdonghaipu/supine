@@ -1,4 +1,4 @@
-#文档内容
+# 文档内容
 - [介绍](#DyForm)
 - [相关库](#相关库)
 - [定制动态表单](#定制动态表单)
@@ -10,7 +10,7 @@
 - [填充表单](#填充表单)
 - [动态控制表单模型](#动态控制表单模型)
 
-#DyForm
+# DyForm
 
 @supine/dy-form是基于Angular表单封装的动态表单库。
 
@@ -38,11 +38,11 @@
 - 易拓展性
     - 轻松实现自定义控件
 
-#相关库
+# 相关库
 - 基于@supine/dy-form适配NG-ZORRO的动态表单库[@supine/dy-form-zorro](https://www.npmjs.com/package/@supine/dy-form-zorro)
 - 轻量级、易拓展验证库(文档中涉及的验证参考该文档)[@supine/validator](https://www.npmjs.com/package/@supine/validator)
 
-#定制动态表单
+# 定制动态表单
 基于@supine/dy-form 定制不同Angular UI框架的动态表单(自定义控件)
 - 安装
 
@@ -202,7 +202,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
 - 按照以上的步骤即可封装一个完整的动态表单来
 
 
-#使用定制好的的动态表单
+# 使用定制好的的动态表单
 
 - 定义表单模型
 ```typescript
@@ -312,7 +312,7 @@ export class AppComponent implements OnInit {
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/login-dy-form.png)
 - 组件内部我们只需要维护极少数代码就能完成表单的相关操作啦
   
-#自定义布局
+# 自定义布局
 
 - 修改模型
 ```typescript
@@ -408,7 +408,7 @@ export class LoginModel extends BaseFormModel {
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
 
-#自定义控件
+# 自定义控件
 
 - (1)通过内置装饰器实现(更简单, 推荐临时使用的时候用该方式)
     - 修改模型
@@ -493,7 +493,7 @@ export class LoginModel extends BaseFormModel {
 - (2)通过集成基类模型实现(复用的解决方案, 推荐在封装通用的控件时使用)
   - 基于@supine/dy-form 定制不同Angular UI框架的动态表单 章节其实就是自定义控件
 
-#在定义控件模型的时候使用表单模型的上下文
+# 在定义控件模型的时候使用表单模型的上下文
 - 模型
 ```typescript
 import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
@@ -690,7 +690,7 @@ export class AppModule {
   }
 ```
 
-#动态控制表单模型
+# 动态控制表单模型
 modelUpdateHook(不常用，但很有用) - 动态控制表单模型
 - 表单模型
 ```typescript
