@@ -1,13 +1,10 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
   ContentChild,
   Directive,
   ElementRef,
-  Input, OnDestroy,
-  TemplateRef, ViewChild,
+  Input,
+  TemplateRef,
   ViewContainerRef,
-  ViewEncapsulation
 } from '@angular/core';
 import {FormControlConfig} from './models';
 import {FormControl} from '@angular/forms';
