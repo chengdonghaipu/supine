@@ -1,18 +1,11 @@
 import {Injector, NgModule} from '@angular/core';
 import {DyFormComponent} from './dy-form.component';
 import {
-  DyFormAreaOutlet,
-  DyFormAreaDef,
   DyFormCellOutlet,
   DyFormColumnDef,
   DyFormLabelCellDef,
   DyFormControlCellDef,
-  DyFormControlItem,
-  DyFormItemDef,
-  DyFormItemOutlet,
   DyFormFooterDef,
-  DyFormArea,
-  DyFormItemWrapDef,
   DyFormFooterOutlet,
   DyFormHeaderOutlet,
   DyFormHeaderDef,
@@ -21,18 +14,12 @@ import {CommonModule} from '@angular/common';
 import {DyLayoutComponent, DyLayoutDirective, DyLayoutItemDirective, DyFormLayoutOutlet} from './dy-layout';
 
 const export_com = [
-  DyFormAreaDef,
   DyFormColumnDef,
   DyFormLabelCellDef,
   DyFormControlCellDef,
   DyFormComponent,
-  DyFormControlItem,
-  DyFormItemDef,
   DyFormHeaderDef,
   DyFormFooterDef,
-  DyFormArea,
-  DyFormItemOutlet,
-  DyFormItemWrapDef,
   DyLayoutComponent,
   DyLayoutItemDirective,
   DyLayoutDirective
@@ -40,7 +27,6 @@ const export_com = [
 
 @NgModule({
   declarations: [
-    DyFormAreaOutlet,
     DyFormCellOutlet,
     DyFormFooterOutlet,
     DyFormHeaderOutlet,

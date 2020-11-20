@@ -25,8 +25,6 @@ import {
 import {Subject} from 'rxjs';
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {
-  DyFormAreaDef,
-  DyFormAreaOutlet,
   DyFormCellDefContext,
   DyFormCellOutlet,
   DyFormColumnDef,
@@ -123,11 +121,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   @ContentChildren(DyFormFooterDef, {descendants: true}) _formFooterDefs: QueryList<DyFormFooterDef>;
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutSelfDefs: QueryList<DyLayoutComponent>;
-
-  // @ContentChild(DyLayoutDirective, {static: true}) _customLayoutDef: DyLayoutDirective;
-  // @ContentChild(DyFormItemDef, {static: true}) _formControlItemDef: DyFormItemDef;
-
-  @ContentChild(DyFormAreaDef, {static: true}) _formAreaDef: DyFormAreaDef;
 
   @ViewChild(DyFormCellOutlet, {static: true}) _formCellOutlet: DyFormCellOutlet;
 

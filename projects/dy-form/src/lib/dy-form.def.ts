@@ -20,21 +20,6 @@ export class DyFormCellOutlet {
   }
 }
 
-
-// @Directive({selector: '[jdDyFormCell]'})
-// // tslint:disable-next-line:directive-class-suffix
-// export class DyFormCell {
-//   constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef) {
-//   }
-// }
-
-// @Directive({selector: '[jdDyFormLabelCell]'})
-// // tslint:disable-next-line:directive-class-suffix
-// export class DyFormLabelCell {
-//   constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef) {
-//   }
-// }
-
 @Directive({
   selector: '[jdDyFormLabelDef]',
   // tslint:disable-next-line:no-host-metadata-property
@@ -49,14 +34,6 @@ export class DyFormLabelCellDef {
               public elementRef: ElementRef) {
   }
 }
-
-// @Directive({selector: '[jdDyFormControlCell]'})
-// // tslint:disable-next-line:directive-class-suffix
-// export class DyFormControlCell {
-//   constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef) {
-//   }
-// }
-
 
 @Directive({
   selector: '[jdDyFormControlDef]',
@@ -73,95 +50,6 @@ export class DyFormControlCellDef {
   }
 }
 
-
-@Directive({selector: '[jdFormAreaOutlet]'})
-// tslint:disable-next-line:directive-class-suffix
-export class DyFormAreaOutlet implements OnDestroy {
-  static mostRecentAreaOutlet: { [key: string]: DyFormAreaOutlet | null } = {};
-
-  static mostRecentTemAreaOutlet: DyFormAreaOutlet | null = null;
-
-  constructor(public viewContainer: ViewContainerRef) {
-    DyFormAreaOutlet.mostRecentTemAreaOutlet = this;
-  }
-
-  ngOnDestroy() {
-    DyFormAreaOutlet.mostRecentAreaOutlet = {};
-    DyFormAreaOutlet.mostRecentTemAreaOutlet = null;
-  }
-}
-
-@Component({
-  selector: 'jd-form-area',
-  template: `
-    <ng-container jdFormAreaOutlet></ng-container>
-  `,
-  // tslint:disable-next-line:no-host-metadata-property
-  host: {
-    class: 'jd-form-area',
-    role: 'form-area',
-  },
-  styles: [`
-    jd-form-area {
-      display: block;
-    }
-  `],
-  // tslint:disable-next-line:validate-decorators
-  changeDetection: ChangeDetectionStrategy.Default,
-  encapsulation: ViewEncapsulation.None,
-})
-// tslint:disable-next-line:component-class-suffix
-export class DyFormArea {
-  @ViewChild(DyFormAreaOutlet, {static: true}) outlet: DyFormAreaOutlet;
-
-  constructor(public viewContainer: ViewContainerRef,
-              public elementRef: ElementRef) {
-  }
-}
-
-@Directive({selector: '[jdDyFormAreaDef]'})
-// tslint:disable-next-line:directive-class-suffix
-export class DyFormAreaDef {
-  constructor(public viewContainer: ViewContainerRef,
-              public elementRef: ElementRef,
-              public template: TemplateRef<any>) {
-  }
-}
-
-@Directive({selector: '[jdFormItemOutlet]'})
-export class DyFormItemOutlet implements OnDestroy {
-  static mostRecentCellOutlet: DyFormItemOutlet | null = null;
-
-  constructor(public viewContainer: ViewContainerRef) {
-    DyFormItemOutlet.mostRecentCellOutlet = this;
-  }
-
-  ngOnDestroy() {
-    if (DyFormItemOutlet.mostRecentCellOutlet === this) {
-      DyFormItemOutlet.mostRecentCellOutlet = null;
-    }
-  }
-}
-
-@Component({
-  selector: 'jd-form-item',
-  template: `
-    <ng-container jdFormItemOutlet></ng-container>
-  `,
-  // tslint:disable-next-line:no-host-metadata-property
-  host: {
-    class: 'jd-form-item',
-    role: 'row',
-  },
-  // tslint:disable-next-line:validate-decorators
-  changeDetection: ChangeDetectionStrategy.Default,
-  encapsulation: ViewEncapsulation.None,
-})
-// tslint:disable-next-line:component-class-suffix
-export class DyFormControlItem {
-  constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef) {
-  }
-}
 
 @Directive({
   selector: '[jdDyFormFooterDef]',
@@ -188,35 +76,6 @@ export class DyFormFooterOutlet {
 @Directive({selector: '[jdFormHeaderOutlet]'})
 export class DyFormHeaderOutlet {
   constructor(public viewContainer: ViewContainerRef) {
-  }
-}
-
-@Directive({
-  selector: '[jdDyFormItemWrapDef]',
-  // host: {
-  //   class: 'jd-form-item',
-  //   role: 'row',
-  // }
-})
-// tslint:disable-next-line:directive-class-suffix
-export class DyFormItemWrapDef {
-
-  constructor(public viewContainer: ViewContainerRef,
-              public elementRef: ElementRef,
-              public template: TemplateRef<any>) {
-  }
-}
-
-
-@Directive({selector: '[jdDyFormItemDef]'})
-export class DyFormItemDef {
-  // @ContentChild(DyFormItemOutlet) outlet: DyFormItemOutlet;
-  @ContentChild(DyFormItemWrapDef) wrapDef: DyFormItemWrapDef;
-
-
-  constructor(public viewContainer: ViewContainerRef,
-              public elementRef: ElementRef,
-              /*public template: TemplateRef<any>*/) {
   }
 }
 
