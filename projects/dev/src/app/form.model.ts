@@ -48,18 +48,21 @@ export class MapUtilFormModel extends BaseFormModel {
   // 矿物类型
   mineralType = [];
 
-  @SelectModel<MapUtilFormModel>({
+  /*@SelectModel<MapUtilFormModel>({
     label: '区域类型',
     initHook: (that, context) => that.optionContent = context.areaTypeContent
   })
   @ValidatorRule('required', {required: '请选择区域类型'})
-  areaType = [null];
+  areaType = [null];*/
 
   @InputModel({label: '名称'})
   @ValidatorRule(['required&maxLength:20'], {maxLength: '最大输入20个字符', required: '请输入单元名称'})
   name = [null];
+  @InputModel({label: '名称'})
+  @ValidatorRule(['required&maxLength:20'], {maxLength: '最大输入20个字符', required: '请输入单元名称'})
+  name1 = [null];
 
-  // 隐藏控件
+  /*// 隐藏控件
   @InputModel({label: '区域编号', hide: true})
   areaId = [null];
 
@@ -130,7 +133,7 @@ export class MapUtilFormModel extends BaseFormModel {
     initHook: (that, context) => that.optionContent = context.crossingType
   })
   @ValidatorRule(['required'], {max: '请选择路口类型'})
-  junctionType = [null];
+  junctionType = [null];*/
 
   /**
    * 更新表单模型钩子
@@ -140,20 +143,21 @@ export class MapUtilFormModel extends BaseFormModel {
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
   modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
-    const typeMap = {
+    /*const typeMap = {
       create: ['areaType', 'speed', 'name'], // actionType==='create' 显示 'areaType', 'speed', 'name'这几个控件 以下以此类推
       ParkingLot: ['speed', 'name', 'areaId'],
       UnloadMineralArea: ['speed', 'name', 'areaId'],
       UnloadWasteArea: ['speed', 'name', 'unloadWasteType', 'unloadMax', 'areaId'],
       // 编号、类型、名称、限速、车数量限制
-      LoadArea: ['areaType', 'speed', 'name'/*, 'loadType'*//*, 'areaId'*/, 'vehicleMax'],
+      LoadArea: ['areaType', 'speed', 'name'/!*, 'loadType'*!//!*, 'areaId'*!/, 'vehicleMax'],
       ImpassableArea: ['speed', 'name', 'areaId'],
       PassableArea: ['speed', 'name', 'areaId'],
       Road: ['speed', 'name', 'roadType', 'capacity', 'areaId'],
       Junction: ['speed', 'name', 'junctionType', 'areaId']
     };
     const controls = typeMap[this.actionType];
-    return model.filter(value => controls.includes(value.name));
+    return model.filter(value => controls.includes(value.name));*/
+    return model;
   }
 
 

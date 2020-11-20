@@ -1,5 +1,8 @@
 <ng-container jdFormHeaderOutlet></ng-container>
-<div class="jd-dy-form-body-outlet">
+<div class="jd-dy-form-body-outlet" *ngIf="!dyFormRef.customLayout; else customLayout">
   <ng-container jdDyFormCellOutlet></ng-container>
 </div>
+<ng-template #customLayout>
+  <ng-content select="jd-form-layout"></ng-content>
+</ng-template>
 <ng-container jdFormFooterOutlet></ng-container>

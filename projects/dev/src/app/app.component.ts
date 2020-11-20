@@ -8,7 +8,7 @@ import {MapUtilFormModel} from './form.model';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  dyFormRef = new DyFormRef(MapUtilFormModel, {mode: 'vertical'});
+  dyFormRef = new DyFormRef(MapUtilFormModel, {mode: 'vertical', customLayout: true});
 
   ngOnInit(): void {
   }

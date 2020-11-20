@@ -1,6 +1,20 @@
 <jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
+<!--  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'input'">
+    <input type="text">
+  </nz-form-item>
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'input1'">
+    <input type="text">
+  </nz-form-item>-->
+  <jd-form-layout>
+    <div jdDyFormLayoutItemOutlet="name"></div>
+    <div>
+      <div>
+        <ng-container jdDyFormLayoutItemOutlet="name1"></ng-container>
+      </div>
+    </div>
+  </jd-form-layout>
   <!--  name 'custom' 对应模型中的 type字段值-->
-  <ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
+  <!--<ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
     <nz-form-item>
       <ng-template [ngTemplateOutlet]="dyFormZorro.labelTpl" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
       <nz-form-control
@@ -19,8 +33,24 @@
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
-  </ng-container>
+  </ng-container>-->
 </jd-dy-form-zorro>
 
+<!--<jd-dy-form [dyFormRef]="dyFormRef">
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'input'">
+    <input type="text">
+  </nz-form-item>
+  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'input1'">
+    <input type="text">
+  </nz-form-item>
+  <jd-form-layout>
+    <div jdDyFormLayoutItemOutlet="name"></div>
+    <div>
+      <div>
+        <ng-container jdDyFormLayoutItemOutlet="name1"></ng-container>
+      </div>
+    </div>
+  </jd-form-layout>
+</jd-dy-form>-->
 <router-outlet></router-outlet>
 

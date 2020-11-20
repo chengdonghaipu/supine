@@ -33,8 +33,7 @@ import {
   DyFormFooterDef,
   DyFormFooterOutlet,
   DyFormHeaderDef,
-  DyFormHeaderOutlet,
-  DyFormItemDef
+  DyFormHeaderOutlet
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
@@ -42,6 +41,7 @@ import {debounceTime, distinctUntilChanged, takeUntil} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
 import {BreakpointObserver} from '@angular/cdk/layout';
+import {DyFormLayoutOutlet, DyLayoutComponent} from './dy-layout';
 
 /*class RecordControlItemViewTuple {
   constructor(public record: IterableChangeRecord<FormControlConfig>/!*,
@@ -82,6 +82,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _customFooterDefs = new Set<DyFormFooterDef>();
 
+  private _customLayoutDefs = new Set<DyLayoutComponent>();
+
   private _controlUIDMap = new Map<number, FormControlConfig>();
 
   private _recordControlUIDMap = new Map<number, FormControlConfig>();
@@ -102,9 +104,13 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _footerRowDefChanged = true;
 
+  private _layoutDefChanged = true;
+
   private _headerRowDefs: DyFormHeaderDef[] = [];
 
   private _footerRowDefs: DyFormFooterDef[] = [];
+
+  private _viewRefs: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>[] = [];
 
   formArea: FormGroup;
 
@@ -116,11 +122,16 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   @ContentChildren(DyFormFooterDef, {descendants: true}) _formFooterDefs: QueryList<DyFormFooterDef>;
 
+  @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutSelfDefs: QueryList<DyLayoutComponent>;
+
+  // @ContentChild(DyLayoutDirective, {static: true}) _customLayoutDef: DyLayoutDirective;
   // @ContentChild(DyFormItemDef, {static: true}) _formControlItemDef: DyFormItemDef;
 
   @ContentChild(DyFormAreaDef, {static: true}) _formAreaDef: DyFormAreaDef;
 
   @ViewChild(DyFormCellOutlet, {static: true}) _formCellOutlet: DyFormCellOutlet;
+
+  @ViewChild(DyFormLayoutOutlet, {static: true}) _formLayoutOutlet: DyFormLayoutOutlet;
 
   @ViewChild(DyFormFooterOutlet, {static: true}) _formFooterOutlet: DyFormFooterOutlet;
 
@@ -186,7 +197,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       resize$
         .pipe(debounceTime(45), distinctUntilChanged(), takeUntil(this._unsubscribe$))
-        .subscribe(value => this._setBreakpoint(value, () => this._restSetLayoutForControl()));
+        .subscribe(value => this._setBreakpoint(value, () => {
+
+        }));
     });
   }
 
@@ -213,7 +226,13 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentInit(): void {
+    this._customLayoutSelfDefs.forEach(item => this._customLayoutDefs.add(item));
   }
+
+  // registerCustomLayout(layoutDef: DyLayoutDirective) {
+  //   this._customLayoutDef = layoutDef;
+  //   this._formLayoutOutlet.viewContainer.createEmbeddedView(layoutDef.template);
+  // }
 
   addColumnDef(columnDef: DyFormColumnDef) {
     this._customColumnDefs.add(columnDef);
@@ -243,6 +262,16 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._footerRowDefChanged = true;
   }
 
+  addLayoutDef(layoutDef: DyLayoutComponent) {
+    this._customLayoutDefs.add(layoutDef);
+    this._layoutDefChanged = true;
+  }
+
+  removeLayoutDef(layoutDef: DyLayoutComponent) {
+    this._customLayoutDefs.delete(layoutDef);
+    this._layoutDefChanged = true;
+  }
+
   controlClass(config: FormControlConfig) {
     if (typeof config.controlClass === 'function') {
       return config.controlClass(this.formArea.value, this.dyFormRef.model);
@@ -255,42 +284,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       return config.labelClass(this.formArea.value, this.dyFormRef.model);
     }
     return config.labelClass || [];
-  }
-
-  private _restSetLayoutForControl() {
-    const viewContainer = this._formCellOutlet.viewContainer;
-    // console.log('_restSetLayoutForControl');
-
-    this._updateRowStyle();
-    if (!this.dyFormRef.responsiveForm) {
-      return;
-    }
-
-    const {containerCount} = this.dyFormRef;
-
-    if (containerCount > 1) {
-      const keys = Object.keys(this.areaOptions)
-        .sort((a, b) => +a - +b)
-        .map(value => +value);
-
-      keys.forEach(areaId => {
-        const _viewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
-
-        for (let i = 0, length = _viewContainer.length; i < length; i++) {
-          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
-          const context = viewRef.context;
-
-          this._setLayoutForControl(viewRef, context.model);
-        }
-      });
-    } else {
-      for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
-        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
-        const context = viewRef.context;
-
-        this._setLayoutForControl(viewRef, context.model);
-      }
-    }
   }
 
   private _setBreakpoint(hostWidth: number, breakpointChangeCallback?: () => void) {
@@ -317,45 +310,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
-  private _setLayoutForControl(view: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, config: FormControlConfig) {
-    // 获取宿主元素
-    let controlHostEl: HTMLElement = view.rootNodes[0];
-
-    for (const rootNode of view.rootNodes) {
-      if (rootNode.nodeName !== '#comment') {
-        controlHostEl = rootNode;
-        break;
-      }
-    }
-
-    if (!controlHostEl) {
-      return;
-    }
-
-    const {mode, responsiveForm} = this.dyFormRef;
-
-    const prefix = 'jd-dy-form-';
-
-    const classList = ['vertical', 'horizontal', 'responsive'].map(value => prefix + value);
-
-    this._setHostClass([prefix + mode], classList);
-
-    this._renderer.addClass(controlHostEl, 'jd-form-item');
-
-    if (config.hide) {
-      this._renderer.setStyle(controlHostEl, 'display', 'none');
-    }
-
-    if (responsiveForm) {
-      const _percentage = percentage(config.controlLayout[this.breakpoint], this.dyFormRef.column);
-      this._setStyle(controlHostEl, {
-        width: _percentage,
-        flex: `0 0 ${_percentage}`,
-        display: 'flex'
-      });
-    }
-  }
-
   private _setStyle(el: HTMLElement, value: { [key: string]: string }) {
     for (const valueKey in value) {
       this._renderer.setStyle(el, valueKey, value[valueKey]);
@@ -369,61 +323,25 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     include.forEach(value => this._renderer.addClass(el, value));
   }
 
-  private _getAreaViewIndexById(areaId: number) {
-    const outlet = this._formCellOutlet;
+  private _removeControlView({uid, name}: FormControlConfig) {
+    // 目前只允许存在一个布局容器
+    const layoutDef = Array.from(this._customLayoutDefs)[0];
 
-    for (let i = 0; i < outlet.viewContainer.length; i++) {
-      const areaView = outlet.viewContainer.get(i) as EmbeddedViewRef<any>;
+    if (layoutDef) {
+      const containers = layoutDef.layoutChildren.filter(value => value.controlName === name);
 
-      if (areaView.context.areaId === areaId) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-  private _getCreateViewIndex(areaId: number) {
-    const outlet = this._formCellOutlet;
-
-    for (let i = 0; i < outlet.viewContainer.length; i++) {
-      const areaView = outlet.viewContainer.get(i) as EmbeddedViewRef<any>;
-      const nextAreaView = outlet.viewContainer.get(i + 1) as EmbeddedViewRef<any>;
-
-      const _areaId = areaView?.context.areaId;
-      const _nextAreaId = nextAreaView?.context.areaId;
-
-      if (areaId < _areaId) {
-        return i > 0 ? i - 1 : 0;
+      if (!containers) {
+        return false;
       }
 
-      if (areaId > _areaId && areaId < _nextAreaId) {
-        return i + 1;
-      }
+      const outletViewContainer = containers[0].viewContainer;
 
-      if (!_nextAreaId) {
-        return outlet.viewContainer.length;
-      }
-    }
-
-    return 0;
-  }
-
-  private _removeControlView({uid, areaId}: FormControlConfig) {
-    // 如果存在 说明是分区模式渲染
-    let outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
-
-    if (!outletViewContainer) {
-      outletViewContainer = this._formCellOutlet.viewContainer;
-    }
-
-    for (let i = 0; i < outletViewContainer.length; i++) {
-      const viewRef = outletViewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
+      const viewRef = outletViewContainer.get(0) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
 
       const context = viewRef.context;
+
       if (context.model.config.uid === uid) {
-        // 移除视图
-        outletViewContainer.remove(i);
+        outletViewContainer.clear();
         return true;
       }
     }
@@ -431,10 +349,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return false;
   }
 
-  private _renderCustomControl(record: IterableChangeRecord<FormControlConfig>) {
+  private _isRenderControl(record: IterableChangeRecord<FormControlConfig>) {
     const item = record.item;
 
-    const {containerCount} = this.dyFormRef;
     // 是否需要渲染控件
     let isRenderControl = true;
 
@@ -464,75 +381,39 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
     }
 
+    return isRenderControl;
+  }
+
+  private _renderLayoutModeControl(record: IterableChangeRecord<FormControlConfig>, currentIndex: number) {
+    const item = record.item;
+    // 是否需要渲染控件
+    const isRenderControl = this._isRenderControl(record);
+
     const dyFormColumnDef = this._columnDefsByName.get(item.type);
 
-    const outlet = this._formCellOutlet;
-
-    let outletViewContainer = outlet.viewContainer;
-
-    if (containerCount > 1) {
-      /**
-       * 渲染区域
-       */
-      this._setHostClass(['jd-dy-form-area-mode'], []);
-      const areaViewIndex = this._getAreaViewIndexById(item.areaId);
-
-      if (areaViewIndex < 0) {
-        const createIndex = this._getCreateViewIndex(item.areaId);
-
-        outlet.viewContainer.createEmbeddedView(this._formAreaDef.template, item, createIndex);
-
-        DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId] = DyFormAreaOutlet.mostRecentTemAreaOutlet;
-      }
-
-      outletViewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[item.areaId].viewContainer;
-
-      if (!isRenderControl) {
-        return;
-      }
-    } else {
-      this._setHostClass([], ['jd-dy-form-area-mode']);
+    if (!dyFormColumnDef) {
+      throw Error(`控件类型 ${item.type} 未注册`);
     }
 
-    if (dyFormColumnDef) {
-      // const {_formControlItemDef} = this;
-
-      if (!isRenderControl) {
-        return;
-      }
-
-      const view = outletViewContainer.createEmbeddedView(
-        dyFormColumnDef.template,
-        new DyFormCellDefContext(null, record.item, -1, 0)
-      );
-      // console.log(_formControlItemDef, _formControlItemDef);
-
-      this._recordControlUIDMap.set(record.item.uid, record.item);
-      // view.context.childView = new RecordControlItemViewTuple(record);
-
-      this._setLayoutForControl(view, record.item);
-      /*if (DyFormItemOutlet.mostRecentCellOutlet) {
-        const {viewContainer} = DyFormItemOutlet.mostRecentCellOutlet;
-        const labelView = viewContainer.createEmbeddedView(
-          dyFormColumnDef.labelCell.template,
-          new DyFormCellDefContext(null, record.item, -1, 0)
-        );
-
-        const controlView = viewContainer.createEmbeddedView(
-          dyFormColumnDef.controlCell.template,
-          new DyFormCellDefContext(null, record.item, -1, 0)
-        );
-
-        this._recordControlUIDMap.set(record.item.uid, record.item);
-
-        view.context.childView = new RecordControlItemViewTuple(record, labelView, controlView);
-
-        this._setLayoutForControl(view, record.item);
-      } else {
-        throw Error(`error`);
-      }*/
+    if (!isRenderControl) {
+      return;
     }
-    // console.log('_renderCustomControl');
+    // 目前只允许存在一个布局容器
+    const layoutDef = Array.from(this._customLayoutDefs)[0];
+
+    const containers = layoutDef.layoutChildren.filter(value => value.controlName === item.name);
+
+    if (!containers.length) {
+      throw Error(`jd-form-layout 里 无法找到控件 ${item.name}`);
+    }
+
+    // console.log(currentIndex, currentIndex);
+    this._viewRefs[currentIndex] = containers[0].viewContainer.createEmbeddedView(
+      dyFormColumnDef.template,
+      new DyFormCellDefContext(null, record.item, -1, 0)
+    );
+
+    this._recordControlUIDMap.set(record.item.uid, record.item);
   }
 
   private _addControl(record: IterableChangeRecord<FormControlConfig>) {
@@ -737,9 +618,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   private _removeControl(options: FormControlConfig) {
-    const result = this._removeControlView(options);
-
-    console.log(result, '_removeControl');
+    this._removeControlView(options);
 
     const {controlName, group, parent, name} = options;
 
@@ -773,7 +652,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         if (!parentOption.layoutGroup) {
           control = this._getFormGroup(item.name, true) as FormGroup;
         } else {
-          control =  this.formArea;
+          control = this.formArea;
         }
 
         childControlMap[item.name] = control.get(item.controlName) as FormControl;
@@ -796,10 +675,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   private _updateRowIndexContext() {
-    const viewContainer = this._formCellOutlet.viewContainer;
-
-    const {containerCount} = this.dyFormRef;
-
     const attachContext = (viewRef: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, count: number, renderIndex: number) => {
       const {model} = viewRef.context;
 
@@ -844,37 +719,16 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
     };
 
-    if (containerCount > 1) {
-      const keys = Object.keys(this.areaOptions)
-        .sort((a, b) => +a - +b)
-        .map(value => +value);
+    for (let renderIndex = 0, count = this._viewRefs.length; renderIndex < count; renderIndex++) {
+      const viewRef = this._viewRefs[renderIndex];
 
-      let renderIndex = 0;
-
-      const count = this.options.length;
-
-      keys.forEach(areaId => {
-        const _viewContainer = DyFormAreaOutlet.mostRecentAreaOutlet[areaId].viewContainer;
-
-        for (let i = 0, length = _viewContainer.length; i < length; i++, renderIndex++) {
-          const viewRef = _viewContainer.get(i) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
-
-          attachContext(viewRef, count, renderIndex);
-        }
-      });
-    } else {
-      for (let renderIndex = 0, count = viewContainer.length; renderIndex < count; renderIndex++) {
-        const viewRef = viewContainer.get(renderIndex) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
-
-        attachContext(viewRef, count, renderIndex);
-      }
+      attachContext(viewRef, count, renderIndex);
     }
   }
 
   private _applyChanges(changes: IterableChanges<FormControlConfig>) {
     this._controlUIDMap.clear();
     this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
-
 
     changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>,
                               previousIndex: number | null,
@@ -885,7 +739,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._addControl(record);
 
         if (!this._recordControlUIDMap.get(record.item.uid)) {
-          this._renderCustomControl(record);
+          // customLayout ? this._renderLayoutModeControl(record, currentIndex) : this._renderCustomControl(record);
+          this._renderLayoutModeControl(record, currentIndex);
         }
 
         console.log('新增 | 修改', record.item.name);
@@ -894,6 +749,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         console.log('删除', record.item.name, previousIndex);
         if (!this._controlUIDMap.get(record.item.uid)) {
           this._removeControl(record.item);
+          this._viewRefs.splice(previousIndex, 1);
         }
       } else {
         console.log('移动');
@@ -904,7 +760,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     this._updateRowIndexContext();
 
-    this._updateRowStyle();
+    // this._updateRowStyle();
 
     Promise.resolve().then(() => {
       this._cdf.markForCheck();
@@ -996,42 +852,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       this._forceRenderFooterRows();
       this._headerRowDefChanged = false;
     }
-
-    this._updateRowStyle();
-    // console.log('_cacheColumnDefs');
-  }
-
-  private _updateRowStyle() {
-    const labelEls = this._elementRef.nativeElement?.querySelectorAll('.jd-form-label') as NodeListOf<HTMLLabelElement>;
-    const controlEls = this._elementRef.nativeElement?.querySelectorAll('.jd-form-control') as NodeListOf<HTMLElement>;
-
-    if (this.dyFormRef?.responsiveForm) {
-      labelEls?.forEach(value => {
-        this._setStyle(value, {
-          flex: this.dyFormRef.labelColLayout[this.breakpoint]
-        });
-      });
-    } else if (this.dyFormRef?.verticalForm) {
-      const {verticalLayout: {labelCol, controlCol}} = this.dyFormRef;
-
-      const _percentageLabel = percentage(labelCol, this.dyFormRef.column);
-      const _percentageControl = percentage(controlCol, this.dyFormRef.column);
-
-      const xs = this._breakpointObserver.isMatched(DyFormBreakpoints.XS);
-
-      labelEls?.forEach(value => {
-        this._setStyle(value, {
-          flex: xs ? '0 0 100%' : `0 0 ${_percentageLabel}`
-        });
-      });
-      controlEls?.forEach(value => {
-        this._setStyle(value, {
-          flex: xs ? '0 0 100%' : `0 0 ${_percentageControl}`
-        });
-      });
-    }
-    // console.log(labelEls.length, 'labelEls');
-    // console.log(controlEls.length, 'controlEls');
   }
 
   private _cacheColumnDefs() {

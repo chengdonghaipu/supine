@@ -14,6 +14,8 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
 
   model: T;
 
+  customLayout = false;
+
   column = 24;
 
   gridBreakpoints: ControlLayout & { unit: string } = {

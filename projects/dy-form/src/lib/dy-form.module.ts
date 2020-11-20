@@ -15,9 +15,10 @@ import {
   DyFormItemWrapDef,
   DyFormFooterOutlet,
   DyFormHeaderOutlet,
-  DyFormHeaderDef
+  DyFormHeaderDef,
 } from './dy-form.def';
 import {CommonModule} from '@angular/common';
+import {DyLayoutComponent, DyLayoutDirective, DyLayoutItemDirective, DyFormLayoutOutlet} from './dy-layout';
 
 const export_com = [
   DyFormAreaDef,
@@ -31,7 +32,10 @@ const export_com = [
   DyFormFooterDef,
   DyFormArea,
   DyFormItemOutlet,
-  DyFormItemWrapDef
+  DyFormItemWrapDef,
+  DyLayoutComponent,
+  DyLayoutItemDirective,
+  DyLayoutDirective
 ];
 
 @NgModule({
@@ -40,6 +44,7 @@ const export_com = [
     DyFormCellOutlet,
     DyFormFooterOutlet,
     DyFormHeaderOutlet,
+    DyFormLayoutOutlet,
     ...export_com
   ],
   imports: [
