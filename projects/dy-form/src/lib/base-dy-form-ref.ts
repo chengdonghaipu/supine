@@ -42,7 +42,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
     controlCol: 16,
   };
 
-  private _areaOptions: { [key: number]: FormControlConfig[] } = {};
+  // private _areaOptions: { [key: number]: FormControlConfig[] } = {};
 
   protected readonly _renderData = new BehaviorSubject<FormControlConfig[]>([]);
 
@@ -50,19 +50,11 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
   /**
    * 容器个数
    */
-  containerCount = 1;
+  // containerCount = 1;
 
-  get containerArr() {
-    const arr = [];
-    for (let i = 0; i < this.containerCount; i++) {
-      arr.push(i);
-    }
-    return arr;
-  }
-
-  get areaOptions() {
+/*  get areaOptions() {
     return this._areaOptions;
-  }
+  }*/
 
   get verticalForm() {
     return this.mode === 'vertical';
@@ -73,7 +65,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
   }
 
   get responsiveForm() {
-    return this.mode === 'responsive';
+    return false;
   }
 
   private readonly _optionMap = new Map<string, FormControlConfig>();
@@ -86,7 +78,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
     return this._renderData.value;
   }
 
-  generateAreaOptions(model?: FormControlConfig[]) {
+/*  generateAreaOptions(model?: FormControlConfig[]) {
     const options = model || this.options;
 
     options.forEach(value => {
@@ -100,7 +92,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
     const keys = Object.keys(this.areaOptions);
 
     this.containerCount = keys.length;
-  }
+  }*/
 
   /**
    * 注册模型!

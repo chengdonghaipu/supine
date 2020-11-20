@@ -129,7 +129,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
     // console.log((options || this.allOptions).length);
 
-    this.generateAreaOptions(options || this.allOptions);
+    // this.generateAreaOptions(options || this.allOptions);
     this.renderDataNext(options || this.allOptions);
   }
 
@@ -267,7 +267,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       option.push(...control);
     }
 
-    this.generateAreaOptions(option);
+    // this.generateAreaOptions(option);
     this.renderDataNext(option);
 
     return this;
@@ -356,7 +356,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       return this;
     }
 
-    this.generateAreaOptions(option);
+    // this.generateAreaOptions(option);
     this.renderDataNext(option);
 
     return this;

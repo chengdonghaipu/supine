@@ -363,8 +363,29 @@
     </nz-form-item>
   </ng-container>-->
   <jd-form-layout>
-    <ng-content select="jd-form-layout"></ng-content>
+    <ng-container [ngSwitch]="dyForm.dyFormRef.mode">
+      <ng-container *ngSwitchCase="'vertical'">
+        <form nz-form nzLayout="vertical" [formGroup]="dyForm.formArea">
+          <ng-container *ngFor="let control of dyForm.options">
+            <ng-container jdDyFormLayoutItemOutlet="{{control.name}}"></ng-container>
+          </ng-container>
+        </form>
+      </ng-container>
+      <ng-container *ngSwitchCase="'horizontal'">
+        <form nz-form nzLayout="horizontal" [formGroup]="dyForm.formArea">
+          <ng-container *ngFor="let control of dyForm.options">
+            <ng-container jdDyFormLayoutItemOutlet="{{control.name}}"></ng-container>
+          </ng-container>
+        </form>
+      </ng-container>
+      <ng-container *ngSwitchCase="'inline'">
+        <form nz-form nzLayout="inline" [formGroup]="dyForm.formArea">
+          <ng-container *ngFor="let control of dyForm.options">
+            <ng-container jdDyFormLayoutItemOutlet="{{control.name}}"></ng-container>
+          </ng-container>
+        </form>
+      </ng-container>
+    </ng-container>
   </jd-form-layout>
-  <jd-form-area *jdDyFormAreaDef></jd-form-area>
 </jd-dy-form>
 

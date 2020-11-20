@@ -82,6 +82,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
     this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
     // console.log(this._customLayoutDefs);
     // 注册自定义布局
+    console.log(this._customLayoutDefs, '_customLayoutDefs');
     this._customLayoutDefs.forEach(item => this.dyForm.addLayoutDef(item));
     // 增加form Header 可以有多行
     this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));

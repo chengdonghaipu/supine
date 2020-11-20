@@ -145,9 +145,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return this._options;
   }
 
-  get areaOptions() {
+ /* get areaOptions() {
     return this.dyFormRef.areaOptions;
-  }
+  }*/
 
   /*get renderData() {
     const keys = Object.keys(this.areaOptions)
