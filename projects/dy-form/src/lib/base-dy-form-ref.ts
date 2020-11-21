@@ -14,33 +14,33 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
 
   model: T;
 
-  customLayout = false;
+  // customLayout = false;
+  //
+  // column = 24;
 
-  column = 24;
+  // gridBreakpoints: ControlLayout & { unit: string } = {
+  //   xs: 0,
+  //   sm: 576,
+  //   md: 768,
+  //   lg: 992,
+  //   xl: 1200,
+  //   xxl: 1600,
+  //   unit: 'px'
+  // };
+  //
+  // labelColLayout: ControlLayout = {
+  //   xs: '0 0 100%',
+  //   sm: '0 0 100%',
+  //   md: '0 0 25%',
+  //   lg: '0 0 25%',
+  //   xl: '0 0 25%',
+  //   xxl: '0 0 25%'
+  // };
 
-  gridBreakpoints: ControlLayout & { unit: string } = {
-    xs: 0,
-    sm: 576,
-    md: 768,
-    lg: 992,
-    xl: 1200,
-    xxl: 1600,
-    unit: 'px'
-  };
-
-  labelColLayout: ControlLayout = {
-    xs: '0 0 100%',
-    sm: '0 0 100%',
-    md: '0 0 25%',
-    lg: '0 0 25%',
-    xl: '0 0 25%',
-    xxl: '0 0 25%'
-  };
-
-  verticalLayout = {
-    labelCol: 6,
-    controlCol: 16,
-  };
+  // verticalLayout = {
+  //   labelCol: 6,
+  //   controlCol: 16,
+  // };
 
   // private _areaOptions: { [key: number]: FormControlConfig[] } = {};
 
@@ -56,17 +56,17 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
     return this._areaOptions;
   }*/
 
-  get verticalForm() {
-    return this.mode === 'vertical';
-  }
-
-  get horizontalForm() {
-    return this.mode === 'horizontal';
-  }
-
-  get responsiveForm() {
-    return false;
-  }
+  // get verticalForm() {
+  //   return this.mode === 'vertical';
+  // }
+  //
+  // get horizontalForm() {
+  //   return this.mode === 'horizontal';
+  // }
+  //
+  // get responsiveForm() {
+  //   return false;
+  // }
 
   private readonly _optionMap = new Map<string, FormControlConfig>();
 

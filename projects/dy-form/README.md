@@ -3,7 +3,8 @@
 - [相关库](#相关库)
 - [定制动态表单](#定制动态表单)
 - [使用定制好的的动态表单](#使用定制好的的动态表单)
-- [自定义控件布局](#自定义布局)
+- [自定义控件布局](#自定义控件布局)
+- [自定义布局](#自定义布局)
 - [自定义控件](#自定义控件)
 - [在定义控件模型的时候使用表单模型的上下文](#在定义控件模型的时候使用表单模型的上下文)
 - [自定义验证](#自定义验证)
@@ -312,7 +313,7 @@ export class AppComponent implements OnInit {
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/login-dy-form.png)
 - 组件内部我们只需要维护极少数代码就能完成表单的相关操作啦
   
-# 自定义布局
+# 自定义控件布局
 
 - 修改模型
 ```typescript
@@ -407,6 +408,42 @@ export class LoginModel extends BaseFormModel {
   
 ![Image text](https://readme-image.oss-cn-shenzhen.aliyuncs.com/layout_preview.png)
 - 看上去挺多的 但只需要把常见的使用场景封装好了 以后开发就不要写什么模板了
+
+# 自定义布局  
+**超简单的自定义布局方式-再也不用担心动态表单布局难的问题了**  
+**注意: @supine/dy-form-zorro 自定义布局方式跟这个稍微有一点点区别**
+```angular2html
+<jd-dy-form [dyFormRef]="dyFormRef" #dyForm>
+    <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'INPUT'">
+        <!--   省略控件定义部分     -->
+    </nz-form-item>
+    <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'INPUT_NUMBER'">
+        <!--   省略控件定义部分     -->
+    </nz-form-item>
+    <!--   省略控件定义部分 假设还有很多控件类型     -->
+    <jd-form-layout>
+        <form nz-form nzLayout="vertical" [formGroup]="dyForm.formArea">
+            <div>
+                <div>
+                    <!--      controlName1 在表单模型中定义好的              -->
+                    <ng-container jdDyFormLayoutItemOutlet="controlName1"></ng-container>                
+                </div>
+            </div>
+            <div>
+                <div>
+                    <!--      controlName2 在表单模型中定义好的              -->
+                    <ng-container jdDyFormLayoutItemOutlet="controlName2"></ng-container>                
+                </div>
+            </div>
+            <!--      这个是@supine/dy-form-zorro所用的方式               -->
+            <!--<ng-container *ngFor="let control of dyForm.options">
+               <ng-container jdDyFormLayoutItemOutlet="{{control.name}}"></ng-container>
+            </ng-container>-->
+        </form>
+    </jd-form-layout>
+</jd-dy-form>
+```
+到此自定义布局就完成了 轻轻松松布局出任何想要的布局
 
 # 自定义控件
 

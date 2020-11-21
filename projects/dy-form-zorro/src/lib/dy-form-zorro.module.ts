@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { DyFormZorroComponent } from './dy-form-zorro.component';
+import {DyFormCustomLayout, DyFormZorroComponent} from './dy-form-zorro.component';
 import {DyFormModule} from '@supine/dy-form';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NzFormModule} from 'ng-zorro-antd/form';
@@ -13,7 +13,7 @@ import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
 
 
 @NgModule({
-  declarations: [DyFormZorroComponent],
+  declarations: [DyFormZorroComponent, DyFormCustomLayout],
   imports: [
     DyFormModule,
     ReactiveFormsModule,
@@ -25,6 +25,6 @@ import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
     NzDatePickerModule,
     NzTimePickerModule,
   ],
-  exports: [DyFormZorroComponent, DyFormModule]
+  exports: [DyFormZorroComponent, DyFormModule, DyFormCustomLayout]
 })
 export class DyFormZorroModule { }

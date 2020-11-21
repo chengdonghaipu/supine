@@ -188,11 +188,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       this._resizeEvent = _renderer.listen('window', 'resize', () => resize$.next(_elementRef.nativeElement.offsetWidth));
 
-      resize$
-        .pipe(debounceTime(45), distinctUntilChanged(), takeUntil(this._unsubscribe$))
-        .subscribe(value => this._setBreakpoint(value, () => {
-
-        }));
+      // resize$
+      //   .pipe(debounceTime(45), distinctUntilChanged(), takeUntil(this._unsubscribe$))
+      //   .subscribe(value => this._setBreakpoint(value, () => {
+      //
+      //   }));
     });
   }
 
@@ -212,10 +212,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         this._options = value;
       });
 
-    const offsetWidth = this._elementRef.nativeElement.offsetWidth;
+    // const offsetWidth = this._elementRef.nativeElement.offsetWidth;
 
     // this._watchDyFormRef();
-    this._setBreakpoint(offsetWidth);
+    // this._setBreakpoint(offsetWidth);
   }
 
   ngAfterContentInit(): void {
@@ -281,26 +281,26 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _setBreakpoint(hostWidth: number, breakpointChangeCallback?: () => void) {
     // tslint:disable-next-line:prefer-const one-variable-per-declaration
-    let _bps = [], gridBreakpoints = this.dyFormRef.gridBreakpoints;
-
-    for (const gridBreakpointsKey in gridBreakpoints) {
-      if (gridBreakpointsKey !== 'unit' && gridBreakpoints.hasOwnProperty(gridBreakpointsKey)) {
-        _bps.push({name: gridBreakpointsKey, value: gridBreakpoints[gridBreakpointsKey]});
-      }
-    }
-
-    _bps = _bps.sort((a, b) => b.value - a.value);
-
-    for (let i = 0; i < _bps.length; i++) {
-      if (_bps[i].value < hostWidth) {
-        if (this._breakpoint !== _bps[i].name) {
-          this._setHostClass([_bps[i].name], this._breakpoint ? [this._breakpoint] : []);
-          this._breakpoint = _bps[i].name;
-          breakpointChangeCallback && breakpointChangeCallback();
-        }
-        break;
-      }
-    }
+    // let _bps = [], gridBreakpoints = this.dyFormRef.gridBreakpoints;
+    //
+    // for (const gridBreakpointsKey in gridBreakpoints) {
+    //   if (gridBreakpointsKey !== 'unit' && gridBreakpoints.hasOwnProperty(gridBreakpointsKey)) {
+    //     _bps.push({name: gridBreakpointsKey, value: gridBreakpoints[gridBreakpointsKey]});
+    //   }
+    // }
+    //
+    // _bps = _bps.sort((a, b) => b.value - a.value);
+    //
+    // for (let i = 0; i < _bps.length; i++) {
+    //   if (_bps[i].value < hostWidth) {
+    //     if (this._breakpoint !== _bps[i].name) {
+    //       this._setHostClass([_bps[i].name], this._breakpoint ? [this._breakpoint] : []);
+    //       this._breakpoint = _bps[i].name;
+    //       breakpointChangeCallback && breakpointChangeCallback();
+    //     }
+    //     break;
+    //   }
+    // }
   }
 
   private _setStyle(el: HTMLElement, value: { [key: string]: string }) {
@@ -825,10 +825,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentChecked(): void {
-    const offsetWidth = this._elementRef.nativeElement.offsetWidth;
+    // const offsetWidth = this._elementRef.nativeElement.offsetWidth;
 
     // this._watchDyFormRef();
-    this._setBreakpoint(offsetWidth);
+    // this._setBreakpoint(offsetWidth);
     this._cacheColumnDefs();
 
     if (this._columnDefsByName.size && this._willRenderChanges) {

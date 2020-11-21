@@ -385,6 +385,9 @@
           </ng-container>
         </form>
       </ng-container>
+      <ng-container *ngSwitchCase="'custom'">
+        <ng-template [ngTemplateOutlet]="customLayoutDef?.template" [ngTemplateOutletContext]="{$implicit: dyForm.options}"></ng-template>
+      </ng-container>
     </ng-container>
   </jd-form-layout>
 </jd-dy-form>

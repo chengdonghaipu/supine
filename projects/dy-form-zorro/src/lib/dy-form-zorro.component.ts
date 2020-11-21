@@ -2,7 +2,7 @@ import {
   AfterContentInit,
   ChangeDetectionStrategy,
   Component, ContentChild,
-  ContentChildren,
+  ContentChildren, Directive,
   Input,
   OnInit,
   QueryList, TemplateRef,
@@ -16,9 +16,17 @@ import {
   DyFormHeaderDef,
   DyFormRef,
   DyLayoutComponent,
-  DyLayoutDirective
+  DyLayoutDirective,
+  FormControlConfig
 } from '@supine/dy-form';
 import {FormControl} from '@angular/forms';
+
+@Directive({selector: '[jdDyFormCustomLayout]'})
+// tslint:disable-next-line:directive-class-suffix
+export class DyFormCustomLayout {
+  constructor(public template: TemplateRef<{ $implicit: FormControlConfig[] }>) {
+  }
+}
 
 @Component({
   selector: 'jd-dy-form-zorro',
@@ -58,7 +66,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutDefs: QueryList<DyLayoutComponent>;
 
-  // @ContentChild(DyLayoutDirective) _customLayoutDef: DyLayoutDirective;
+  @ContentChild(DyFormCustomLayout) customLayoutDef: DyFormCustomLayout;
 
   @Input() dyFormRef: DyFormRef<any>;
 
@@ -82,17 +90,11 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
     this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
     // console.log(this._customLayoutDefs);
     // 注册自定义布局
-    console.log(this._customLayoutDefs, '_customLayoutDefs');
     this._customLayoutDefs.forEach(item => this.dyForm.addLayoutDef(item));
     // 增加form Header 可以有多行
     this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));
     // 注册表单控件模板
     this._formColumnDefs.forEach(item => this.dyForm.addColumnDef(item));
-
-    // this.dyForm.registerCustomLayout(this._customLayoutDef);
-    setTimeout(() => {
-      // console.log(this._customLayoutDef);
-    }, 1000);
   }
 
 }

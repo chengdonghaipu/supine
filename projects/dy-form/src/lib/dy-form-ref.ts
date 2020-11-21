@@ -1,4 +1,3 @@
-import {DyFormMode} from './type';
 import {BaseModel, FormControlConfig} from './models';
 import {Type} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
@@ -11,21 +10,19 @@ import {DyFormComponent} from './dy-form.component';
 import {universal_valid} from './validator-fn';
 
 
-interface InitialData {
-  mode?: DyFormMode;
+export interface DyFormRefInitialData {
+  // column?: number;
 
-  column?: number;
-
-  controlLayout?: ControlLayout;
+  // controlLayout?: ControlLayout;
   //
-  gridBreakpoints?: ControlLayout & { unit: string };
+  // gridBreakpoints?: ControlLayout & { unit: string };
 
-  customLayout?: boolean;
+  // customLayout?: boolean;
 
-  verticalLayout?: {
-    labelCol: number,
-    controlCol: number,
-  };
+  // verticalLayout?: {
+  //   labelCol: number,
+  //   controlCol: number,
+  // };
 }
 
 export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
@@ -34,18 +31,18 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
   dyForm: DyFormComponent;
 
-  protected modelSet = new Map<Type<any>, FormControlConfig[]>();
+  // protected modelSet = new Map<Type<any>, FormControlConfig[]>();
   /**
    * 默认所有控件都按照这个配置进行响应式变化
    */
-  controlLayout: ControlLayout = {
-    xs: this.column,
-    sm: this.column / 2,
-    md: this.column / 2,
-    lg: this.column / 3,
-    xl: this.column / 4,
-    xxl: this.column / 4
-  };
+  // controlLayout: ControlLayout = {
+  //   xs: this.column,
+  //   sm: this.column / 2,
+  //   md: this.column / 2,
+  //   lg: this.column / 3,
+  //   xl: this.column / 4,
+  //   xxl: this.column / 4
+  // };
 
   private _disabledOrEnabled(keys: string[] | string, enabled: boolean) {
     const _updateField = [];
@@ -59,7 +56,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     this.updateControl(_updateField);
   }
 
-  constructor(model: Type<T>, initialData: InitialData = {}) {
+  constructor(model: Type<T>, initialData: DyFormRefInitialData = {}) {
     super();
     this.registeredModel(model);
 
@@ -109,9 +106,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
         throw Error(`${value.name} always exists`);
       }
       optionMap.set(value.name, value);
-      if (!value.controlLayout) {
-        value.controlLayout = this.controlLayout;
-      }
+      // if (!value.controlLayout) {
+      //   value.controlLayout = this.controlLayout;
+      // }
     });
 
     this.allOptions = model;
@@ -253,9 +250,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     const option = this.options;
 
     control.forEach(value => {
-      if (!value.controlLayout) {
-        value.controlLayout = this.controlLayout;
-      }
+      // if (!value.controlLayout) {
+      //   value.controlLayout = this.controlLayout;
+      // }
       value.oldControl = undefined;
     });
 
