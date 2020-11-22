@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DyFormRef} from '@supine/dy-form';
 import {MapUtilFormModel} from './form.model';
+import {ZorroDyFormRef} from '@supine/dy-form-zorro';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import {MapUtilFormModel} from './form.model';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  dyFormRef = new DyFormRef(MapUtilFormModel, {mode: 'vertical', customLayout: true});
+  dyFormRef = new ZorroDyFormRef(MapUtilFormModel, {mode: 'custom'});
 
   ngOnInit(): void {
   }

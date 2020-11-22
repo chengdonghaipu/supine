@@ -1,16 +1,12 @@
-import {DyFormMode} from './type';
 import {BaseModel, FormControlConfig} from './models';
 import {Type} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
 import {BaseFormModel} from './models';
-import {ControlLayout} from './models/type';
 
 
 export abstract class AbstractDyFormRef<T extends BaseFormModel> {
   abstract dyForm;
-
-  mode: DyFormMode = 'vertical';
 
   model: T;
 

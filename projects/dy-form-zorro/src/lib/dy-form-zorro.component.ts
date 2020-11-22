@@ -20,6 +20,7 @@ import {
   FormControlConfig
 } from '@supine/dy-form';
 import {FormControl} from '@angular/forms';
+import {ZorroDyFormRef} from './dy-form-ref';
 
 @Directive({selector: '[jdDyFormCustomLayout]'})
 // tslint:disable-next-line:directive-class-suffix
@@ -68,7 +69,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
 
   @ContentChild(DyFormCustomLayout) customLayoutDef: DyFormCustomLayout;
 
-  @Input() dyFormRef: DyFormRef<any>;
+  @Input() dyFormRef: ZorroDyFormRef<any>;
 
   hasError(control: FormControl) {
     return control.errors && Object.keys(control.errors).length;
@@ -88,9 +89,11 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     // 增加form Footer 可以有多行
     this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
-    // console.log(this._customLayoutDefs);
-    // 注册自定义布局
-    this._customLayoutDefs.forEach(item => this.dyForm.addLayoutDef(item));
+    console.log(this._customLayoutDefs);
+    if (this.dyFormRef.mode === 'custom') {
+      // 注册自定义布局
+      this._customLayoutDefs.forEach(item => this.dyForm.addLayoutDef(item));
+    }
     // 增加form Header 可以有多行
     this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));
     // 注册表单控件模板

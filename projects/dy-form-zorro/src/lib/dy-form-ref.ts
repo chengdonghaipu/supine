@@ -14,7 +14,14 @@ interface InitialData extends DyFormRefInitialData {
 
 
 export class ZorroDyFormRef<T extends BaseFormModel> extends DyFormRef<T> {
+  mode: DyFormMode = 'vertical';
+
   constructor(model: Type<T>, initialData: InitialData = {}) {
     super(model, initialData);
+    for (const initialDataKey in initialData) {
+      if (initialData.hasOwnProperty(initialDataKey)) {
+        this[initialDataKey] = initialData[initialDataKey];
+      }
+    }
   }
 }

@@ -1,9 +1,8 @@
 import {BaseModel, FormControlConfig} from './models';
 import {Type} from '@angular/core';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {AsyncValidatorFn, FormControl, ValidatorFn} from '@angular/forms';
 import {BaseFormModel} from './models';
-import {ControlLayout} from './models/type';
 import {ATTACHED_MODEL, DY_FORM_OPTIONS, VALIDATOR_RULE} from './decorator/form-metadata';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {DyFormComponent} from './dy-form.component';
