@@ -754,7 +754,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._updateRowIndexContext();
 
     // this._updateRowStyle();
-
+    this._cdf.detectChanges();
     Promise.resolve().then(() => {
       this._cdf.markForCheck();
       if (!this._dyFormInit) {

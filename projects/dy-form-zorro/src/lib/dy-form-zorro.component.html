@@ -363,7 +363,7 @@
     </nz-form-item>
   </ng-container>-->
   <jd-form-layout>
-    <ng-container [ngSwitch]="dyForm.dyFormRef.mode">
+    <ng-container [ngSwitch]="dyFormRef.mode">
       <ng-container *ngSwitchCase="'vertical'">
         <form nz-form nzLayout="vertical" [formGroup]="dyForm.formArea">
           <ng-container *ngFor="let control of dyForm.options">

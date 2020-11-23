@@ -6,7 +6,7 @@ import {
   Input,
   OnInit,
   QueryList, TemplateRef,
-  ViewChild,
+  ViewChild, ViewContainerRef,
   ViewEncapsulation
 } from '@angular/core';
 import {
@@ -16,7 +16,7 @@ import {
   DyFormHeaderDef,
   DyFormRef,
   DyLayoutComponent,
-  DyLayoutDirective,
+  DyLayoutDirective, DyLayoutItemDirective,
   FormControlConfig
 } from '@supine/dy-form';
 import {FormControl} from '@angular/forms';
@@ -25,7 +25,8 @@ import {ZorroDyFormRef} from './dy-form-ref';
 @Directive({selector: '[jdDyFormCustomLayout]'})
 // tslint:disable-next-line:directive-class-suffix
 export class DyFormCustomLayout {
-  constructor(public template: TemplateRef<{ $implicit: FormControlConfig[] }>) {
+  constructor(public viewContainer: ViewContainerRef, public template: TemplateRef<{ $implicit: FormControlConfig[] }>) {
+    viewContainer.createEmbeddedView(template);
   }
 }
 
@@ -66,6 +67,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutDefs: QueryList<DyLayoutComponent>;
+  @ContentChildren(DyLayoutItemDirective, {descendants: true}) _customLayoutDefsV: QueryList<DyLayoutItemDirective>;
 
   @ContentChild(DyFormCustomLayout) customLayoutDef: DyFormCustomLayout;
 
@@ -89,7 +91,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     // 增加form Footer 可以有多行
     this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
-    console.log(this._customLayoutDefs);
+    console.log(this._customLayoutDefs.length, this._customLayoutDefsV.length);
     if (this.dyFormRef.mode === 'custom') {
       // 注册自定义布局
       this._customLayoutDefs.forEach(item => this.dyForm.addLayoutDef(item));

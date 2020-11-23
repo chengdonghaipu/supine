@@ -34,15 +34,19 @@
       </nz-form-control>
     </nz-form-item>
   </ng-container>-->
-  <jd-form-layout>
-    <form nz-form nzLayout="horizontal" [formGroup]="dyFormZorro?.dyForm.formArea">
-      <ng-container jdDyFormLayoutItemOutlet="name"></ng-container>
-      <ng-container jdDyFormLayoutItemOutlet="name1"></ng-container>
-<!--      <ng-container *ngFor="let control of dyFormZorro?.dyForm.options">-->
-<!--        <ng-container jdDyFormLayoutItemOutlet="{{control.name}}"></ng-container>-->
-<!--      </ng-container>-->
-    </form>
-  </jd-form-layout>
+  <ng-container *jdDyFormCustomLayout>
+    <jd-form-layout>
+      <form nz-form nzLayout="horizontal" [formGroup]="dyFormZorro?.dyForm.formArea">
+        <ng-container jdDyFormLayoutItemOutlet="name"></ng-container>
+        <ng-container jdDyFormLayoutItemOutlet="name1"></ng-container>
+        <ng-container *ngFor="let control of dyFormRef">
+          <div>gfj</div>
+          <ng-container jdDyFormLayoutItemOutlet="{{control.name}}"></ng-container>
+        </ng-container>
+      </form>
+    </jd-form-layout>
+  </ng-container>
+
 </jd-dy-form-zorro>
 
 <!--<jd-dy-form [dyFormRef]="dyFormRef">
