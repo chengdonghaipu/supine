@@ -49,12 +49,18 @@ export class SelectControl<M = any> extends ZorroControlModel<M> {
    */
   loading = false;
 
-  ngModelChange: ($event) => void = $event => {};
+  ngModelChange: ($event) => void = $event => {
+  };
 
-  openChange: (open: boolean) => void = open => {};
+  openChange: (open: boolean) => void = open => {
+  };
+
+  set placeHolder(value: string) {
+    this._placeHolder = value;
+  }
 
   get placeHolder(): string {
-    return `请选择${this.label}`;
+    return this._placeHolder || `请选择${this.label}`;
   }
 
   constructor(init?: SelectControl) {

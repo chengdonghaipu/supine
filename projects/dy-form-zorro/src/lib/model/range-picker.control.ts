@@ -3,6 +3,7 @@ import {Const, ModelPartial} from '@supine/dy-form';
 
 
 export class RangePickerControl<M> extends DateControl<M> {
+  private _placeHolders: [string, string];
   /**
    * type 必须要实现 不同的type代表不同的控件
    */
@@ -22,8 +23,12 @@ export class RangePickerControl<M> extends DateControl<M> {
 
   onOk: (date: Date[]) => void;
 
-  get placeHolder() {
-    return this._placeHolder;
+  set placeHolders(value: [string, string]) {
+    this._placeHolders = value;
+  }
+
+  get placeHolders() {
+    return this._placeHolders;
   }
 
   constructor(init?: ModelPartial<RangePickerControl<M>>) {

@@ -22,8 +22,12 @@ export class DatePickerControl<M> extends DateControl<M> {
   onOk: (date: Date) => void;
 
 
+  set placeHolder(value: string) {
+    this._placeHolder = value;
+  }
+
   get placeHolder() {
-    return this._placeHolder;
+    return this._placeHolder || `请选择${this.label}日期`;
   }
 
   constructor(init?: ModelPartial<DatePickerControl<M>>) {

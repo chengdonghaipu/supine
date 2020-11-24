@@ -17,6 +17,14 @@ export class InputModelControl<M = any> extends ZorroControlModel<M> {
 
   inputType: InputType = 'text';
 
+  set placeHolder(value: string) {
+    this._placeHolder = value;
+  }
+
+  get placeHolder() {
+    return this._placeHolder || `请输入${this.label}`;
+  }
+
   constructor(init?: ModelPartial<InputModelControl>) {
     super();
     this.init(init);

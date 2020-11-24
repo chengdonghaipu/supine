@@ -46,7 +46,9 @@ export class TimePickerControl<M> extends ZorroControlModel<M> {
   // 面板打开/关闭时的回调
   openChange: (open: boolean) => void;
 
-
+  set placeHolder(value: string) {
+    this._placeHolder = value;
+  }
 
   get placeHolder() {
     return this._placeHolder || `请选择${this.label}时间`;

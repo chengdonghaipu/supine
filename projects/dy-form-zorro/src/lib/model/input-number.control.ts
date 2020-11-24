@@ -17,6 +17,14 @@ export class InputNumberControl<M = any> extends ZorroControlModel<M> {
   // 精度
   precision: number;
 
+  set placeHolder(value: string) {
+    this._placeHolder = value;
+  }
+
+  get placeHolder() {
+    return this._placeHolder || `请输入${this.label}`;
+  }
+
   constructor(init?: ModelPartial<InputNumberControl>) {
     super();
     this.init(init);
