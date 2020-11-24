@@ -190,7 +190,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [ngStyle]="model.controlStyle"
                      [nzValidateStatus]="control"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <!-- <input nz-input
               [id]="model.name"
               [placeholder]="model.placeHolder"
@@ -214,7 +214,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="formGroupControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
       </ng-template>
@@ -231,7 +231,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="datePickerControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
       </ng-template>
@@ -248,7 +248,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="timePickerControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
       </ng-template>
@@ -265,7 +265,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="rangePickerControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT'}">
       </ng-template>
@@ -282,7 +282,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="inputNumberControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control}">
       </ng-template>
@@ -299,7 +299,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="formGroupControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'INPUT_NUMBER'}">
       </ng-template>
@@ -316,7 +316,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="textAreaControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control}">
       </ng-template>
@@ -333,7 +333,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="selectControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control}">
       </ng-template>
@@ -350,7 +350,7 @@
                      [nzValidatingTip]="model.validatingTip"
                      [nzValidateStatus]="control"
                      [ngStyle]="model.controlStyle"
-                     [ngClass]="dyForm.controlClass(model)">
+                     [ngClass]="model.controlClass">
       <ng-template [ngTemplateOutlet]="formGroupControl"
                    [ngTemplateOutletContext]="{$implicit: model, control: control, type: 'SELECT'}">
       </ng-template>

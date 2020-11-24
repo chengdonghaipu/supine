@@ -274,20 +274,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._layoutItemDefChanged = true;
   }
 
-  controlClass(config: FormControlConfig) {
-    if (typeof config.controlClass === 'function') {
-      return config.controlClass(this.formArea.value, this.dyFormRef.model);
-    }
-    return config.controlClass || [];
-  }
-
-  labelClass(config: FormControlConfig) {
-    if (typeof config.labelClass === 'function') {
-      return config.labelClass(this.formArea.value, this.dyFormRef.model);
-    }
-    return config.labelClass || [];
-  }
-
   private _setBreakpoint(hostWidth: number, breakpointChangeCallback?: () => void) {
     // tslint:disable-next-line:prefer-const one-variable-per-declaration
     // let _bps = [], gridBreakpoints = this.dyFormRef.gridBreakpoints;

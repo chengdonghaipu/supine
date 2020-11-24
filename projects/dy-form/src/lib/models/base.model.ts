@@ -31,21 +31,9 @@ export abstract class BaseModel<M = any> {
 
   areaId = 1;
 
-  set labelClass(labelClass: string[] | ((value: any, context: ModelPartial<M>) => string[])) {
-    this._labelClass = labelClass;
-  }
+  labelClass: string[] = [];
 
-  get labelClass() {
-    return this._labelClass;
-  }
-
-  set controlClass(controlClass: string[] | ((value: any, context: ModelPartial<M>) => string[])) {
-    this._controlClass = controlClass;
-  }
-
-  get controlClass() {
-    return this._controlClass;
-  }
+  controlClass: string[] = [];
 
   controlStyle: ModelPartial<CSSStyleDeclaration> = {};
 
