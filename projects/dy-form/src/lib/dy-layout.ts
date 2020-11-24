@@ -11,9 +11,9 @@ import {
 } from '@angular/core';
 
 
-@Directive({selector: '[jdDyFormLayoutItemOutlet]'})
+@Directive({selector: '[jdDyFormLayoutItemName]'})
 export class DyLayoutItemDirective {
-  @Input('jdDyFormLayoutItemOutlet') controlName: string;
+  @Input('jdDyFormLayoutItemName') controlName: string;
 
   constructor(public viewContainer: ViewContainerRef, public elementRef: ElementRef) {
   }

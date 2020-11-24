@@ -14,9 +14,9 @@ import {
   DyFormComponent,
   DyFormFooterDef,
   DyFormHeaderDef,
-  DyFormRef,
   DyLayoutComponent,
-  DyLayoutDirective, DyLayoutItemDirective,
+  DyLayoutDirective,
+  DyLayoutItemDirective,
   FormControlConfig
 } from '@supine/dy-form';
 import {FormControl} from '@angular/forms';
@@ -40,25 +40,25 @@ export class DyFormCustomLayout {
 export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;
 
-  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<any>;
+  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<void>;
 
-  @ViewChild('label', {static: true}) labelTpl: TemplateRef<any>;
+  @ViewChild('label', {static: true}) labelTpl: TemplateRef<void>;
 
-  @ViewChild('inputControl', {static: true}) inputTpl: TemplateRef<any>;
+  @ViewChild('inputControl', {static: true}) inputTpl: TemplateRef<void>;
 
-  @ViewChild('inputNumberControl', {static: true}) inputNumberTpl: TemplateRef<any>;
+  @ViewChild('inputNumberControl', {static: true}) inputNumberTpl: TemplateRef<void>;
 
-  @ViewChild('textAreaControl', {static: true}) textAreaTpl: TemplateRef<any>;
+  @ViewChild('textAreaControl', {static: true}) textAreaTpl: TemplateRef<void>;
 
-  @ViewChild('datePickerControl', {static: true}) datePickerTpl: TemplateRef<any>;
+  @ViewChild('datePickerControl', {static: true}) datePickerTpl: TemplateRef<void>;
 
-  @ViewChild('rangePickerControl', {static: true}) rangePickerTpl: TemplateRef<any>;
+  @ViewChild('rangePickerControl', {static: true}) rangePickerTpl: TemplateRef<void>;
 
-  @ViewChild('timePickerControl', {static: true}) timePickerTpl: TemplateRef<any>;
+  @ViewChild('timePickerControl', {static: true}) timePickerTpl: TemplateRef<void>;
 
-  @ViewChild('selectControl', {static: true}) selectTpl: TemplateRef<any>;
+  @ViewChild('selectControl', {static: true}) selectTpl: TemplateRef<void>;
 
-  @ViewChild('formGroupControl', {static: true}) formGroupTpl: TemplateRef<any>;
+  @ViewChild('formGroupControl', {static: true}) formGroupTpl: TemplateRef<void>;
 
   @ContentChildren(DyFormHeaderDef, {descendants: true}) _formHeaderDefs: QueryList<DyFormHeaderDef>;
 
@@ -67,7 +67,8 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutDefs: QueryList<DyLayoutComponent>;
-  @ContentChildren(DyLayoutItemDirective, {descendants: true}) _customLayoutDefsV: QueryList<DyLayoutItemDirective>;
+
+  @ContentChildren(DyLayoutItemDirective, {descendants: true}) _customLayoutItemDefs: QueryList<DyLayoutItemDirective>;
 
   @ContentChild(DyFormCustomLayout) customLayoutDef: DyFormCustomLayout;
 
@@ -91,10 +92,11 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     // 增加form Footer 可以有多行
     this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
-    console.log(this._customLayoutDefs.length, this._customLayoutDefsV.length);
+    // console.log(this._customLayoutDefs.length, this._customLayoutItemDefs.length, this.customLayoutDef);
     if (this.dyFormRef.mode === 'custom') {
       // 注册自定义布局
-      this._customLayoutDefs.forEach(item => this.dyForm.addLayoutDef(item));
+      // console.log(this._customLayoutItemDefs.length, this._customLayoutItemDefs);
+      this._customLayoutItemDefs.forEach(item => this.dyForm.addLayoutItemDef(item));
     }
     // 增加form Header 可以有多行
     this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));

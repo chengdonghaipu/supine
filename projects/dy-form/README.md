@@ -138,6 +138,14 @@ export function InputModel<M>(model?: ModelPartial<Model<M>>): PropertyDecorator
         </ng-template>
     </nz-form-control>
   </nz-form-item>
+  <!-- 布局 可以实现各种各样的布局 在我封装的@supine/dy-form-zorro 中有3中内置布局(inline, horizontal, vertical)和一种自定义布局 -->
+  <jd-form-layout>
+     <form nz-form nzLayout="inline" [formGroup]="dyForm.formArea">
+       <ng-container *ngFor="let control of dyForm.options">
+         <ng-container jdDyFormLayoutItemName="{{control.name}}"></ng-container>
+       </ng-container>
+     </form>
+  </jd-form-layout>
 </jd-dy-form>
 ```
 
@@ -200,7 +208,7 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
 
 }
 ```
-- 按照以上的步骤即可封装一个完整的动态表单来
+-  上面的例子我们只实现了input, 按照以上的步骤即可封装一个完整的动态表单来
 
 
 # 使用定制好的的动态表单
@@ -295,7 +303,7 @@ import {FormModel} from './form.model';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  dyFormRef = new DyFormRef(FormModel, {mode: 'vertical'});
+  dyFormRef = new DyFormRef(FormModel);
 
   ngOnInit(): void {
   }
@@ -402,6 +410,7 @@ export class LoginModel extends BaseFormModel {
       </nz-form-control>
     </nz-form-item>
   </ng-container>
+<!--此处省略布局代码-->
 </jd-dy-form-zorro>
 ```
 - 预览图如下
@@ -411,7 +420,6 @@ export class LoginModel extends BaseFormModel {
 
 # 自定义布局  
 **超简单的自定义布局方式-再也不用担心动态表单布局难的问题了**  
-**注意: @supine/dy-form-zorro 自定义布局方式跟这个稍微有一点点区别**
 ```angular2html
 <jd-dy-form [dyFormRef]="dyFormRef" #dyForm>
     <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'INPUT'">
@@ -426,13 +434,13 @@ export class LoginModel extends BaseFormModel {
             <div>
                 <div>
                     <!--      controlName1 在表单模型中定义好的              -->
-                    <ng-container jdDyFormLayoutItemOutlet="controlName1"></ng-container>                
+                    <ng-container jdDyFormLayoutItemName="controlName1"></ng-container>                
                 </div>
             </div>
             <div>
                 <div>
                     <!--      controlName2 在表单模型中定义好的              -->
-                    <ng-container jdDyFormLayoutItemOutlet="controlName2"></ng-container>                
+                    <ng-container jdDyFormLayoutItemName="controlName2"></ng-container>                
                 </div>
             </div>
             <!--      这个是@supine/dy-form-zorro所用的方式               -->
@@ -523,6 +531,7 @@ export class LoginModel extends BaseFormModel {
         </nz-form-control>
       </nz-form-item>
     </ng-container>
+    <!--此处省略布局代码-->
   </jd-dy-form-zorro>
   ```
   - 预览图

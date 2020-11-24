@@ -9,7 +9,7 @@ import {ZorroDyFormRef} from '@supine/dy-form-zorro';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  dyFormRef = new ZorroDyFormRef(MapUtilFormModel, {mode: 'custom'});
+  dyFormRef = new ZorroDyFormRef(MapUtilFormModel, {mode: 'inline'});
 
   ngOnInit(): void {
   }

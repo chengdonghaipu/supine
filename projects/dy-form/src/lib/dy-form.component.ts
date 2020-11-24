@@ -39,7 +39,7 @@ import {debounceTime, distinctUntilChanged, takeUntil} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {DyFormLayoutOutlet, DyLayoutComponent} from './dy-layout';
+import {DyFormLayoutOutlet, DyLayoutComponent, DyLayoutDirective, DyLayoutItemDirective} from './dy-layout';
 
 /*class RecordControlItemViewTuple {
   constructor(public record: IterableChangeRecord<FormControlConfig>/!*,
@@ -82,6 +82,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _customLayoutDefs = new Set<DyLayoutComponent>();
 
+  private _customLayoutItems = new Set<DyLayoutItemDirective>();
+
   private _controlUIDMap = new Map<number, FormControlConfig>();
 
   private _recordControlUIDMap = new Map<number, FormControlConfig>();
@@ -102,11 +104,15 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _footerRowDefChanged = true;
 
-  private _layoutDefChanged = true;
+  private _layoutItemDefChanged = true;
 
   private _headerRowDefs: DyFormHeaderDef[] = [];
 
   private _footerRowDefs: DyFormFooterDef[] = [];
+
+  private _layoutItemDefs: DyLayoutItemDirective[] = [];
+
+  private _customLayoutDef: DyLayoutDirective;
 
   private _viewRefs: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>[] = [];
 
@@ -119,6 +125,8 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   @ContentChildren(DyFormHeaderDef, {descendants: true}) _formHeaderDefs: QueryList<DyFormHeaderDef>;
 
   @ContentChildren(DyFormFooterDef, {descendants: true}) _formFooterDefs: QueryList<DyFormFooterDef>;
+
+  @ContentChildren(DyLayoutItemDirective, {descendants: true}) _formLayoutItems: QueryList<DyLayoutItemDirective>;
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutSelfDefs: QueryList<DyLayoutComponent>;
 
@@ -138,9 +146,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return this._options;
   }
 
- /* get areaOptions() {
-    return this.dyFormRef.areaOptions;
-  }*/
+  /* get areaOptions() {
+     return this.dyFormRef.areaOptions;
+   }*/
 
   /*get renderData() {
     const keys = Object.keys(this.areaOptions)
@@ -219,13 +227,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentInit(): void {
+    console.log(this._formLayoutItems, this._layoutItemDefs, '_formLayoutItems');
     this._customLayoutSelfDefs.forEach(item => this._customLayoutDefs.add(item));
   }
 
-  // registerCustomLayout(layoutDef: DyLayoutDirective) {
-  //   this._customLayoutDef = layoutDef;
-  //   this._formLayoutOutlet.viewContainer.createEmbeddedView(layoutDef.template);
-  // }
+  registerCustomLayout(layoutDef: DyLayoutDirective) {
+    this._customLayoutDef = layoutDef;
+    this._formLayoutOutlet.viewContainer.createEmbeddedView(layoutDef.template);
+  }
 
   addColumnDef(columnDef: DyFormColumnDef) {
     this._customColumnDefs.add(columnDef);
@@ -255,14 +264,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._footerRowDefChanged = true;
   }
 
-  addLayoutDef(layoutDef: DyLayoutComponent) {
-    this._customLayoutDefs.add(layoutDef);
-    this._layoutDefChanged = true;
+  addLayoutItemDef(layoutDef: DyLayoutItemDirective) {
+    this._customLayoutItems.add(layoutDef);
+    this._layoutItemDefChanged = true;
   }
 
-  removeLayoutDef(layoutDef: DyLayoutComponent) {
-    this._customLayoutDefs.delete(layoutDef);
-    this._layoutDefChanged = true;
+  removeLayoutItemDef(layoutDef: DyLayoutItemDirective) {
+    this._customLayoutItems.delete(layoutDef);
+    this._layoutItemDefChanged = true;
   }
 
   controlClass(config: FormControlConfig) {
@@ -394,7 +403,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     // 目前只允许存在一个布局容器
     const layoutDef = Array.from(this._customLayoutDefs)[0];
 
-    const containers = layoutDef.layoutChildren.filter(value => value.controlName === item.name);
+    console.log(this._layoutItemDefs, '_layoutItemDefs');
+
+    const containers = this._layoutItemDefs.filter(value => value.controlName === item.name);
 
     if (!containers.length) {
       throw Error(`jd-form-layout 里 无法找到控件 ${item.name}`);
@@ -754,7 +765,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._updateRowIndexContext();
 
     // this._updateRowStyle();
-    this._cdf.detectChanges();
+    // this._cdf.detectChanges();
     Promise.resolve().then(() => {
       this._cdf.markForCheck();
       if (!this._dyFormInit) {
@@ -832,8 +843,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._cacheColumnDefs();
 
     if (this._columnDefsByName.size && this._willRenderChanges) {
-      this._applyChanges(this._willRenderChanges);
-      this._willRenderChanges = null;
+      Promise.resolve().then(() => {
+        this._applyChanges(this._willRenderChanges);
+        this._willRenderChanges = null;
+      });
     }
 
     if (this._footerRowDefChanged) {
@@ -867,6 +880,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     this._footerRowDefs = _footerRowDefs;
+
+    const _layoutItemDefs = mergeArrayAndSet(
+      this._formLayoutItems.toArray(), this._customLayoutItems);
+    // console.log(this._formLayoutItems.toArray(), _layoutItemDefs);
+    // TODO 目前暂时通过长度变化 来渲染
+    if (this._layoutItemDefs.length !== _layoutItemDefs.length) {
+      this._layoutItemDefs = _layoutItemDefs;
+    }
 
     this._columnDefsByName.clear();
 
