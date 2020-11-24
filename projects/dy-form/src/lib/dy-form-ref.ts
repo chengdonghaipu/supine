@@ -9,21 +9,6 @@ import {DyFormComponent} from './dy-form.component';
 import {universal_valid} from './validator-fn';
 
 
-export interface DyFormRefInitialData {
-  // column?: number;
-
-  // controlLayout?: ControlLayout;
-  //
-  // gridBreakpoints?: ControlLayout & { unit: string };
-
-  // customLayout?: boolean;
-
-  // verticalLayout?: {
-  //   labelCol: number,
-  //   controlCol: number,
-  // };
-}
-
 export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   // 用于销毁资源
   private _unsubscribe$ = new Subject<void>();
@@ -55,15 +40,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     this.updateControl(_updateField);
   }
 
-  constructor(model: Type<T>, initialData: DyFormRefInitialData = {}) {
+  constructor(model: Type<T>) {
     super();
     this.registeredModel(model);
-
-    for (const initialDataKey in initialData) {
-      if (initialData.hasOwnProperty(initialDataKey)) {
-        this[initialDataKey] = initialData[initialDataKey];
-      }
-    }
   }
 
   disconnect(): void {

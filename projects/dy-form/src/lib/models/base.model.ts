@@ -9,10 +9,6 @@ export abstract class BaseModel<M = any> {
 
   protected _placeHolder: string;
 
-  private _labelClass: string[] | ((value: any, context: ModelPartial<M>) => string[]) = [];
-
-  private _controlClass: string[] | ((value: any, context: ModelPartial<M>) => string[]) = [];
-
   uid = 0;
 
   name: string;
@@ -28,8 +24,6 @@ export abstract class BaseModel<M = any> {
   asyncValidators: AsyncValidatorFn | AsyncValidatorFn[] | null = [];
 
   tooltipText = '';
-
-  areaId = 1;
 
   labelClass: string[] = [];
 
@@ -52,7 +46,7 @@ export abstract class BaseModel<M = any> {
   /**
    * 与 invalid 相互配合  如果满足条件  则将 invalid 设置为false 即为有效状态
    */
-  validOfIf: (value: any, context: ModelPartial<M>) => boolean = undefined;
+  // validOfIf: (value: any, context: ModelPartial<M>) => boolean = undefined;
 
   aliasName: string;
 
@@ -80,13 +74,7 @@ export abstract class BaseModel<M = any> {
   }
 
   get placeHolder() {
-
-    const actionType = {
-      INPUT: '输入',
-      TEXTAREA: '输入',
-      SELECT: '选择'
-    };
-    return this._placeHolder || `请${actionType[this.type] || '输入'}${this.label}`;
+    return this._placeHolder;
   }
 
   /**
@@ -94,7 +82,7 @@ export abstract class BaseModel<M = any> {
    */
   required = false;
 
-  controlLayout: ControlLayout;
+  // controlLayout: ControlLayout;
 
   formControl: FormControl | undefined;
 
@@ -105,7 +93,7 @@ export abstract class BaseModel<M = any> {
    * 该属性 当且仅当不是响应式时有效
    * 控件宽度 默认整行
    */
-  controlCol: string | number = 24;
+  // controlCol: string | number = 24;
 
   initHook: (that: this, context: ModelPartial<M>) => void;
 

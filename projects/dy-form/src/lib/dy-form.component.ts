@@ -386,10 +386,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     if (!isRenderControl) {
       return;
     }
+
+    if (item.hide) {
+      return;
+    }
     // 目前只允许存在一个布局容器
     const layoutDef = Array.from(this._customLayoutDefs)[0];
 
-    console.log(this._layoutItemDefs, '_layoutItemDefs');
+    // console.log(this._layoutItemDefs, '_layoutItemDefs');
 
     const containers = this._layoutItemDefs.filter(value => value.controlName === item.name);
 
