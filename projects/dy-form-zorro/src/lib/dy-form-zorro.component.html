@@ -9,7 +9,7 @@
 <ng-template #label let-model>
   <nz-form-label [nzRequired]="model.required"
                  jdDyFormLabelDef
-                 [ngClass]="dyForm.labelClass(model)"
+                 [ngClass]="model.labelClass"
                  [ngStyle]="model.labelStyle"
                  [nzFor]="model.controlName">{{model.label}}
   </nz-form-label>

@@ -130,7 +130,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutSelfDefs: QueryList<DyLayoutComponent>;
 
-  @ViewChild(DyFormCellOutlet, {static: true}) _formCellOutlet: DyFormCellOutlet;
+  // @ViewChild(DyFormCellOutlet, {static: true}) _formCellOutlet: DyFormCellOutlet;
 
   @ViewChild(DyFormLayoutOutlet, {static: true}) _formLayoutOutlet: DyFormLayoutOutlet;
 
@@ -815,14 +815,14 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   ngOnDestroy(): void {
     this._unsubscribe$.next();
     this._unsubscribe$.complete();
-    this._formCellOutlet.viewContainer.clear();
+    // this._formCellOutlet.viewContainer.clear();
 
     if (this._resizeEvent) {
       this._resizeEvent();
     }
     // this._noDataRowOutlet.viewContainer.clear();
-    // this._headerRowOutlet.viewContainer.clear();
-    // this._footerRowOutlet.viewContainer.clear();
+    this._formFooterOutlet.viewContainer.clear();
+    this._formHeaderOutlet.viewContainer.clear();
   }
 
   ngAfterContentChecked(): void {
