@@ -11,7 +11,12 @@ import {
   DyFormHeaderDef,
 } from './dy-form.def';
 import {CommonModule} from '@angular/common';
-import {DyLayoutComponent, DyLayoutDirective, DyLayoutItemDirective, DyFormLayoutOutlet} from './dy-layout';
+import {
+  DyLayoutComponent,
+  DyLayoutDirective,
+  DyLayoutItemDirective,
+  DyFormLayoutOutlet
+} from './dy-layout';
 
 const export_com = [
   DyFormColumnDef,

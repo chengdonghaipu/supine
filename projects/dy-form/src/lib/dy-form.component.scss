@@ -3,11 +3,11 @@ $prefix: 'jd-dy-form';
 #{$prefix} {
   display: block;
 
-  .#{$prefix}-body-outlet {
+  /*.#{$prefix}-body-outlet {
     width: 100%;
-  }
+  }*/
 
-  &.#{$prefix}-responsive {
+ /* &.#{$prefix}-responsive {
     .jd-form-area {
       display: flex;
       flex-wrap: wrap;
@@ -32,7 +32,7 @@ $prefix: 'jd-dy-form';
     .jd-form-control-item {
       width: 100%;
     }
-  }
+  }*/
 
   .jd-form-item {
     box-sizing: border-box;

@@ -1,39 +1,4 @@
 <jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
-<!--  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'input'">
-    <input type="text">
-  </nz-form-item>
-  <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'input1'">
-    <input type="text">
-  </nz-form-item>-->
-<!--  <jd-form-layout>-->
-<!--    <div jdDyFormLayoutItemOutlet="name"></div>-->
-<!--    <div>-->
-<!--      <div>-->
-<!--        <ng-container jdDyFormLayoutItemOutlet="name1"></ng-container>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </jd-form-layout>-->
-  <!--  name 'custom' 对应模型中的 type字段值-->
-  <!--<ng-container *jdDyFormColumnDef="let model = model name 'phone', let groupModel = groupInfo, let childControl = childControl">
-    <nz-form-item>
-      <ng-template [ngTemplateOutlet]="dyFormZorro.labelTpl" [ngTemplateOutletContext]="{$implicit: groupModel.phone}"></ng-template>
-      <nz-form-control
-        jdDyFormControlDef
-        [nzValidateStatus]="childControl.phone"
-        [nzErrorTip]="dyFormZorro.errorTpl"
-      >
-        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-          <ng-template #addOnBeforeTemplate>
-            <nz-select class="phone-select" [ngModel]="'+86'">
-              <nz-option nzLabel="+86" nzValue="+86"></nz-option>
-              <nz-option nzLabel="+87" nzValue="+87"></nz-option>
-            </nz-select>
-          </ng-template>
-          <input [formControl]="childControl.phone" id="'phoneNumber'" nz-input/>
-        </nz-input-group>
-      </nz-form-control>
-    </nz-form-item>
-  </ng-container>-->
   <jd-form-layout>
     <form nz-form nzLayout="horizontal" [formGroup]="dyFormZorro?.dyForm.formArea">
       <ng-container jdDyFormLayoutItemName="name"></ng-container>
@@ -44,12 +9,6 @@
       <!--      </ng-container>-->
     </form>
   </jd-form-layout>
-  <ng-container *jdDyFormCustomLayout>
-    khjk
-<!--    <ng-container jdDyFormLayoutItemName="name"></ng-container>-->
-<!--    <ng-container jdDyFormLayoutItemName="name1"></ng-container>-->
-
-  </ng-container>
 
 </jd-dy-form-zorro>
 

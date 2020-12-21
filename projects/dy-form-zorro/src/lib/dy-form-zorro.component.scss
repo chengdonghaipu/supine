@@ -9,14 +9,14 @@ jd-dy-form {
   nz-input-number.dy-form-input-number {
     width: 100%;
   }
-  .jd-form-item {
-    padding: 0 15px;
-
-
-  }
-  .ant-form-item-control {
-    flex: 1;
-  }
+  //.jd-form-item {
+  //  padding: 0 15px;
+  //
+  //
+  //}
+  //.ant-form-item-control {
+  //  flex: 1;
+  //}
  /* .ant-form-item .ant-form-item-label {
     padding: 0 0 8px;
     line-height: 1.5715;
@@ -39,11 +39,11 @@ jd-dy-form {
     }*/
   }
 }
-.jd-dy-form-vertical {
-  .ant-form-item-label {
-    @media (max-width: 575px) {
-      flex: 0 0 100%;
-    }
-  }
-
-}
+//.jd-dy-form-vertical {
+//  .ant-form-item-label {
+//    @media (max-width: 575px) {
+//      flex: 0 0 100%;
+//    }
+//  }
+//
+//}
