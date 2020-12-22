@@ -21,6 +21,7 @@
     - 表单模型、控件模型都基于class实现的，表单模型、控件模型都提供了基类，可以基于基类继承进行拓展
 - 易拓展性
     - 轻松实现自定义控件
+    - 轻松实现自定义布局
 
 #相关库
 - 基于@supine/dy-form[@supine/dy-form](https://www.npmjs.com/package/@supine/dy-form)

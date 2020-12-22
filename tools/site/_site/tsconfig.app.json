@@ -6,7 +6,23 @@
     "module": "esnext",
     "types": [],
     "paths": {
-      "ngx-color/sketch": [ "../node_modules/ngx-color/sketch" ]
+      "ngx-color/sketch": [ "../node_modules/ngx-color/sketch" ],
+      "@supine/dy-form": [
+        "../dist/dy-form/dy-form",
+        "../dist/dy-form"
+      ],
+      "@supine/dy-form-zorro": [
+        "../dist/dy-form-zorro/dy-form-zorro",
+        "../dist/dy-form-zorro"
+      ],
+      "@supine/validator": [
+        "../dist/validator/validator",
+        "../dist/validator"
+      ],
+      "@supine/http": [
+        "../dist/http/http",
+        "../dist/http"
+      ]
     }
   },
   "exclude": [

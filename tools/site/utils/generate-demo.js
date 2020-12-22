@@ -27,10 +27,12 @@ function generateDemoModule(content) {
   let declarations = '';
   let entryComponents = [];
   for (const key in demoMap) {
+    const otherComponents = retrieveOtherComponents(demoMap[key] && demoMap[key].ts);
     const declareComponents = [`NzDemo${componentName(component)}${componentName(key)}Component`];
     const entries = retrieveEntryComponents(demoMap[key] && demoMap[key].ts);
     entryComponents.push(...entries);
-    declareComponents.push(...entries);
+    declareComponents.push(...entries, ...otherComponents);
+    // console.log(entries);
     imports += `import { ${declareComponents.join(', ')} } from './${key}';\n`;
     declarations += `\t\t${declareComponents.join(',\n\t')},\n`;
   }
@@ -216,3 +218,18 @@ function retrieveEntryComponents(plainCode) {
   }
   return [];
 }
+
+function retrieveOtherComponents(plainCode) {
+  const componentReg = /export\s+class\s+[A-Z][A-Za-z0-9]*Other[A-Za-z0-9]?Component/;
+
+  const matches = (plainCode + '').match(componentReg) || [];
+
+  if (matches[0]) {
+    return matches.map(value => {
+      value.replace(/export\s+class\s+/, '');
+      return value.replace(/export\s+class\s+/, '');
+    });
+  }
+  return [];
+}
+

@@ -1,13 +1,13 @@
 ---
 order: 0
 title:
-  zh-CN: 基本用法
+  zh-CN: 封装动态表单
   en-US: Basic Usage
 ---
 
 ## zh-CN
 
-相邻组件水平间距。
+基于@supine/dy-form封装一个简易的动态表单。
 
 ## en-US
 
