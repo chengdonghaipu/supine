@@ -5,7 +5,7 @@ export class LoginModel extends BaseFormModel {
   // customPro 为自定义模型属性 将作为模板上下文属性 在模板中可以访问到
   // 可以定义多个自定义属性
   // type 默认为CUSTOM 允许修改
-  @CustomModel({label: '自定义', type: 'custom', customPro: 'customPro'})
+  @CustomModel({label: '自定义', type: 'custom', customPro: '我是自定义的!'})
   custom = [null];
 
   @InputModel<LoginModel>({label: '禁用用户名'})
@@ -19,16 +19,22 @@ export class LoginModel extends BaseFormModel {
   template: `
     <nz-zorro-dy-form [dyFormRef]="dyFormRef" #dyForm>
       <!--  name 'custom' 对应模型中的 type字段值-->
-      <ng-container *jdDyFormColumnDef="let control; let model = model name 'custom'">
-        <nz-form-item>
-          <ng-template [ngTemplateOutlet]="dyForm.labelTpl" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
-          <nz-form-control  jdDyFormControlDef
-                            [nzErrorTip]="dyForm.errorTpl">
+      <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'custom'">
+        <ng-template [ngTemplateOutlet]="dyForm.labelTpl" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+        <nz-form-control  jdDyFormControlDef
+                          [nzErrorTip]="dyForm.errorTpl">
+          <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+            <ng-template #addOnBeforeTemplate>
+              <nz-select class="phone-select" [ngModel]="'+86'">
+                <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+                <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+              </nz-select>
+            </ng-template>
             <!--        customPro 为模型中自定义属性-->
-            <input type="text" nz-input [formControl]="control" [placeholder]="model.customPro">
-          </nz-form-control>
-        </nz-form-item>
-      </ng-container>
+            <input [formControl]="control" [placeholder]="model.customPro" id="'phoneNumber'" nz-input />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
       <!--此处省略布局代码-->
     </nz-zorro-dy-form>
   `

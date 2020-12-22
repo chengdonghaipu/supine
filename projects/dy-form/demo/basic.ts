@@ -1,4 +1,4 @@
-import {Component, ContentChildren, Input, OnInit, QueryList, TemplateRef, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, ContentChildren, Input, OnInit, QueryList, TemplateRef, ViewChild} from '@angular/core';
 
 /**
  * 第一步: 实现控件模型(以input为例)
@@ -55,7 +55,7 @@ export class InputModelControl<M> extends BaseModel<M> {
  */
 
 import {BaseDecorator} from '@supine/dy-form';
-import {FormControl} from '@angular/forms';
+import {AbstractControl, FormControl, NgModel} from '@angular/forms';
 
 export function InputModel<M>(model?: ModelPartial<InputModelControl<M>>): PropertyDecorator {
   const newModel = new InputModelControl();
@@ -127,10 +127,10 @@ export function InputModel<M>(model?: ModelPartial<InputModelControl<M>>): Prope
     </jd-dy-form>
   `
 })
-export class NzZorroDyFormOtherComponent {
+export class NzZorroDyFormOtherComponent implements AfterContentInit {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;
 
-  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<void>;
+  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<{ $implicit: AbstractControl | NgModel }>;
 
   @ViewChild('label', {static: true}) labelTpl: TemplateRef<void>;
 
@@ -151,6 +151,15 @@ export class NzZorroDyFormOtherComponent {
   getError(control: FormControl) {
     const errors = Object.getOwnPropertyNames(control.errors);
     return control.getError(errors[0]);
+  }
+
+  ngAfterContentInit(): void {
+    // 增加form Footer 可以有多行
+    this._formFooterDefs.forEach(item => this.dyForm.addFooterRowDef(item));
+    // 增加form Header 可以有多行
+    this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));
+    // 注册表单控件模板
+    this._formColumnDefs.forEach(item => this.dyForm.addColumnDef(item));
   }
 }
 
