@@ -41,7 +41,8 @@
             "allowedCommonJsDependencies": [
               "codesandbox",
               "codesandbox-import-utils",
-              "@ant-design/colors"
+              "@ant-design/colors",
+              "lodash"
             ]
           },
           "configurations": {

@@ -23,10 +23,9 @@ cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 
 ## 主要特性
 - 解耦
-
-传统的Angular表单开发需要成百上千行HTML，在组件内部维护大量与表单相关的代码，不利于后期维护，可读性不强。
+  - 传统的Angular表单开发需要成百上千行HTML，在组件内部维护大量与表单相关的代码，不利于后期维护，可读性不强。
 [@supine/dy-form](https://www.npmjs.com/package/@supine/dy-form)
-最核心的思想就是将与表单相关的业务集中到表单模型中解决，从而减弱与组件的耦合性
+最主要的初衷就是将与表单相关的业务集中到表单模型中解决，从而减弱与组件的耦合度
 
 - 高可读性
   - 所有控件配置都在表单模型中，表单结构一目了然
@@ -39,6 +38,7 @@ cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 - 易拓展性
   - 轻松实现自定义控件
   - 轻松实现自定义布局
+  - 轻松拓展内置校验规则
 
 # 相关库
 - 基于@supine/dy-form[@supine/dy-form](https://www.npmjs.com/package/@supine/dy-form)
