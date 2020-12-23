@@ -73,7 +73,7 @@ export class UserModel extends BaseFormModel {
   template: `
     <div style="margin-bottom: 15px">
       actionType:
-      <nz-select [ngModel]="actionType" (ngModelChange)="ngModelChange($event)">
+      <nz-select [(ngModel)]="actionType" (ngModelChange)="ngModelChange($event)">
         <nz-option nzLabel="创建用户" nzValue="create"></nz-option>
         <nz-option nzLabel="修改用户" nzValue="update"></nz-option>
       </nz-select>
@@ -104,7 +104,7 @@ export class NzDemoDyFormActionTypeComponent implements OnInit {
 
     if (actionType === 'create') {
       this.dyFormRef.reset();
-      model.withAttachValue(this.actionType)
+      model.withAttachValue(this.actionType);
     } else {
       model.withAttachValue(this.actionType)
         .withAttachValue({
