@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 4
 title:
   zh-CN: 自定义同步校验器
   en-US: Customize Size

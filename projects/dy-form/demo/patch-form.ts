@@ -24,11 +24,16 @@ export class LoginModel extends BaseFormModel {
     <br>
     <nz-zorro-dy-form [dyFormRef]="dyFormRef1"></nz-zorro-dy-form>
     <button nz-button nzType="primary" (click)="dyPatch()">动态填充表单</button>
+    <button nz-button nzType="danger" (click)="reset()">重置</button>
   `,
   styles: [
     `
       nz-zorro-dy-form{
         display: inline-block !important;
+        margin-bottom: 15px;
+      }
+      [nz-button] {
+        margin-right: 15px;
       }
     `
   ]
@@ -62,5 +67,9 @@ export class NzDemoDyFormPatchFormComponent implements OnInit {
       email: '1151849955@qq.com',
       phone: '15173818606'
     });
+  }
+
+  reset() {
+    this.dyFormRef1.reset();
   }
 }
