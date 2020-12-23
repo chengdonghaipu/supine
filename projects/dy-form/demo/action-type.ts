@@ -105,6 +105,7 @@ export class NzDemoDyFormActionTypeComponent implements OnInit {
     if (actionType === 'create') {
       this.dyFormRef.reset();
       model.withActionType(actionType);
+      this.result = {};
     } else {
       model.withActionType(actionType)
         .withAttachValue({
@@ -113,6 +114,7 @@ export class NzDemoDyFormActionTypeComponent implements OnInit {
           phone: '15173818606',
           id: 10001
         }).patchValue();
+      this.result = {};
     }
   }
 
