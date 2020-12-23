@@ -2,10 +2,12 @@ import {DyFormModule} from '@supine/dy-form';
 import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzSelectModule} from 'ng-zorro-antd/select';
+import {NzButtonModule} from 'ng-zorro-antd/button';
 
 export const moduleList = [
    DyFormModule,
    NzFormModule,
    NzInputModule,
    NzSelectModule,
+   NzButtonModule,
 ];
