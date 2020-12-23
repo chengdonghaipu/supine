@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ShareModule } from '../share/share.module';
-import { moduleList } from './module';
+import { moduleList, providers } from './module';
 
 {{imports}}
 
@@ -19,6 +19,9 @@ import { moduleList } from './module';
   ],
 entryComponents: [
   {{entryComponents}}
+],
+providers: [
+  ...providers
 ]
 })
 export class NzDemo{{component}}Module {

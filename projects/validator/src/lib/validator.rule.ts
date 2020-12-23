@@ -95,7 +95,7 @@ function regExp(ruleName: string, value) {
   return _result;
 }
 
-export class ValidatorRule {
+export class ZlValidatorRule {
   /**
    * 字段是必填的
    * @param value
@@ -520,7 +520,7 @@ export class ValidatorRule {
     if (!isString(value)) {
       return true;
     }
-    return !ValidatorRule.contains(value, params);
+    return !ZlValidatorRule.contains(value, params);
   }
 
   /**
@@ -546,7 +546,7 @@ export class ValidatorRule {
   @Rule()
   static notIn(value, params: unknown[]) {
     CheckParamTypeException('notIn', 'Array', params);
-    return !ValidatorRule.in(value, params);
+    return !ZlValidatorRule.in(value, params);
   }
 
   @Rule()

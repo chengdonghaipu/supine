@@ -31,7 +31,7 @@ export class LoginModel extends BaseFormModel {
               </nz-select>
             </ng-template>
             <!--        customPro 为模型中自定义属性-->
-            <input [formControl]="control" [placeholder]="model.customPro" id="'phoneNumber'" nz-input />
+            <input [formControl]="control" [placeholder]="model.customPro" nz-input />
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>

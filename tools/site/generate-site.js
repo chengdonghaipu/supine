@@ -67,13 +67,13 @@ function generate(target) {
           demoMap[nameKey]['enCode'] = generateCodeBox(componentName, demoMap[nameKey]['name'], nameKey, demoMap[nameKey].meta.title['en-US'], demoMap[nameKey].en, demoMap[nameKey].meta.iframe);
           demoMap[nameKey]['zhCode'] = generateCodeBox(componentName, demoMap[nameKey]['name'], nameKey, demoMap[nameKey].meta.title['zh-CN'], demoMap[nameKey].zh, demoMap[nameKey].meta.iframe);
         }
-        if (/.ts$/.test(demo)) {
+        if (/.ts$/.test(demo) && demo !== 'module.ts') {
           const nameKey = nameWithoutSuffixUtil(demo);
           demoMap[nameKey].ts = String(fs.readFileSync(path.join(demoDirPath, demo)));
           // copy ts file to site->${component} folder
           fs.writeFileSync(path.join(showCaseComponentPath, demo), demoMap[nameKey].ts);
         }
-        if (demo === 'module') {
+        if (demo === 'module.ts') {
           const data = String(fs.readFileSync(path.join(demoDirPath, demo)));
           fs.writeFileSync(path.join(showCaseComponentPath, 'module.ts'), data);
         }

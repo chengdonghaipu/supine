@@ -176,9 +176,9 @@ const validator = new ZlValidator();
 - 单独使用内置规则
 
 ```typescript
-import {ValidatorRule} from '@supine/validator';
+import {ZlValidatorRule} from '@supine/validator';
 
-ValidatorRule.base64('hfk')
+ZlValidatorRule.base64('hfk')
 ```
 
 # 自定义验证规则
@@ -234,14 +234,14 @@ export class XXValidatorRule {
 - 注册自定义规则
 
 ```typescript
-import {ZlValidator, ValidatorRule} from '@supine/validator';
+import {ZlValidator, ZlValidatorRule} from '@supine/validator';
 import {XXValidatorRule} from './XXValidatorRule'
 /**
  * ValidatorRule 内置的验证规则  如有需要可以加进来
  * XXValidatorRule 就是上面自定义的 规则
  */
 @Validator({
-  rules: [ValidatorRule, XXValidatorRule]
+  rules: [ZlValidatorRule, XXValidatorRule]
 })
 class XXValidator extends ZlValidator {
   

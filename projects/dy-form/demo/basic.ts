@@ -175,16 +175,14 @@ export class NzZorroDyFormOtherComponent implements AfterContentInit {
 /**
  * 第一步: 定义表单模型
  */
-import {BaseFormModel, ValidatorRule} from '@supine/dy-form';
+import {BaseFormModel} from '@supine/dy-form';
 import {filter, map} from 'rxjs/operators';
 
 export class LoginModel extends BaseFormModel {
   @InputModel<LoginModel>({label: '用户名'})
-  @ValidatorRule(['required&maxLength:15&minLength:4'], {required: '用户名字段是必填的', maxLength: '用户名长度最多为15个字符', minLength: '用户名长度最少为4个字符'})
   username = [null];
 
   @InputModel<LoginModel>({label: '密码'})
-  @ValidatorRule(['required&maxLength:15&minLength:4'], {required: '密码字段是必填的', maxLength: '密码长度最多为15个字符', minLength: '密码长度最少为4个字符'})
   password = [null];
 
   /**

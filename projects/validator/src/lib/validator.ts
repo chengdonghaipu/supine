@@ -2,7 +2,7 @@ import {CustomMessage, CustomRuleFn, GroupRule, RuleFn, RuleType, ValidatorMetaD
 import 'reflect-metadata';
 import {RULE_MAP, TYPE_MESSAGE, VALIDATOR_RULE} from './token';
 import {RuleParser} from './rule-parser';
-import {ValidatorRule} from './validator.rule';
+import {ZlValidatorRule} from './validator.rule';
 import {CheckRuleNotException} from './exception';
 
 function isPlainObject(target: any) {
@@ -40,7 +40,7 @@ export function Validator(metaData: { rules: ValidatorRuleConstructor<any>[] }):
 }
 
 @Validator({
-  rules: [ValidatorRule]
+  rules: [ZlValidatorRule]
 })
 export class ZlValidator {
   protected dataMap: Map<string, any> = new Map<string, any>();
@@ -217,7 +217,7 @@ export class ZlValidator {
         // RuleFn[]
       } else if (groupRule.every(rule => isPlainObject(rule))) {
         const ruleGroup = groupRule as Array<{ [key: string]: any[] | CustomRuleFn }>;
-        console.log(ruleGroup, 'ruleGroup');
+        // console.log(ruleGroup, 'ruleGroup');
         const orResult = [];
         for (const orRules of ruleGroup) {
           let andResult = false;
@@ -228,7 +228,7 @@ export class ZlValidator {
 
             let result: string | boolean = false;
 
-            console.log(rule, 'orRules[andRulesKey]');
+            // console.log(rule, 'orRules[andRulesKey]');
 
             if (Array.isArray(rule)) {
               CheckRuleNotException(ruleMethod[andRulesKey], andRulesKey);
@@ -300,7 +300,7 @@ export class ZlValidator {
         }
       }
     });
-    console.log(this.message);
+    // console.log(this.message);
   }
 }
 

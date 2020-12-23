@@ -39,7 +39,7 @@ export class LoginModel extends BaseFormModel {
                   <nz-option nzLabel="+87" nzValue="+87"></nz-option>
                 </nz-select>
               </ng-template>
-              <input [formControl]="childControl.phone" id="'phoneNumber'" style="width: 50%" nz-input/>
+              <input [formControl]="childControl.phone" style="width: 50%" nz-input/>
               <input [formControl]="childControl.username" style="width: 50%" nz-input/>
             </nz-input-group>
           </nz-form-control>
