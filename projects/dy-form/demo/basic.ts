@@ -91,7 +91,6 @@ export function InputModel<M>(model?: ModelPartial<InputModelControl<M>>): Prope
              [id]="model.name"
              [placeholder]="model.placeHolder"
              [formControl]="control"
-             [disabled]="model.disabled"
              [nzSize]="model.size"
              [type]="model.inputType"
              [readOnly]="model.readonly"/>
