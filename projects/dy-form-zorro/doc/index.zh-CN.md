@@ -46,6 +46,21 @@ import { DyFormZorroModule } from ' @supine/dy-form-zorro';
 
 ## API
 
+### 内置的所有控件模型
+
+|  名称   | 描述 | 配置 |
+|  ----  | ---- | ------- |
+| **InputModel**  | 模型配置项请参考ng-zorro-antd中 `InputModule` 部分 |  输入框 |
+| **InputGroupModel**  | 模型配置项请参考ng-zorro-antd中 `InputModule` 部分 |  数字输入框组 |
+| **InputNumberModel**  | 模型配置项请参考ng-zorro-antd中 `InputNumberModule` 部分 |  数字输入框 |
+| **InputNumberGroupModel**  | 模型配置项请参考ng-zorro-antd中 `InputModule` 部分 |  数字输入框组 |
+| **TextareaModel**  | 模型配置项请参考ng-zorro-antd中 `InputModule` 部分 |  文本域 |
+| **SelectModel**  | 模型配置项请参考ng-zorro-antd中 `SelectModule` 部分 |  下拉框 |
+| **SelectGroupModel**  | 模型配置项请参考ng-zorro-antd中 `InputModule` 部分 |  下拉框组 |
+| **DatePickerModel**  | 模型配置项请参考ng-zorro-antd中 `DatePickerModule` 部分 |  日期选择框 |
+| **RangePickerModel**  | 模型配置项请参考ng-zorro-antd中 `RangePickerModule` 部分 |  日期范围选择 |
+| **TimePickerModel**  | 模型配置项请参考ng-zorro-antd中 `TimePickerModule` 部分 |  时间选择 |
+
 ### jd-dy-form-zorro
 
 | 参数 | 说明 | 类型 | 默认值 | 是否必传 |

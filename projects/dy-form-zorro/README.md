@@ -284,7 +284,7 @@ export class LoginModel extends BaseFormModel {
 | **InputGroupModel**  | 数字输入框组 |
 | **InputNumberModel**  | 数字输入框 |
 | **InputNumberGroupModel**  | 数字输入框组 |
-| **textarea**  | 文本域 |
+| **TextareaModel**  | 文本域 |
 | **SelectModel**  | 下拉框 |
 | **SelectGroupModel**  | 下拉框组 |
 | **DatePickerModel**  | 日期选择框 |

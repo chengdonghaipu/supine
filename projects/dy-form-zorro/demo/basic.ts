@@ -33,11 +33,6 @@ export class LoginModel extends BaseFormModel {
         margin-bottom: 15px;
       }
 
-      nz-zorro-dy-form {
-        display: block;
-        max-width: 350px;
-      }
-
       :host ::ng-deep [nz-form]:not(.ant-form-inline):not(.ant-form-vertical) {
         max-width: 600px;
       }
