@@ -178,7 +178,7 @@ export class ZlValidator {
   }
 
   private passes() {
-    console.log(this.rules);
+    // console.log(this.rules);
     const propertyNames = Object.getOwnPropertyNames(this.rules);
 
     const {ruleMethod, typeMessage} = this.validatorMetaData;

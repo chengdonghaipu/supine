@@ -1,5 +1,5 @@
 import {DyFormRef, BaseFormModel} from '@supine/dy-form';
-import {Type} from '@angular/core';
+import {ChangeDetectorRef, Type} from '@angular/core';
 
 export type DyFormMode = 'vertical' | 'horizontal' | 'inline' | 'custom';
 
@@ -16,6 +16,8 @@ interface InitialData {
 export class ZorroDyFormRef<T extends BaseFormModel> extends DyFormRef<T> {
   mode: DyFormMode = 'vertical';
 
+  changeDetectorRef: ChangeDetectorRef;
+
   constructor(model: Type<T>, initialData: InitialData = {}) {
     super(model);
     for (const initialDataKey in initialData) {
@@ -23,5 +25,17 @@ export class ZorroDyFormRef<T extends BaseFormModel> extends DyFormRef<T> {
         this[initialDataKey] = initialData[initialDataKey];
       }
     }
+  }
+
+  setLayout(layout: DyFormMode) {
+    if (!this.dyForm) {
+      throw Error(`初始化后才能执行 setLayout`);
+    }
+
+    this.mode = layout;
+
+    this.changeDetectorRef.markForCheck();
+
+    setTimeout(() => this.dyForm.forceRenderLayout());
   }
 }

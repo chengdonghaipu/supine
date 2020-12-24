@@ -7,15 +7,9 @@ cols: 1
 cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 ---
 
-@supine/dy-form是基于Angular表单封装的动态表单库。
+@supine/dy-form-zorro是基于@supine/dy-form 为ng-zorro适配的开箱即用的动态表单库。
 
-通过引入一组可维护的表单控件模型和动态表单控件组件，它完全自动化了表单UI创建。
-
-@supine/dy-form 不依赖于任何Angular UI框架, 任何Angular UI框架都可以基于@supine/dy-form封装成特定风格的动态表单
-
-@supine/dy-form 一般也不会直接在项目中使用，因为内部并没有任何控件模型，只是提供了基础表单控件的接口
-
-目前已经适配NG-ZORRO ---  @supine/dy-form-zorro
+拥有@supine/dy-form所有特性
 
 ## 何时使用
 
@@ -33,6 +27,7 @@ cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
   - 不需要成百上千行HTML，组件内部也不需要维护大量与表单相关的代码
   - 大多数情况 只需要一行HTML代码和几行TS代码即可生成期望的表单
   - 表单校验，一般来说只需一行代码搞定
+  - 批量对接接口
 - 面向对象
   - 表单模型、控件模型都基于class实现的，表单模型、控件模型都提供了基类，可以基于基类继承进行拓展
 - 易拓展性
@@ -45,36 +40,15 @@ cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 - 轻量级、易拓展验证库(文档中涉及的验证参考该文档)[@supine/validator](https://www.npmjs.com/package/@supine/validator)
 
 ```ts
-import { DyFormModule } from ' @supine/dy-form';
+import { DyFormZorroModule } from ' @supine/dy-form-zorro';
 ```
 
-# 基于@supine/dy-form封装动态表单基本步骤
-- 安装
-  ```shell
-  ng add @supine/dy-form
-  ```
-
-- 实现表单控件模型
-
-- 实现表单控件模型对应的装饰器
-
-- 生成一个Angular组件&并配置模板
-
-- 在组件中注册FormFooterTemplate、FormHeaderTemplate、FormControlTemplate等
-
-# 使用封装好的动态表单
-
-- 第一步: 定义表单模型
-- 第二步: 在HTML中声明动态表单
-- 第三步: 在组件中定义dyFormRef属性
-- 第四步: dyFormRef.executeModelUpdate();执行渲染
 
 ## API
 
-### jd-dy-form
+### jd-dy-form-zorro
 
 | 参数 | 说明 | 类型 | 默认值 | 是否必传 |
 | --- | --- | --- | --- | --- |
-| `[dyFormRef]` | 所有表单功能都由dyFormRef间接控制 | `AbstractDyFormRef` |  | ✅ |
+| `[dyFormRef]` | 所有表单功能都由dyFormRef间接控制 | `ZorroDyFormRef` |  | ✅ |
 
-### dyFormRef

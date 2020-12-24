@@ -1,6 +1,7 @@
 import {
+  AfterContentChecked,
   AfterContentInit,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component, ContentChild,
   ContentChildren, Directive,
   Input,
@@ -37,7 +38,7 @@ export class DyFormCustomLayout {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DyFormZorroComponent implements OnInit, AfterContentInit {
+export class DyFormZorroComponent implements OnInit, AfterContentInit, AfterContentChecked {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;
 
   @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<void>;
@@ -83,10 +84,11 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
     return control.getError(errors[0]);
   }
 
-  constructor() {
+  constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.dyFormRef.changeDetectorRef = this.changeDetectorRef;
   }
 
   ngAfterContentInit(): void {
@@ -102,6 +104,9 @@ export class DyFormZorroComponent implements OnInit, AfterContentInit {
     this._formHeaderDefs.forEach(item => this.dyForm.addHeaderRowDef(item));
     // 注册表单控件模板
     this._formColumnDefs.forEach(item => this.dyForm.addColumnDef(item));
+  }
+
+  ngAfterContentChecked(): void {
   }
 
 }

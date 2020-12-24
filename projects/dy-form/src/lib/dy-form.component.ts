@@ -218,7 +218,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentInit(): void {
-    console.log(this._formLayoutItems, this._layoutItemDefs, '_formLayoutItems');
+    // console.log(this._formLayoutItems, this._layoutItemDefs, '_formLayoutItems');
     this._customLayoutSelfDefs.forEach(item => this._customLayoutDefs.add(item));
   }
 
@@ -328,9 +328,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return false;
   }
 
-  private _isRenderControl(record: IterableChangeRecord<FormControlConfig>) {
-    const item = record.item;
-
+  private _isRenderControl(item: FormControlConfig) {
     // 是否需要渲染控件
     let isRenderControl = true;
 
@@ -363,10 +361,9 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return isRenderControl;
   }
 
-  private _renderLayoutModeControl(record: IterableChangeRecord<FormControlConfig>, currentIndex: number) {
-    const item = record.item;
+  private _renderLayoutModeControl(item: FormControlConfig, currentIndex: number) {
     // 是否需要渲染控件
-    const isRenderControl = this._isRenderControl(record);
+    const isRenderControl = this._isRenderControl(item);
 
     const dyFormColumnDef = this._columnDefsByName.get(item.type);
 
@@ -382,7 +379,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       return;
     }
     // 目前只允许存在一个布局容器
-    const layoutDef = Array.from(this._customLayoutDefs)[0];
+    // const layoutDef = Array.from(this._customLayoutDefs)[0];
 
     // console.log(this._layoutItemDefs, '_layoutItemDefs');
 
@@ -395,10 +392,10 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     // console.log(currentIndex, currentIndex);
     this._viewRefs[currentIndex] = containers[0].viewContainer.createEmbeddedView(
       dyFormColumnDef.template,
-      new DyFormCellDefContext(null, record.item, -1, 0)
+      new DyFormCellDefContext(null, item, -1, 0)
     );
 
-    this._recordControlUIDMap.set(record.item.uid, record.item);
+    this._recordControlUIDMap.set(item.uid, item);
   }
 
   private _addControl(record: IterableChangeRecord<FormControlConfig>) {
@@ -725,19 +722,19 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
         if (!this._recordControlUIDMap.get(record.item.uid)) {
           // customLayout ? this._renderLayoutModeControl(record, currentIndex) : this._renderCustomControl(record);
-          this._renderLayoutModeControl(record, currentIndex);
+          this._renderLayoutModeControl(record.item, currentIndex);
         }
 
-        console.log('新增 | 修改', record.item.name);
+        // console.log('新增 | 修改', record.item.name);
       } else if (currentIndex === null) {
         // 删除
-        console.log('删除', record.item.name, previousIndex);
+        // console.log('删除', record.item.name, previousIndex);
         if (!this._controlUIDMap.get(record.item.uid)) {
           this._removeControl(record.item);
           this._viewRefs.splice(previousIndex, 1);
         }
       } else {
-        console.log('移动');
+        // console.log('移动');
         // 移动 不需要处理
         // console.log('移动');
       }
@@ -771,6 +768,17 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
 
     this._footerRowDefs.forEach(value => this._formFooterOutlet.viewContainer.createEmbeddedView(value.template));
+  }
+
+  /**
+   * 强制渲染
+   */
+  forceRenderLayout() {
+    this._controlUIDMap.clear();
+
+    this.options.forEach((value, index) => this._renderLayoutModeControl(value, index));
+
+    this._updateRowIndexContext();
   }
 
   ngDoCheck(): void {
@@ -866,9 +874,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       this._formLayoutItems.toArray(), this._customLayoutItems);
     // console.log(this._formLayoutItems.toArray(), _layoutItemDefs);
     // TODO 目前暂时通过长度变化 来渲染
-    if (this._layoutItemDefs.length !== _layoutItemDefs.length) {
-      this._layoutItemDefs = _layoutItemDefs;
-    }
+    this._layoutItemDefs = _layoutItemDefs;
+    // console.log(_layoutItemDefs, 2222);
+    // if (this._layoutItemDefs.length !== _layoutItemDefs.length) {
+    //   this._layoutItemDefs = _layoutItemDefs;
+    // }
 
     this._columnDefsByName.clear();
 
