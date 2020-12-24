@@ -106,8 +106,8 @@ function generate(target) {
     // handle components->${component}->doc folder
     const result = {
       name: componentName,
-      docZh: parseDocMdUtil(fs.readFileSync(path.join(componentDirPath, 'doc/index.zh-CN.md')), `components/${componentName}/doc/index.zh-CN.md`),
-      docEn: parseDocMdUtil(fs.readFileSync(path.join(componentDirPath, 'doc/index.en-US.md')), `components/${componentName}/doc/index.en-US.md`),
+      docZh: parseDocMdUtil(fs.readFileSync(path.join(componentDirPath, 'doc/index.zh-CN.md')), `projects/${componentName}/doc/index.zh-CN.md`),
+      docEn: parseDocMdUtil(fs.readFileSync(path.join(componentDirPath, 'doc/index.en-US.md')), `projects/${componentName}/doc/index.en-US.md`),
       demoMap,
       pageDemo
     };

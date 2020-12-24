@@ -24,8 +24,8 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '
 })
 export class GithubButtonComponent implements OnInit {
   starCount = 0;
-  org = 'NG-ZORRO';
-  repo = 'ng-zorro-antd';
+  org = 'chengdonghaipu';
+  repo = 'supine';
   @Input() responsive: null | 'narrow' | 'crowded' = null;
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private platform: Platform) {}

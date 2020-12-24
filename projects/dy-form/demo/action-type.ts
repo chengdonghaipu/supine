@@ -25,24 +25,22 @@ export class UserModel extends BaseFormModel {
   phone = [null];
 
   updateUser(body, id) {
-    console.log(body, id);
     // 模拟用户更新接口
-    return of(null)
-      .pipe(
-        debounceTime(100),
-        map(() => Object.assign({}, body, {id}))
-      );
+    return of(Object.assign({}, {id, message: '修改成功', body, code: 0}))
+      .pipe(debounceTime(100));
   }
 
   createUser(body) {
     // 模拟用户创建接口
-    return of(null)
-      .pipe(
-        debounceTime(100),
-        map(() => body)
-      );
+    return of(Object.assign({}, {message: '新增成功', body, code: 0}))
+      .pipe(debounceTime(100));
   }
 
+  /**
+   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+   * HTTP模块 目前还没开源
+   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+   */
   httpRequest(): Observable<unknown> {
     return this.updateValueAndValidity()
       .pipe(
@@ -59,6 +57,12 @@ export class UserModel extends BaseFormModel {
             update: [this.updateUser, [body, id]],
             create: [this.createUser, [body]],
           };
+
+          // 如果结合我封装的http模块 则可以按照下面的模板来
+          // const httpRequestMap: HttpRequestMap = {
+          //    update: [this.http.updateRole, [body, id]],
+          //    add: [this.http.addRole, [body]],
+          // };
 
           const [handle, params] = httpRequestMap[this.actionType];
 
@@ -102,13 +106,13 @@ export class NzDemoDyFormActionTypeComponent implements OnInit {
   ngModelChange(actionType: string) {
     const {model} = this.dyFormRef;
 
+    model.withActionType(actionType);
+
     if (actionType === 'create') {
       this.dyFormRef.reset();
-      model.withActionType(actionType);
       this.result = {};
     } else {
-      model.withActionType(actionType)
-        .withAttachValue({
+      model.withAttachValue({
           username: '苏三',
           email: '1151849955@qq.com',
           phone: '15173818606',

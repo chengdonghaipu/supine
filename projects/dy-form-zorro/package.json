@@ -17,6 +17,13 @@
     "copy:collection": "cp schematics/collection.json ../../dist/dy-form-zorro/schematics/collection.json",
     "postbuild": "npm run copy:schemas && npm run copy:collection"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chengdonghaipu/supine"
+  },
+  "bugs": {
+    "url": "https://github.com/chengdonghaipu/supine/issues"
+  },
   "peerDependencies": {
     "@angular/common": "^10.0.14",
     "@angular/core": "^10.0.14",

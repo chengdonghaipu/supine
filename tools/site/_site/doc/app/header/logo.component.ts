@@ -4,8 +4,8 @@ import { Component } from "@angular/core";
   selector: 'app-logo',
   template: `
     <a href="/" id="logo">
-      <img width="32" height="28.27" alt="logo" src="./assets/img/logo.svg">
-      <strong>NG-ZORRO</strong>
+      <img width="32" height="28.27" alt="logo" src="./assets/img/favicon.ico">
+      <strong>supine</strong>
     </a>
   `,
   styles: [
