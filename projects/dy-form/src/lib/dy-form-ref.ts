@@ -50,7 +50,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     this._unsubscribe$.complete();
   }
 
-  renderDataNext(options: FormControlConfig[]) {
+  protected renderDataNext(options: FormControlConfig[]) {
     this.optionMap.clear();
 
     options.forEach(value => this.optionMap.set(value.name, value));
@@ -62,12 +62,12 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     return this._renderData;
   }
 
-  disabledByKeys(keys: string[] | string): this {
+  protected disabledByKeys(keys: string[] | string): this {
     this._disabledOrEnabled(keys, true);
     return this;
   }
 
-  enabledByKeys(keys: string[] | string): this {
+  protected enabledByKeys(keys: string[] | string): this {
     this._disabledOrEnabled(keys, false);
     return this;
   }
@@ -95,7 +95,11 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     // this.renderDataNext(model);
   }
 
-  executeModelUpdate(...params: any[]) {
+  /**
+   * 触发模型modelUpdateHook 从而更新视图
+   * @param params 传递给modelUpdateHook的参数 对于复杂场景很有用
+   */
+  executeModelUpdate(...params: any[]): void {
     const hook = this.model.modelUpdateHook.bind(this.model);
 
     const formValue = this?.dyForm?.formArea.value || {};
@@ -113,7 +117,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
    * @param Model
    * @param attached
    */
-  resolveModel<M extends BaseFormModel>(Model: Type<M>, attached = false) {
+  protected resolveModel<M extends BaseFormModel>(Model: Type<M>, attached = false) {
     if (this.model && !attached) {
       throw Error(`不能注册多个表单模型`);
     }
@@ -189,7 +193,12 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     this._registeredModel(options);
   }
 
-  registeredModel<M extends BaseFormModel>(model: Type<M>): this {
+  /**
+   * 注册表单模型
+   * @param model 表单模型
+   * @return this
+   */
+  protected registeredModel<M extends BaseFormModel>(model: Type<M>): this {
     if (this.model) {
       throw Error(`不能注册多个表单模型`);
     }
@@ -201,10 +210,10 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
   /**
    * 新增表单控件 一般很少用 建议通过模型实现相应的业务
-   * @param control
-   * @param indexOrName
+   * @param control 控件模型，可以是数组
+   * @param indexOrName 插入指定的索引位置或者控件名称位置 可选
    */
-  addControl(control: BaseModel | BaseModel[], indexOrName?: number | string): this {
+  addControl<C extends BaseModel>(control: C | C[], indexOrName?: number | string): this {
     control = !Array.isArray(control) ? [control] : control;
 
     for (const ol of control) {
@@ -304,9 +313,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
   /**
    * 更新表单控件 一般很少用 建议通过模型实现相应的业务
-   * @param control
+   * @param control 控件模型，可以是数组
    */
-  updateControl(control: BaseModel | BaseModel[]): this {
+  updateControl<C extends BaseModel>(control: C | C[]): this {
     control = !Array.isArray(control) ? [control] : control;
 
     let update = false;

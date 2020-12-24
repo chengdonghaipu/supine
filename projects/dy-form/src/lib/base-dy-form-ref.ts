@@ -3,10 +3,11 @@ import {Type} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
 import {BaseFormModel} from './models';
+import {DyFormComponent} from './dy-form.component';
 
 
 export abstract class AbstractDyFormRef<T extends BaseFormModel> {
-  abstract dyForm;
+  abstract dyForm: DyFormComponent;
 
   model: T;
 
@@ -94,7 +95,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
    * 注册模型!
    * @param model
    */
-  abstract registeredModel(model: FormControlConfig[] | Type<any>): this;
+  protected abstract registeredModel(model: FormControlConfig[] | Type<any>): this;
 
   /**
    * 添加控件
@@ -150,16 +151,16 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
   });
 
   /**
-   * 禁用控件
+   * 禁用控件 暂时不可用
    * 支持批量
    * @param keys
    */
-  abstract disabledByKeys(keys: string[] | string): this;
+  protected abstract disabledByKeys(keys: string[] | string): this;
 
   /**
-   * 启用控件
+   * 启用控件 暂时不可用
    * 支持批量
    * @param keys
    */
-  abstract enabledByKeys(keys: string[] | string): this;
+  protected abstract enabledByKeys(keys: string[] | string): this;
 }

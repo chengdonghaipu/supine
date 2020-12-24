@@ -20,21 +20,21 @@ export class LoginModel extends BaseFormModel {
     <nz-zorro-dy-form [dyFormRef]="dyFormRef" layout="horizontal">
       <ng-container *jdDyFormHeaderDef>
         <div class="form-header">
-          <h2>欢迎登陆</h2>
+          <h2>欢迎登录</h2>
         </div>
       </ng-container>
       <ng-container *jdDyFormFooterDef>
         <div nz-row class="login-form-margin">
           <div nz-col [nzSpan]="12">
             <label nz-checkbox [formControl]="remember">
-              <span>记住登陆</span>
+              <span>记住登录</span>
             </label>
           </div>
           <div nz-col [nzSpan]="12">
             <a class="login-form-forgot">忘记密码</a>
           </div>
         </div>
-        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">登 陆</button>
+        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">登 录</button>
         Or <a> register now! </a>
       </ng-container>
     </nz-zorro-dy-form>

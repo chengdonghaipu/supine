@@ -75,6 +75,139 @@ import { DyFormModule } from ' @supine/dy-form';
 
 | 参数 | 说明 | 类型 | 默认值 | 是否必传 |
 | --- | --- | --- | --- | --- |
-| `[dyFormRef]` | 所有表单功能都由dyFormRef间接控制 | `AbstractDyFormRef` |  | ✅ |
+| `[dyFormRef]` | 所有表单功能都由dyFormRef间接控制 | `DyFormRef` |  | ✅ |
 
 ### dyFormRef
+
+- 成员属性
+
+| 成员属性 | 说明 | 类型 | 默认值 | 访问权限 | 使用频率 |
+| --- | --- | --- | --- | --- | --- |
+| `model` | 表单模型实例，模型注册后即可获取 | `<T extends BaseFormModel>` | `null` | `public` | 很高 |
+| `dyForm` | 动态表单实例,一般很少用 | `DyFormComponent` | `null` | `public` | 很低 |
+| `allOptions` | 所有模型控件配置，一般拓展dyFormRef可能会用到 | `FormControlConfig[]` | `[]` | `protected` | 很低 |
+
+- 成员方法 - 根据使用频率从高往低排序
+
+```
+/**
+ * 触发模型modelUpdateHook 从而更新视图
+ * @param params 传递给modelUpdateHook的参数 对于复杂场景很有用
+ */
+ executeModelUpdate(...params: any[]): void
+```
+
+```
+/**
+ * 重置表单
+ * @param value
+ * @param options
+ */
+ reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean })
+```
+
+```
+/**
+ * 填充表单数据
+ * @param value
+ * @param options
+ */
+ setValues(value: { [p: string]: any }, options?: { onlySelf?: boolean; emitEvent?: boolean }): this
+```
+
+```
+/**
+ * 新增表单控件 一般很少用 建议通过modelUpdateHook实现相应的业务
+ * @param control 控件模型，可以是数组
+ * @param indexOrName 插入指定的索引位置或者控件名称位置 可选
+ */
+ addControl<C extends BaseModel>(control: C | C[], indexOrName?: number | string): this
+```
+
+```
+/**
+ * 更新表单控件 一般很少用 建议通过modelUpdateHook实现相应的业务
+ * @param control 控件模型，可以是数组
+ */
+ updateControl<C extends BaseModel>(control: C | C[]): this
+```
+
+```
+/**
+ * 移除表单控件 一般很少用 建议通过modelUpdateHook实现相应的业务
+ * @param controlName 控件名称
+ */
+ removeControl(controlName: string | string[]): this
+```
+
+```
+/**
+ * 注册表单模型
+ * @param model 表单模型
+ * @return this
+ */
+ protected registeredModel<M extends BaseFormModel>(model: Type<M>): this
+```
+
+### DyFormComponent
+
+```typescript
+interface DyFormComponent {
+  /**
+   * 表单组
+   */
+  formArea: FormGroup;
+
+  dyFormRef: DyFormRef;
+
+  /**
+   * 重置表单
+   * @param value
+   * @param options
+   */
+  reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean; }): void;
+
+  /**
+   * 填充表单数据
+   * @param value
+   * @param options
+   */
+  setValues(value: { [p: string]: any }, options?: { onlySelf?: boolean; emitEvent?: boolean }): void;
+
+  /**
+   * 添加控件模型类型(注册表单控件模板) 比如INPUT 模型 基于@supine/dy-form封装动态表单 这是必须要的
+   * @param columnDef
+   */
+  addColumnDef(columnDef: DyFormColumnDef): void;
+
+  /**
+   * 移除控件模型模板
+   * @param columnDef
+   */
+  removeColumnDef(columnDef: DyFormColumnDef): void;
+
+  /**
+   * 注册表单header模板 基于@supine/dy-form封装动态表单 这是必须要的
+   * @param headerRowDef
+   */
+  addHeaderRowDef(headerRowDef: DyFormHeaderDef): void;
+
+  /**
+   * 移除表单header模板
+   * @param headerRowDef
+   */
+  removeHeaderRowDef(headerRowDef: DyFormHeaderDef): void;
+
+  /**
+   * 注册表单footer模板 基于@supine/dy-form封装动态表单 这是必须要的
+   * @param footerRowDef
+   */
+  addFooterRowDef(footerRowDef: DyFormFooterDef): void;
+
+  /**
+   * 移除表单footer模板
+   * @param footerRowDef
+   */
+  removeFooterRowDef(footerRowDef: DyFormFooterDef): void;
+}
+```

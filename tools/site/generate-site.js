@@ -42,7 +42,7 @@ function generate(target) {
       }
     }
     const componentDirPath = path.join(rootPath, componentName);
-    if (['version', 'i18n', 'locale', 'core', 'style', 'dev', 'dy-form-zorro', 'http', 'validator'].includes(componentName)) {
+    if (['version', 'i18n', 'locale', 'core', 'style', 'dev'].includes(componentName)) {
       return;
     }
     // 如果是文件夹
