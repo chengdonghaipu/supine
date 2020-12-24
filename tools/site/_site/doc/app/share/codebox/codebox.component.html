@@ -58,16 +58,16 @@
         [class.ant-tooltip-open]="copied"
         (click)="copyCode()"
       ></i>
-      <i
-        [nzTooltipTitle]="language==='zh'? '复制生成代码命令' : 'Copy Generate Command'"
-        *ngIf="nzGenerateCommand"
-        nz-tooltip
-        nz-icon
-        [nzType]="commandCopied ? 'check' : 'code'"
-        class="code-box-code-copy"
-        [class.ant-tooltip-open]="commandCopied"
-        (click)="copyGenerateCommand(nzGenerateCommand)"
-      ></i>
+<!--      <i-->
+<!--        [nzTooltipTitle]="language==='zh'? '复制生成代码命令' : 'Copy Generate Command'"-->
+<!--        *ngIf="nzGenerateCommand"-->
+<!--        nz-tooltip-->
+<!--        nz-icon-->
+<!--        [nzType]="commandCopied ? 'check' : 'code'"-->
+<!--        class="code-box-code-copy"-->
+<!--        [class.ant-tooltip-open]="commandCopied"-->
+<!--        (click)="copyGenerateCommand(nzGenerateCommand)"-->
+<!--      ></i>-->
       <span class="code-expand-icon"
             nz-tooltip
             [nzTooltipTitle]="nzExpanded ?

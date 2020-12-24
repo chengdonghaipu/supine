@@ -118,7 +118,7 @@ export function InputModel<M>(model?: ModelPartial<InputModelControl<M>>): Prope
       </nz-form-item>
       <!-- 布局 可以实现各种各样的布局 在我封装的@supine/dy-form-zorro 中有3中内置布局(inline, horizontal, vertical)和一种自定义布局 -->
       <jd-form-layout>
-        <form nz-form nzLayout="inline" [formGroup]="dyForm.formArea">
+        <form nz-form [nzLayout]="layout" [formGroup]="dyForm.formArea">
           <ng-container *ngFor="let control of dyForm.options">
             <ng-container jdDyFormLayoutItemName="{{control.name}}"></ng-container>
           </ng-container>
@@ -128,6 +128,8 @@ export function InputModel<M>(model?: ModelPartial<InputModelControl<M>>): Prope
   `
 })
 export class NzZorroDyFormOtherComponent implements AfterContentInit {
+  @Input() layout: 'horizontal' | 'vertical' | 'inline' = 'inline';
+
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;
 
   @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<{ $implicit: AbstractControl | NgModel }>;
@@ -142,6 +144,7 @@ export class NzZorroDyFormOtherComponent implements AfterContentInit {
 
   @ContentChildren(DyFormColumnDef, {descendants: true}) _formColumnDefs: QueryList<DyFormColumnDef>;
 
+  // 可以继承DyFormRef进行拓展
   @Input() dyFormRef: DyFormRef<any>;
 
   hasError(control: FormControl) {
@@ -208,10 +211,12 @@ export class LoginModel extends BaseFormModel {
         // 如果验证未通过 则过滤掉
         filter(value => value),
         // 额外处理
-        map(() => {})
+        map(() => {
+        })
       );
   }
 }
+
 @Component({
   selector: 'nz-demo-dy-form-basic',
   template: `

@@ -67,9 +67,13 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzPipesModule } from 'ng-zorro-antd/pipes';
+import {DyFormModule} from '@supine/dy-form';
+import {DyFormZorroModule} from '@supine/dy-form-zorro';
 
 @NgModule({
   exports: [
+    DyFormModule,
+    DyFormZorroModule,
     NzAffixModule,
     NzAlertModule,
     NzAnchorModule,

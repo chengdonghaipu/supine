@@ -26,7 +26,6 @@ import {Subject} from 'rxjs';
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {
   DyFormCellDefContext,
-  DyFormCellOutlet,
   DyFormColumnDef,
   DyFormFooterDef,
   DyFormFooterOutlet,
@@ -35,29 +34,21 @@ import {
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {FormControlConfig} from './models';
-import {debounceTime, distinctUntilChanged, takeUntil} from 'rxjs/operators';
+import {takeUntil} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {DyFormLayoutOutlet, DyLayoutComponent, DyLayoutDirective, DyLayoutItemDirective} from './dy-layout';
 
-/*class RecordControlItemViewTuple {
-  constructor(public record: IterableChangeRecord<FormControlConfig>/!*,
-              public labelView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,
-              public controlView: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>,*!/
-  ) {
-  }
-}*/
-
-const enum DyFormBreakpoints {
-  XS = '(max-width: 575px)',
-  SM = '(min-width: 576px) and (max-width: 767px)',
-  MD = '(min-width: 768px) and (max-width: 991px)',
-  LG = '(min-width: 992px) and (max-width: 1199px)',
-  XL = '(min-width: 1200px) and (max-width: 1599px)',
-  XXL = '(min-width: 1600px) and (max-width: 1999px)',
-  X3L = '(min-width: 2000px)',
-}
+// const enum DyFormBreakpoints {
+//   XS = '(max-width: 575px)',
+//   SM = '(min-width: 576px) and (max-width: 767px)',
+//   MD = '(min-width: 768px) and (max-width: 991px)',
+//   LG = '(min-width: 992px) and (max-width: 1199px)',
+//   XL = '(min-width: 1200px) and (max-width: 1599px)',
+//   XXL = '(min-width: 1600px) and (max-width: 1999px)',
+//   X3L = '(min-width: 2000px)',
+// }
 
 @Component({
   selector: 'jd-dy-form',

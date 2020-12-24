@@ -71,10 +71,10 @@ import { DyFormModule } from ' @supine/dy-form';
 
 ## API
 
-### dy-form
+### jd-dy-form
 
-| 参数 | 说明 | 类型 | 默认值 | 支持全局配置 |
+| 参数 | 说明 | 类型 | 默认值 | 是否必传 |
 | --- | --- | --- | --- | --- |
-| `[nzSize]` | space size | `small` \| `middle` \| `large` \| `number` | `small` | ✅ |
-| `[nzDirection]` | space direction | `vertical` \| `horizontal` | `horizontal` |  |
-| `[nzAlign]` | align items | `start` \| `end` \| `baseline` \| `horizontal` | - | |
+| `[dyFormRef]` | 所有表单功能都由dyFormRef间接控制 | `AbstractDyFormRef` |  | ✅ |
+
+### dyFormRef

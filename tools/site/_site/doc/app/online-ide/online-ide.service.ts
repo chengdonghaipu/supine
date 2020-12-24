@@ -31,10 +31,14 @@ export class OnlineIdeService {
     '@angular/router': '^10.0.0',
     '@ant-design/icons-angular': '10.0.0-beta.0',
     'rxjs': '~6.5.4',
+    '@supine/dy-form': '^10.0.0-rc44',
+    '@supine/dy-form-zorro': '^10.0.0-rc44',
+    '@supine/validator': '^10.0.0-rc44',
     'core-js': '~3.6.5',
     'date-fns': '^2.0.0',
     'tslib': '^2.0.0',
     'zone.js': '~0.11.1',
+    'lodash': '^4.17.20',
     'ng-zorro-antd': `^${VERSION.full}`
   };
 
