@@ -27,7 +27,7 @@ export class ZorroDyFormRef<T extends BaseFormModel> extends DyFormRef<T> {
     }
   }
 
-  setLayout(layout: DyFormMode) {
+  setLayout(layout: DyFormMode): void {
     if (!this.dyForm) {
       throw Error(`初始化后才能执行 setLayout`);
     }

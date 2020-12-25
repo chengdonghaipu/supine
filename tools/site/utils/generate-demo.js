@@ -107,13 +107,16 @@ function generateTemplate(result) {
   };
   const name = result.name;
   const hasPageDemo = !!result.pageDemo;
+  if (name === 'validator') {
+    // console.log(result);
+  }
   return {
     zh: wrapperAll(
-      generateToc('zh-CN', result.name, result.demoMap),
+      generateToc('zh-CN', result.name, result),
       wrapperHeader(titleMap.zh, result.docZh.whenToUse, 'zh', innerMap.zh, hasPageDemo, name) + wrapperAPI(result.docZh.api)
     ),
     en: wrapperAll(
-      generateToc('en-US', result.name, result.demoMap),
+      generateToc('en-US', result.name, result),
       wrapperHeader(titleMap.en, result.docEn.whenToUse, 'en', innerMap.en, hasPageDemo, name) + wrapperAPI(result.docEn.api)
     )
   };
@@ -151,8 +154,34 @@ function wrapperAll(toc, content) {
   return `<article>${toc}${content}</article>`;
 }
 
-function generateToc(language, name, demoMap) {
+function generateToc(language, name, result) {
+  const demoMap = result.demoMap;
+  const languageMap = {
+    'zh-CN': 'Zh',
+    'en-US': 'En',
+  }
+  const doc = result[`doc${languageMap[language]}`];
+  const {whenToUse} = doc;
+  const reg = /id="([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[a-zA-Z0-9_-]){2,20}"/g;
+
+  const matches = (whenToUse + '').match(reg) || [];
   let linkArray = [];
+  if (matches[1]) {
+    matches.forEach((value, index) => {
+      const id = value.split('=')[1].replace(/"/g, '');
+
+      linkArray.push({
+        content: `<nz-link nzHref="#${id}" nzTitle="${id}"></nz-link>`,
+        order: 0
+      });
+    });
+  }
+
+  linkArray = linkArray.reverse().map((value, index) => {
+    value.order = -(index + 1);
+    return value;
+  });
+
   for (const key in demoMap) {
     linkArray.push({
       content: `<nz-link nzHref="#components-${name}-demo-${key}" nzTitle="${demoMap[key].meta.title[language]}"></nz-link>`,
@@ -160,7 +189,7 @@ function generateToc(language, name, demoMap) {
     });
   }
   linkArray.sort((pre, next) => pre.order - next.order);
-  linkArray.push({ content: `<nz-link nzHref="#api" nzTitle="API"></nz-link>` });
+  linkArray.push({content: `<nz-link nzHref="#api" nzTitle="API"></nz-link>`});
   const links = linkArray.map(link => link.content).join('');
   return `
 <nz-affix class="toc-affix" [nzOffsetTop]="16">
@@ -178,7 +207,7 @@ function generateExample(result) {
   const templateUnion = String(fs.readFileSync(path.resolve(__dirname, '../template/example-union.template.html')));
   let demoList = [];
   for (const key in demoMap) {
-    demoList.push(Object.assign({ name: key }, demoMap[key]));
+    demoList.push(Object.assign({name: key}, demoMap[key]));
   }
   demoList.sort((pre, next) => pre.meta.order - next.meta.order);
   let firstZhPart = '';

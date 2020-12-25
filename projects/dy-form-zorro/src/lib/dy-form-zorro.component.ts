@@ -20,7 +20,7 @@ import {
   DyLayoutItemDirective,
   FormControlConfig
 } from '@supine/dy-form';
-import {FormControl} from '@angular/forms';
+import {AbstractControl, FormControl, NgModel} from '@angular/forms';
 import {ZorroDyFormRef} from './dy-form-ref';
 
 @Directive({selector: '[jdDyFormCustomLayout]'})
@@ -41,8 +41,27 @@ export class DyFormCustomLayout {
 export class DyFormZorroComponent implements OnInit, AfterContentInit, AfterContentChecked {
   @ViewChild(DyFormComponent, {static: true}) dyForm: DyFormComponent;
 
-  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<void>;
+  /**
+   * 通用错误提示模板
+   * @example
+   * <jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
+   *   <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'custom'">
+   *      <nz-form-control jdDyFormControlDef [nzErrorTip]="dyFormZorro.errorTpl"></nz-form-control>
+   *   </nz-form-item>
+   * </jd-dy-form-zorro>
+   */
+  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<{ $implicit: AbstractControl | NgModel }>;
 
+  /**
+   * 通用表单控件label模板
+   * @example
+   * <jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
+   *   <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'custom'">
+   *      <ng-template [ngTemplateOutlet]="dyFormZorro.labelTpl" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+   *      <nz-form-control jdDyFormControlDef [nzErrorTip]="dyFormZorro.errorTpl"></nz-form-control>
+   *   </nz-form-item>
+   * </jd-dy-form-zorro>
+   */
   @ViewChild('label', {static: true}) labelTpl: TemplateRef<void>;
 
   @ViewChild('inputControl', {static: true}) inputTpl: TemplateRef<void>;

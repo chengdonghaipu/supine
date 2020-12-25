@@ -9,7 +9,7 @@ cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 
 @supine/dy-form-zorro是基于@supine/dy-form 为ng-zorro适配的开箱即用的动态表单库。
 
-拥有@supine/dy-form所有特性
+拥有@supine/dy-form所有特性, 因此在这里写的代码示例不多, 更多示例请参考dy-form模块。
 
 ## 何时使用
 
@@ -66,4 +66,65 @@ import { DyFormZorroModule } from ' @supine/dy-form-zorro';
 | 参数 | 说明 | 类型 | 默认值 | 是否必传 |
 | --- | --- | --- | --- | --- |
 | `[dyFormRef]` | 所有表单功能都由dyFormRef间接控制 | `ZorroDyFormRef` |  | ✅ |
+
+### ZorroDyFormRef
+
+ZorroDyFormRef 继承自 DyFormRef
+
+- 成员方法
+
+```
+/**
+ * 动态设置布局
+ * @param layout 'vertical' | 'horizontal' | 'inline' | 'custom'
+ */
+ setLayout(layout: DyFormMode): void
+```
+
+### DyFormZorroComponent
+
+- 暴露了很多模板以便复用，自定义时比较有用，避免很多重复性的代码
+
+```typescript
+class DyFormZorroComponent {
+  /**
+   * 通用错误提示模板
+   * @example
+   * <jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
+   *   <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'custom'">
+   *      <nz-form-control jdDyFormControlDef [nzErrorTip]="dyFormZorro.errorTpl"></nz-form-control>
+   *   </nz-form-item>
+   * </jd-dy-form-zorro>
+   */
+  @ViewChild('errorTpl', {static: true}) errorTpl: TemplateRef<{ $implicit: AbstractControl | NgModel }>;
+
+  /**
+   * 通用表单控件label模板
+   * @example
+   * <jd-dy-form-zorro [dyFormRef]="dyFormRef" #dyFormZorro>
+   *   <nz-form-item *jdDyFormColumnDef="let control; let model = model name 'custom'">
+   *      <ng-template [ngTemplateOutlet]="dyFormZorro.labelTpl" [ngTemplateOutletContext]="{$implicit: model}"></ng-template>
+   *      <nz-form-control jdDyFormControlDef [nzErrorTip]="dyFormZorro.errorTpl"></nz-form-control>
+   *   </nz-form-item>
+   * </jd-dy-form-zorro>
+   */
+  @ViewChild('label', {static: true}) labelTpl: TemplateRef<void>;
+
+  @ViewChild('inputControl', {static: true}) inputTpl: TemplateRef<void>;
+
+  @ViewChild('inputNumberControl', {static: true}) inputNumberTpl: TemplateRef<void>;
+
+  @ViewChild('textAreaControl', {static: true}) textAreaTpl: TemplateRef<void>;
+
+  @ViewChild('datePickerControl', {static: true}) datePickerTpl: TemplateRef<void>;
+
+  @ViewChild('rangePickerControl', {static: true}) rangePickerTpl: TemplateRef<void>;
+
+  @ViewChild('timePickerControl', {static: true}) timePickerTpl: TemplateRef<void>;
+
+  @ViewChild('selectControl', {static: true}) selectTpl: TemplateRef<void>;
+
+  @ViewChild('formGroupControl', {static: true}) formGroupTpl: TemplateRef<void>;
+}
+```
 
