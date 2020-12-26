@@ -55,7 +55,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
     options.forEach(value => this.optionMap.set(value.name, value));
 
-    this._renderData.next(options);
+    this._renderData.next(options.sort((a, b) => a.order - b.order));
   }
 
   connect(): Observable<BaseModel[]> {
@@ -122,7 +122,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       throw Error(`不能注册多个表单模型`);
     }
 
-    const options: FormControlConfig[] = Reflect.getMetadata(DY_FORM_OPTIONS, Model.prototype);
+    const options: FormControlConfig[] = Reflect.getMetadata(DY_FORM_OPTIONS, Model.prototype) || [];
 
     const attachedModels = Reflect.getMetadata(ATTACHED_MODEL, Model) as Type<M>[] || [];
     // 递归注册附加模型

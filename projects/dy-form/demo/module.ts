@@ -6,6 +6,7 @@ import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
 import {Provider} from '@angular/core';
 import {ExpandValidator} from './expand-verify';
+import {NzRadioModule} from 'ng-zorro-antd/radio';
 
 export const moduleList = [
   DyFormModule,
@@ -13,7 +14,8 @@ export const moduleList = [
   NzInputModule,
   NzSelectModule,
   NzButtonModule,
-  NzCheckboxModule
+  NzCheckboxModule,
+  NzRadioModule,
 ];
 
 export const providers: Provider[] = [

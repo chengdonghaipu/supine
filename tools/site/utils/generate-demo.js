@@ -249,7 +249,7 @@ function retrieveEntryComponents(plainCode) {
 }
 
 function retrieveOtherComponents(plainCode) {
-  const componentReg = /export\s+class\s+[A-Z][A-Za-z0-9]*Other[A-Za-z0-9]?Component/;
+  const componentReg = /export\s+class\s+[A-Z][A-Za-z0-9]*Other[A-Za-z0-9]?Component/g;
 
   const matches = (plainCode + '').match(componentReg) || [];
 

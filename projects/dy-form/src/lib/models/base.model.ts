@@ -1,6 +1,5 @@
 import {ModelPartial} from '../type';
 import {AsyncValidatorFn, FormControl, ValidatorFn} from '@angular/forms';
-import {ControlLayout} from './type';
 
 let nextUniqueId = 0;
 
@@ -8,6 +7,8 @@ export abstract class BaseModel<M = any> {
   abstract type: string;
 
   protected _placeHolder: string;
+
+  protected _order = 1;
 
   uid = 0;
 
@@ -46,7 +47,7 @@ export abstract class BaseModel<M = any> {
   /**
    * 与 invalid 相互配合  如果满足条件  则将 invalid 设置为false 即为有效状态
    */
-  // validOfIf: (value: any, context: ModelPartial<M>) => boolean = undefined;
+    // validOfIf: (value: any, context: ModelPartial<M>) => boolean = undefined;
 
   aliasName: string;
 
@@ -93,9 +94,18 @@ export abstract class BaseModel<M = any> {
    * 该属性 当且仅当不是响应式时有效
    * 控件宽度 默认整行
    */
-  // controlCol: string | number = 24;
+    // controlCol: string | number = 24;
 
   initHook: (that: this, context: ModelPartial<M>) => void;
+
+  set order(value: number) {
+    this._order = value;
+  }
+
+  get order() {
+    const isNumber = Object.prototype.toString.call(this._order) === '[object Number]';
+    return isNumber && !isNaN(this._order) ? this._order : 1;
+  }
 
   protected constructor() {
     this.uid = ++nextUniqueId;
@@ -110,7 +120,7 @@ export abstract class BaseModel<M = any> {
         }
       }
     }
-  }
+  };
 }
 
-export type FormControlConfig = BaseModel & {[key: string]: any};
+export type FormControlConfig = BaseModel & { [key: string]: any };

@@ -3,7 +3,6 @@ import {
   AfterContentInit,
   ChangeDetectorRef,
   Component,
-  ContentChild,
   ContentChildren,
   DoCheck,
   ElementRef,
@@ -39,16 +38,6 @@ import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {DyFormLayoutOutlet, DyLayoutComponent, DyLayoutDirective, DyLayoutItemDirective} from './dy-layout';
-
-// const enum DyFormBreakpoints {
-//   XS = '(max-width: 575px)',
-//   SM = '(min-width: 576px) and (max-width: 767px)',
-//   MD = '(min-width: 768px) and (max-width: 991px)',
-//   LG = '(min-width: 992px) and (max-width: 1199px)',
-//   XL = '(min-width: 1200px) and (max-width: 1599px)',
-//   XXL = '(min-width: 1600px) and (max-width: 1999px)',
-//   X3L = '(min-width: 2000px)',
-// }
 
 @Component({
   selector: 'jd-dy-form',
@@ -105,7 +94,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _customLayoutDef: DyLayoutDirective;
 
-  private _viewRefs: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>[] = [];
+  private _viewRefs: { [k: string]: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>> } = {};
 
   formArea: FormGroup;
 
@@ -121,8 +110,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   @ContentChildren(DyLayoutComponent, {descendants: true}) _customLayoutSelfDefs: QueryList<DyLayoutComponent>;
 
-  // @ViewChild(DyFormCellOutlet, {static: true}) _formCellOutlet: DyFormCellOutlet;
-
   @ViewChild(DyFormLayoutOutlet, {static: true}) _formLayoutOutlet: DyFormLayoutOutlet;
 
   @ViewChild(DyFormFooterOutlet, {static: true}) _formFooterOutlet: DyFormFooterOutlet;
@@ -136,17 +123,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   get options() {
     return this._options;
   }
-
-  /* get areaOptions() {
-     return this.dyFormRef.areaOptions;
-   }*/
-
-  /*get renderData() {
-    const keys = Object.keys(this.areaOptions)
-      .sort((a, b) => +a - +b)
-      .map(value => +value);
-    return keys.map(value => this.areaOptions[value]);
-  }*/
 
   /**
    * 重置控件
@@ -186,12 +162,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       resize$.next(0);
 
       this._resizeEvent = _renderer.listen('window', 'resize', () => resize$.next(_elementRef.nativeElement.offsetWidth));
-
-      // resize$
-      //   .pipe(debounceTime(45), distinctUntilChanged(), takeUntil(this._unsubscribe$))
-      //   .subscribe(value => this._setBreakpoint(value, () => {
-      //
-      //   }));
     });
   }
 
@@ -210,16 +180,35 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       .subscribe(value => {
         this._options = value;
       });
-
-    // const offsetWidth = this._elementRef.nativeElement.offsetWidth;
-
-    // this._watchDyFormRef();
-    // this._setBreakpoint(offsetWidth);
   }
 
   ngAfterContentInit(): void {
-    // console.log(this._formLayoutItems, this._layoutItemDefs, '_formLayoutItems');
     this._customLayoutSelfDefs.forEach(item => this._customLayoutDefs.add(item));
+
+    this._formFooterDefs
+      .changes
+      .pipe(takeUntil(this._unsubscribe$))
+      .subscribe(() => {
+        this._headerRowDefs = mergeArrayAndSet(this._formHeaderDefs.toArray(), this._customHeaderDefs);
+        this._forceRenderHeaderRows();
+      });
+
+    this._formHeaderDefs
+      .changes
+      .pipe(takeUntil(this._unsubscribe$))
+      .subscribe(() => {
+        this._footerRowDefs = mergeArrayAndSet(this._formFooterDefs.toArray(), this._customFooterDefs);
+
+        this._forceRenderFooterRows();
+      });
+
+    this._formLayoutItems
+      .changes
+      .pipe(takeUntil(this._unsubscribe$))
+      .subscribe(() => {
+        // console.log('changes');
+        this._layoutItemDefs = mergeArrayAndSet(this._formLayoutItems.toArray(), this._customLayoutItems);
+      });
   }
 
   registerCustomLayout(layoutDef: DyLayoutDirective) {
@@ -238,68 +227,37 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   addHeaderRowDef(headerRowDef: DyFormHeaderDef) {
     this._customHeaderDefs.add(headerRowDef);
     this._headerRowDefChanged = true;
+    this._headerRowDefs = mergeArrayAndSet(this._formHeaderDefs?.toArray() || [], this._customHeaderDefs);
   }
 
   removeHeaderRowDef(headerRowDef: DyFormHeaderDef) {
     this._customHeaderDefs.delete(headerRowDef);
     this._headerRowDefChanged = true;
+    this._headerRowDefs = mergeArrayAndSet(this._formHeaderDefs?.toArray() || [], this._customHeaderDefs);
   }
 
   addFooterRowDef(footerRowDef: DyFormFooterDef) {
     this._customFooterDefs.add(footerRowDef);
     this._footerRowDefChanged = true;
+    this._footerRowDefs = mergeArrayAndSet(this._formFooterDefs?.toArray() || [], this._customFooterDefs);
   }
 
   removeFooterRowDef(footerRowDef: DyFormFooterDef) {
     this._customFooterDefs.delete(footerRowDef);
     this._footerRowDefChanged = true;
+    this._footerRowDefs = mergeArrayAndSet(this._formFooterDefs?.toArray() || [], this._customFooterDefs);
   }
 
   addLayoutItemDef(layoutDef: DyLayoutItemDirective) {
     this._customLayoutItems.add(layoutDef);
     this._layoutItemDefChanged = true;
+    this._layoutItemDefs = mergeArrayAndSet(this._formLayoutItems?.toArray() || [], this._customLayoutItems);
   }
 
   removeLayoutItemDef(layoutDef: DyLayoutItemDirective) {
     this._customLayoutItems.delete(layoutDef);
     this._layoutItemDefChanged = true;
-  }
-
-  private _setBreakpoint(hostWidth: number, breakpointChangeCallback?: () => void) {
-    // tslint:disable-next-line:prefer-const one-variable-per-declaration
-    // let _bps = [], gridBreakpoints = this.dyFormRef.gridBreakpoints;
-    //
-    // for (const gridBreakpointsKey in gridBreakpoints) {
-    //   if (gridBreakpointsKey !== 'unit' && gridBreakpoints.hasOwnProperty(gridBreakpointsKey)) {
-    //     _bps.push({name: gridBreakpointsKey, value: gridBreakpoints[gridBreakpointsKey]});
-    //   }
-    // }
-    //
-    // _bps = _bps.sort((a, b) => b.value - a.value);
-    //
-    // for (let i = 0; i < _bps.length; i++) {
-    //   if (_bps[i].value < hostWidth) {
-    //     if (this._breakpoint !== _bps[i].name) {
-    //       this._setHostClass([_bps[i].name], this._breakpoint ? [this._breakpoint] : []);
-    //       this._breakpoint = _bps[i].name;
-    //       breakpointChangeCallback && breakpointChangeCallback();
-    //     }
-    //     break;
-    //   }
-    // }
-  }
-
-  private _setStyle(el: HTMLElement, value: { [key: string]: string }) {
-    for (const valueKey in value) {
-      this._renderer.setStyle(el, valueKey, value[valueKey]);
-    }
-  }
-
-  private _setHostClass(include: string[], exclude: string[]) {
-    const el = this._elementRef.nativeElement;
-
-    exclude.forEach(value => this._renderer.removeClass(el, value));
-    include.forEach(value => this._renderer.addClass(el, value));
+    this._layoutItemDefs = mergeArrayAndSet(this._formLayoutItems?.toArray() || [], this._customLayoutItems);
   }
 
   private _removeControlView({uid, name}: FormControlConfig) {
@@ -309,7 +267,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     if (layoutDef) {
       const containers = layoutDef.layoutChildren.filter(value => value.controlName === name);
 
-      if (!containers) {
+      if (!containers.length) {
         return false;
       }
 
@@ -319,7 +277,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       const context = viewRef.context;
 
-      if (context.model.config.uid === uid) {
+      if (context.model.uid === uid) {
         outletViewContainer.clear();
         return true;
       }
@@ -378,10 +336,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     if (item.hide) {
       return;
     }
-    // 目前只允许存在一个布局容器
-    // const layoutDef = Array.from(this._customLayoutDefs)[0];
-
-    // console.log(this._layoutItemDefs, '_layoutItemDefs');
 
     const containers = this._layoutItemDefs.filter(value => value.controlName === item.name);
 
@@ -389,8 +343,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       throw Error(`jd-form-layout 里 无法找到控件 ${item.name}`);
     }
 
-    // console.log(currentIndex, currentIndex);
-    this._viewRefs[currentIndex] = containers[0].viewContainer.createEmbeddedView(
+    this._viewRefs[item.uid] = containers[0].viewContainer.createEmbeddedView(
       dyFormColumnDef.template,
       new DyFormCellDefContext(null, item, -1, 0)
     );
@@ -515,7 +468,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
         getFormControl(config)
       );
     }
-    console.log('_addControl');
+    // console.log('_addControl');
   }
 
   private _addFormGroup(groupName: string) {
@@ -602,7 +555,17 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   private _removeControl(options: FormControlConfig) {
     this._removeControlView(options);
 
-    const {controlName, group, parent, name} = options;
+    const {controlName, group, parent, name, uid} = options;
+
+    delete this._viewRefs[uid];
+
+    // if (previousIndex > -1) {
+    //   this._viewRefs.splice(previousIndex, 1);
+    // } else {
+    //   console.log(`移除 ${name}---${uid} error`);
+    // }
+
+    this._recordControlUIDMap.delete(uid);
 
     if (group || !parent) {
       this.formArea.removeControl(controlName);
@@ -701,15 +664,27 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
     };
 
-    for (let renderIndex = 0, count = this._viewRefs.length; renderIndex < count; renderIndex++) {
-      const viewRef = this._viewRefs[renderIndex];
+    const keys = Object.keys(this._viewRefs);
 
-      attachContext(viewRef, count, renderIndex);
+    for (let renderIndex = 0; renderIndex < keys.length; renderIndex++) {
+      // const item = this._recordControlUIDMap.get(+keys[renderIndex]);
+      const viewRef = this._viewRefs[keys[renderIndex]];
+
+      if (!viewRef) {
+        return;
+      }
+
+      attachContext(viewRef, keys.length, renderIndex);
     }
   }
 
   private _applyChanges(changes: IterableChanges<FormControlConfig>) {
+    if (!changes) {
+      return;
+    }
+
     this._controlUIDMap.clear();
+
     this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
 
     changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>,
@@ -724,17 +699,13 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
           // customLayout ? this._renderLayoutModeControl(record, currentIndex) : this._renderCustomControl(record);
           this._renderLayoutModeControl(record.item, currentIndex);
         }
-
-        // console.log('新增 | 修改', record.item.name);
       } else if (currentIndex === null) {
         // 删除
         // console.log('删除', record.item.name, previousIndex);
         if (!this._controlUIDMap.get(record.item.uid)) {
           this._removeControl(record.item);
-          this._viewRefs.splice(previousIndex, 1);
         }
       } else {
-        // console.log('移动');
         // 移动 不需要处理
         // console.log('移动');
       }
@@ -742,14 +713,11 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     this._updateRowIndexContext();
 
-    // this._updateRowStyle();
-    // this._cdf.detectChanges();
     Promise.resolve().then(() => {
       this._cdf.markForCheck();
       if (!this._dyFormInit) {
         this._dyFormInit = true;
         this.dyFormRef.model.initHook();
-        // this.formArea.errors
       }
     });
   }
@@ -782,9 +750,6 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngDoCheck(): void {
-    /**
-     * 通过表单配置注册迭代差异器
-     */
     if (this._formOptionsDirty) {
       this._formOptionsDirty = false;
 
@@ -795,15 +760,21 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
       }
     }
 
-    /**
-     * 判断配置是否发生变化
-     */
     if (this._optionDiffer) {
       const changes = this._optionDiffer.diff(this.options);
 
       if (changes) {
         if (this._columnDefsByName.size) {
-          this._applyChanges(changes);
+          changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>) => {
+            const containers = this._layoutItemDefs.filter(value => value.controlName === record.item.name);
+
+            if (!containers.length) {
+              this._willRenderChanges = changes;
+            }
+          });
+          if (!this._willRenderChanges) {
+            this._applyChanges(changes);
+          }
         } else {
           this._willRenderChanges = changes;
         }
@@ -825,22 +796,25 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   ngAfterContentChecked(): void {
-    // const offsetWidth = this._elementRef.nativeElement.offsetWidth;
-
-    // this._watchDyFormRef();
-    // this._setBreakpoint(offsetWidth);
     this._cacheColumnDefs();
 
     if (this._columnDefsByName.size && this._willRenderChanges) {
       Promise.resolve().then(() => {
-        this._applyChanges(this._willRenderChanges);
+        // console.log('_applyChanges');
+        const willRenderChanges = this._willRenderChanges;
         this._willRenderChanges = null;
+        this._applyChanges(willRenderChanges);
       });
     }
 
     if (this._footerRowDefChanged) {
       this._forceRenderHeaderRows();
       this._footerRowDefChanged = false;
+    }
+
+    if (this._layoutItemDefChanged) {
+      // this.forceRenderLayout();
+      this._layoutItemDefChanged = false;
     }
 
     if (this._headerRowDefChanged) {
@@ -850,35 +824,12 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   private _cacheColumnDefs() {
-    const _headerRowDefs = mergeArrayAndSet(
-      this._formHeaderDefs.toArray(), this._customHeaderDefs);
 
-    // TODO 目前暂时通过长度变化 来渲染
-    if (this._headerRowDefs.length !== _headerRowDefs.length) {
-      this._forceRenderHeaderRows();
-    }
+    this._footerRowDefs = mergeArrayAndSet(this._formFooterDefs.toArray(), this._customFooterDefs);
 
-    this._headerRowDefs = _headerRowDefs;
+    this._headerRowDefs = mergeArrayAndSet(this._formHeaderDefs.toArray(), this._customHeaderDefs);
 
-    const _footerRowDefs = mergeArrayAndSet(
-      this._formFooterDefs.toArray(), this._customFooterDefs);
-
-    // TODO 目前暂时通过长度变化 来渲染
-    if (this._footerRowDefs.length !== _footerRowDefs.length) {
-      this._forceRenderFooterRows();
-    }
-
-    this._footerRowDefs = _footerRowDefs;
-
-    const _layoutItemDefs = mergeArrayAndSet(
-      this._formLayoutItems.toArray(), this._customLayoutItems);
-    // console.log(this._formLayoutItems.toArray(), _layoutItemDefs);
-    // TODO 目前暂时通过长度变化 来渲染
-    this._layoutItemDefs = _layoutItemDefs;
-    // console.log(_layoutItemDefs, 2222);
-    // if (this._layoutItemDefs.length !== _layoutItemDefs.length) {
-    //   this._layoutItemDefs = _layoutItemDefs;
-    // }
+    this._layoutItemDefs = mergeArrayAndSet(this._formLayoutItems.toArray(), this._customLayoutItems);
 
     this._columnDefsByName.clear();
 
