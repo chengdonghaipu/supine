@@ -11,59 +11,9 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
 
   model: T;
 
-  // customLayout = false;
-  //
-  // column = 24;
-
-  // gridBreakpoints: ControlLayout & { unit: string } = {
-  //   xs: 0,
-  //   sm: 576,
-  //   md: 768,
-  //   lg: 992,
-  //   xl: 1200,
-  //   xxl: 1600,
-  //   unit: 'px'
-  // };
-  //
-  // labelColLayout: ControlLayout = {
-  //   xs: '0 0 100%',
-  //   sm: '0 0 100%',
-  //   md: '0 0 25%',
-  //   lg: '0 0 25%',
-  //   xl: '0 0 25%',
-  //   xxl: '0 0 25%'
-  // };
-
-  // verticalLayout = {
-  //   labelCol: 6,
-  //   controlCol: 16,
-  // };
-
-  // private _areaOptions: { [key: number]: FormControlConfig[] } = {};
-
   protected readonly _renderData = new BehaviorSubject<FormControlConfig[]>([]);
 
   protected allOptions: FormControlConfig[] = [];
-  /**
-   * 容器个数
-   */
-  // containerCount = 1;
-
-/*  get areaOptions() {
-    return this._areaOptions;
-  }*/
-
-  // get verticalForm() {
-  //   return this.mode === 'vertical';
-  // }
-  //
-  // get horizontalForm() {
-  //   return this.mode === 'horizontal';
-  // }
-  //
-  // get responsiveForm() {
-  //   return false;
-  // }
 
   private readonly _optionMap = new Map<string, FormControlConfig>();
 
@@ -74,22 +24,6 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
   get options(): FormControlConfig[] {
     return this._renderData.value;
   }
-
-/*  generateAreaOptions(model?: FormControlConfig[]) {
-    const options = model || this.options;
-
-    options.forEach(value => {
-      if (!this.areaOptions[value.areaId]) {
-        this.areaOptions[value.areaId] = [];
-      }
-
-      this.areaOptions[value.areaId].push(value);
-    });
-
-    const keys = Object.keys(this.areaOptions);
-
-    this.containerCount = keys.length;
-  }*/
 
   /**
    * 注册模型!
@@ -124,12 +58,6 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
    */
   abstract updateControl(control: BaseModel | BaseModel[]): this;
 
-  /**
-   * 获取控件实例
-   * @param controlName
-   */
-  abstract getControlByName(controlName: string): FormControl;
-
   abstract connect(): Observable<BaseModel[]>;
 
   /**
@@ -149,18 +77,4 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
     onlySelf?: boolean;
     emitEvent?: boolean;
   });
-
-  /**
-   * 禁用控件 暂时不可用
-   * 支持批量
-   * @param keys
-   */
-  protected abstract disabledByKeys(keys: string[] | string): this;
-
-  /**
-   * 启用控件 暂时不可用
-   * 支持批量
-   * @param keys
-   */
-  protected abstract enabledByKeys(keys: string[] | string): this;
 }

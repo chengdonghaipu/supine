@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseFormModel, DyFormRef, AttachedModel, FormControlConfig} from '@supine/dy-form';
+import {BaseFormModel, DyFormRef, ControlModel, FormControlConfig} from '@supine/dy-form';
 import {InputModel} from './basic';
 
 export class CommonModel extends BaseFormModel {
@@ -13,7 +13,7 @@ export class CommonModel extends BaseFormModel {
   common2 = [null];
 }
 
-@AttachedModel({models: [CommonModel]})
+@ControlModel({models: [CommonModel]})
 export class FormModelAttached extends BaseFormModel {
 
   @InputModel<CommonModel>({label: '新的'})

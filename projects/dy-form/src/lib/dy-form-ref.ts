@@ -3,10 +3,11 @@ import {Type} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {AsyncValidatorFn, FormControl, ValidatorFn} from '@angular/forms';
 import {BaseFormModel} from './models';
-import {ATTACHED_MODEL, DY_FORM_OPTIONS, VALIDATOR_RULE} from './decorator/form-metadata';
+import {CONTROL_MODEL, DY_FORM_OPTIONS, VALIDATOR_RULE} from './decorator/form-metadata';
 import {AbstractDyFormRef} from './base-dy-form-ref';
 import {DyFormComponent} from './dy-form.component';
 import {universal_valid} from './validator-fn';
+import {ControlModelMeta} from './decorator';
 
 
 export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
@@ -14,31 +15,6 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   private _unsubscribe$ = new Subject<void>();
 
   dyForm: DyFormComponent;
-
-  // protected modelSet = new Map<Type<any>, FormControlConfig[]>();
-  /**
-   * 默认所有控件都按照这个配置进行响应式变化
-   */
-  // controlLayout: ControlLayout = {
-  //   xs: this.column,
-  //   sm: this.column / 2,
-  //   md: this.column / 2,
-  //   lg: this.column / 3,
-  //   xl: this.column / 4,
-  //   xxl: this.column / 4
-  // };
-
-  private _disabledOrEnabled(keys: string[] | string, enabled: boolean) {
-    const _updateField = [];
-    if (Array.isArray(keys)) {
-      keys.forEach(value1 => {
-        _updateField.push({name: value1, disabled: enabled});
-      });
-    } else if (typeof keys === 'string') {
-      _updateField.push({name: keys, disabled: enabled});
-    }
-    this.updateControl(_updateField);
-  }
 
   constructor(model: Type<T>) {
     super();
@@ -62,19 +38,19 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     return this._renderData;
   }
 
-  protected disabledByKeys(keys: string[] | string): this {
-    this._disabledOrEnabled(keys, true);
-    return this;
-  }
-
-  protected enabledByKeys(keys: string[] | string): this {
-    this._disabledOrEnabled(keys, false);
-    return this;
-  }
-
-  getControlByName(controlName: string): FormControl {
-    return undefined;
-  }
+  // protected disabledByKeys(keys: string[] | string): this {
+  //   this._disabledOrEnabled(keys, true);
+  //   return this;
+  // }
+  //
+  // protected enabledByKeys(keys: string[] | string): this {
+  //   this._disabledOrEnabled(keys, false);
+  //   return this;
+  // }
+  //
+  // getControlByName(controlName: string): FormControl {
+  //   return undefined;
+  // }
 
   private _registeredModel(model: FormControlConfig[]) {
     const optionMap = new Map<string, FormControlConfig>();
@@ -84,15 +60,9 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
         throw Error(`${value.name} always exists`);
       }
       optionMap.set(value.name, value);
-      // if (!value.controlLayout) {
-      //   value.controlLayout = this.controlLayout;
-      // }
     });
 
     this.allOptions = model;
-
-    // this.generateAreaOptions(model);
-    // this.renderDataNext(model);
   }
 
   /**
@@ -104,11 +74,8 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
     const formValue = this?.dyForm?.formArea.value || {};
 
-    const options = hook(formValue, this.allOptions, ...params);
+    const options = hook(formValue, this.allOptions/*.map(value => cloneDeep(value))*/, ...params);
 
-    // console.log((options || this.allOptions).length);
-
-    // this.generateAreaOptions(options || this.allOptions);
     this.renderDataNext(options || this.allOptions);
   }
 
@@ -124,7 +91,12 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
 
     const options: FormControlConfig[] = Reflect.getMetadata(DY_FORM_OPTIONS, Model.prototype) || [];
 
-    const attachedModels = Reflect.getMetadata(ATTACHED_MODEL, Model) as Type<M>[] || [];
+    const controlModel: ControlModelMeta<M> = Reflect.getMetadata(CONTROL_MODEL, Model) || {
+      models: [],
+      updateOn: null,
+    };
+
+    const {models: attachedModels, updateOn} = controlModel;
     // 递归注册附加模型
     attachedModels.forEach(value => {
       const tempOptions = this.resolveModel(value, true);
@@ -148,6 +120,8 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       const formOptionValue = _model[value.name];
       value.validators = [];
       value.asyncValidators = [];
+      value.updateOn = value.updateOn ? value.updateOn : (updateOn || 'change');
+
 
       if (formOptionValue) {
         if (!Array.isArray(formOptionValue)) {
@@ -175,12 +149,6 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       if (ruleObj) {
         // tslint:disable-next-line:prefer-const
         let {rule, msg, property} = ruleObj;
-
-       /* if (Array.isArray(rule)) {
-          rule = rule.join('&');
-        }
-
-        value.required = /required/.test(rule);*/
 
         (value.validators as ValidatorFn[]).push(universal_valid(value.name, rule, msg, property));
       }

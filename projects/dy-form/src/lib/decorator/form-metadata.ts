@@ -3,4 +3,4 @@ export const DY_FORM_OPTIONS = 'DY_FORM_OPTIONS';
 
 export const VALIDATOR_RULE = 'VALIDATOR_RULE';
 
-export const ATTACHED_MODEL = 'ATTACHED_MODEL';
+export const CONTROL_MODEL = 'CONTROL_MODEL';

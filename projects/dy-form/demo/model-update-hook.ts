@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseFormModel, DyFormRef, AttachedModel, FormControlConfig} from '@supine/dy-form';
+import {BaseFormModel, DyFormRef, ControlModel, FormControlConfig} from '@supine/dy-form';
 import {InputModel} from './basic';
 
 export class FormModel extends BaseFormModel {
@@ -22,7 +22,7 @@ export class FormModel extends BaseFormModel {
   filed5 = [null];
 }
 
-@AttachedModel({models: [FormModel]})
+@ControlModel({models: [FormModel]})
 export class FormModelByActionType extends BaseFormModel {
 
   /**
@@ -42,7 +42,7 @@ export class FormModelByActionType extends BaseFormModel {
   }
 }
 
-@AttachedModel({models: [FormModel]})
+@ControlModel({models: [FormModel]})
 export class FormModelByModelParams extends BaseFormModel {
 
   /**

@@ -14,17 +14,13 @@ export abstract class BaseModel<M = any> {
 
   name: string;
 
-  /*get uid() {
-     return this._uid;
-  }*/
-
   defaultValue: any = null;
 
   validators: ValidatorFn | ValidatorFn[] | null = [];
 
   asyncValidators: AsyncValidatorFn | AsyncValidatorFn[] | null = [];
 
-  tooltipText = '';
+  // tooltipText = '';
 
   labelClass: string[] = [];
 
@@ -37,17 +33,7 @@ export abstract class BaseModel<M = any> {
   /**
    * 验证时机
    */
-  updateOn: 'change' | 'blur' | 'submit' = 'change';
-
-  /**
-   * 当invalid为true 时 该控件会从动态表单中移除(注意: 不是隐藏)
-   */
-  invalid = false;
-
-  /**
-   * 与 invalid 相互配合  如果满足条件  则将 invalid 设置为false 即为有效状态
-   */
-    // validOfIf: (value: any, context: ModelPartial<M>) => boolean = undefined;
+  updateOn: 'change' | 'blur' | 'submit';
 
   aliasName: string;
 
@@ -83,8 +69,6 @@ export abstract class BaseModel<M = any> {
    */
   required = false;
 
-  // controlLayout: ControlLayout;
-
   formControl: FormControl | undefined;
 
   oldControl: this | undefined;
@@ -94,7 +78,6 @@ export abstract class BaseModel<M = any> {
    * 该属性 当且仅当不是响应式时有效
    * 控件宽度 默认整行
    */
-    // controlCol: string | number = 24;
 
   initHook: (that: this, context: ModelPartial<M>) => void;
 
@@ -124,3 +107,53 @@ export abstract class BaseModel<M = any> {
 }
 
 export type FormControlConfig = BaseModel & { [key: string]: any };
+
+export class ModelUpdateHelper {
+  private static disabledOrEnabled<M extends BaseModel>(keys: string[] | string, models: M[], enabled: boolean) {
+    const modelMap = new Map<string, M>();
+
+    models.forEach(value => modelMap.set(value.name, value));
+
+    const checkModelNotFound = (model: M, key: string) => {
+      if (!model) {
+        throw Error(`Model ${key} not found`);
+      }
+    };
+
+    let _keys = [];
+
+    if (typeof keys === 'string') {
+      _keys.push(keys);
+    } else if (Array.isArray(keys)) {
+      _keys = keys;
+    }
+
+    _keys.forEach(value => {
+      const model = modelMap.get(value);
+
+      checkModelNotFound(model, value);
+
+      model.disabled = !enabled;
+    });
+  }
+
+  /**
+   * 禁用控件
+   * 支持批量
+   * @param keys
+   * @param models
+   */
+  static disabledByKeys<M extends BaseModel>(keys: string[] | string, models: M[]): void {
+    ModelUpdateHelper.disabledOrEnabled(keys, models, false);
+  }
+
+  /**
+   * 启用控件
+   * 支持批量
+   * @param keys
+   * @param models
+   */
+  static enabledByKeys<M extends BaseModel>(keys: string[] | string, models: M[]): void {
+    ModelUpdateHelper.disabledOrEnabled(keys, models, true);
+  }
+}

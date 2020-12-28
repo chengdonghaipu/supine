@@ -21,32 +21,15 @@ export abstract class BaseFormModel<T = any> {
   }
 
   get value() {
-    const value = this.formGroup.value;
-    return this.filter(value);
+    return this.formGroup.value;
   }
 
   get getRawValue() {
-    const value = this.formGroup.getRawValue();
-    return this.filter(value);
+    return this.formGroup.getRawValue();
   }
 
   get<M extends FormControlConfig>(name: string): M {
     return this.option.find(value => value.name === name) as unknown as M;
-  }
-
-  protected filter(value) {
-    const valid = [];
-
-    this.option.forEach(value1 => {
-      if (!value1.invalid) {
-        valid.push(value1.controlName);
-      }
-    });
-    const _value: any = {};
-
-    valid.forEach(value1 => _value[value1] = value[value1]);
-    // this.
-    return _value;
   }
 
   initHook() {
