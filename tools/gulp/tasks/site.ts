@@ -24,12 +24,13 @@ const CI = process.env.CI;
  */
 task('watch:site', () => {
   // Globs accepts the Unix-style path separators only
-  const globs = [docsGlob, demoGlob].map(p => p.replace(/\\/g, '/'));
+  const globs = [docsGlob, demoGlob]/*.map(p => p.replace(/\\/g, '/'))*/;
   watch(globs).on(
     'change',
     debounce(path => {
+      console.log(path);
       const p = path.replace(/\\/g, '/');
-      const execArray = /components\/(.+)\/(doc|demo)/.exec(p);
+      const execArray = /projecs\/(.+)\/(doc|demo)/.exec(p);
       if (execArray && execArray[1]) {
         const component = execArray[1];
         console.log(`Reload '${component}'`);

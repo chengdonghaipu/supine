@@ -1,5 +1,5 @@
 import {AbstractControl, FormGroup} from '@angular/forms';
-import {FormControlConfig} from './base.model';
+import {FormControlModel} from './base.model';
 import {Observable, of} from 'rxjs';
 import {isObject} from '@supine/validator';
 
@@ -8,7 +8,7 @@ export abstract class BaseFormModel<T = any> {
 
   actionType: string;
 
-  options: FormControlConfig[];
+  options: FormControlModel[];
 
   protected attachValue;
 
@@ -28,7 +28,7 @@ export abstract class BaseFormModel<T = any> {
     return this.formGroup.getRawValue();
   }
 
-  get<M extends FormControlConfig>(name: string): M {
+  get<M extends FormControlModel>(name: string): M {
     return this.option.find(value => value.name === name) as unknown as M;
   }
 
@@ -48,7 +48,7 @@ export abstract class BaseFormModel<T = any> {
    * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params): FormControlConfig[] | void {
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params): FormControlModel[] | void {
 
   }
 

@@ -1,5 +1,5 @@
 ---
-order: 15
+order: 16
 title:
   zh-CN: 动态控制表单模型
   en-US: Customize Size

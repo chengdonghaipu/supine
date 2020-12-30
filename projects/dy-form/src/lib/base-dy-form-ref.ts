@@ -1,4 +1,4 @@
-import {BaseModel, FormControlConfig} from './models';
+import {BaseModel, FormControlModel} from './models';
 import {Type} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
@@ -11,17 +11,17 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
 
   model: T;
 
-  protected readonly _renderData = new BehaviorSubject<FormControlConfig[]>([]);
+  protected readonly _renderData = new BehaviorSubject<FormControlModel[]>([]);
 
-  protected allOptions: FormControlConfig[] = [];
+  protected allOptions: FormControlModel[] = [];
 
-  private readonly _optionMap = new Map<string, FormControlConfig>();
+  private readonly _optionMap = new Map<string, FormControlModel>();
 
-  get optionMap(): Map<string, FormControlConfig> {
+  get optionMap(): Map<string, FormControlModel> {
     return this._optionMap;
   }
 
-  get options(): FormControlConfig[] {
+  get options(): FormControlModel[] {
     return this._renderData.value;
   }
 
@@ -29,7 +29,7 @@ export abstract class AbstractDyFormRef<T extends BaseFormModel> {
    * 注册模型!
    * @param model
    */
-  protected abstract registeredModel(model: FormControlConfig[] | Type<any>): this;
+  protected abstract registeredModel(model: FormControlModel[] | Type<any>): this;
 
   /**
    * 添加控件

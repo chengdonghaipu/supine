@@ -43,6 +43,60 @@ cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 import { DyFormZorroModule } from ' @supine/dy-form-zorro';
 ```
 
+## 通过脚手架生成表单模型
+```shell
+ng g @supine/dy-form:model LoginModel
+```
+
+- 通过上面的命令即可生成 LoginModel 模型内容如下
+```typescript
+import {BaseFormModel, InputModel, ValidatorRule} from '@supine/dy-form';
+
+export class LoginModel extends BaseFormModel {
+  @InputModel<LoginModel>({label: 'label'})
+  @ValidatorRule(['max:999'], {max: '最大999'})
+  exp = [null];
+
+  /**
+   * 更新表单模型钩子
+   * @param formValue 当表单初始化后 formValue就为表单对象的value 否则为null
+   * @param model 注册了的模型配置数组 可以根据某些条件进行过滤 来动态控制表单
+   * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
+   * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
+   */
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params: any[]): FormControlModel[] | void {
+    return model;
+  }
+
+
+  /**
+   * 结合我封装的HTTP模块 可轻松实现批量对接与表单相关的接口
+   * HTTP模块 目前还没开源
+   * 即便不使用我封装的HTTP模块 按照以下模板 也容易实现
+   */
+  httpRequest() {
+    // return this.updateValueAndValidity()
+    //   .pipe(
+    //     filter(value => value),
+    //     concatMap(() => {
+    //       // 获取表单数据 如果不能满足需要 可以在子类实现value的获取
+    //       const body = super.value;
+    //       // 获取提交表单的一些外部参数 比如更新的参数ID  attachValue 通过 model.withAttachValue(数据)进行设置
+    //       const {id} = this.attachValue;
+    //
+    //       // 一系列与表单相关的接口
+    //       const httpRequestMap: HttpRequestMap = {
+    //         update: [this.http.updateRole, [body, id]],
+    //         add: [this.http.addRole, [body]],
+    //       };
+    //
+    //       const [handle, params] = httpRequestMap[this.actionType];
+    //
+    //       return handle(...params);
+    //     }));
+  }
+}
+```
 
 ## API
 

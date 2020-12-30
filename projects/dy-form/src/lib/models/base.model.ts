@@ -106,13 +106,16 @@ export abstract class BaseModel<M = any> {
   };
 }
 
-export type FormControlConfig = BaseModel & { [key: string]: any };
+export type FormControlModel = BaseModel & { [key: string]: any };
 
 export class ModelUpdateHelper {
-  private static disabledOrEnabled<M extends BaseModel>(keys: string[] | string, models: M[], enabled: boolean) {
+  private static disabledOrEnabled<M extends BaseModel>(keys: string[] | string, models: M[], enabled: boolean, reset = false) {
     const modelMap = new Map<string, M>();
 
-    models.forEach(value => modelMap.set(value.name, value));
+    models.forEach(value => {
+      modelMap.set(value.name, value);
+      reset && (value.disabled = enabled);
+    });
 
     const checkModelNotFound = (model: M, key: string) => {
       if (!model) {
@@ -142,9 +145,10 @@ export class ModelUpdateHelper {
    * 支持批量
    * @param keys
    * @param models
+   * @param reset
    */
-  static disabledByKeys<M extends BaseModel>(keys: string[] | string, models: M[]): void {
-    ModelUpdateHelper.disabledOrEnabled(keys, models, false);
+  static disabledByKeys<M extends BaseModel>(keys: string[] | string, models: M[], reset = false): void {
+    ModelUpdateHelper.disabledOrEnabled(keys, models, false, reset);
   }
 
   /**
@@ -152,8 +156,9 @@ export class ModelUpdateHelper {
    * 支持批量
    * @param keys
    * @param models
+   * @param reset
    */
-  static enabledByKeys<M extends BaseModel>(keys: string[] | string, models: M[]): void {
-    ModelUpdateHelper.disabledOrEnabled(keys, models, true);
+  static enabledByKeys<M extends BaseModel>(keys: string[] | string, models: M[], reset = false): void {
+    ModelUpdateHelper.disabledOrEnabled(keys, models, true, reset);
   }
 }

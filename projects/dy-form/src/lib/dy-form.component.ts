@@ -32,7 +32,7 @@ import {
   DyFormHeaderOutlet
 } from './dy-form.def';
 import {AbstractDyFormRef} from './base-dy-form-ref';
-import {FormControlConfig} from './models';
+import {FormControlModel} from './models';
 import {takeUntil} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 import {BreakpointType} from './type';
@@ -64,21 +64,21 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _customLayoutItems = new Set<DyLayoutItemDirective>();
 
-  private _controlUIDMap = new Map<number, FormControlConfig>();
+  private _controlUIDMap = new Map<number, FormControlModel>();
 
-  private _recordControlUIDMap = new Map<number, FormControlConfig>();
+  private _recordControlUIDMap = new Map<number, FormControlModel>();
   // 表单选项
-  private _options: FormControlConfig[] = [];
+  private _options: FormControlModel[] = [];
   // 窗口变化事件
   private _resizeEvent: () => void;
   // dyForm是否初始化
   private _dyFormInit = false;
   // 表单配置差异器
-  private _optionDiffer: IterableDiffer<FormControlConfig> | null = null;
+  private _optionDiffer: IterableDiffer<FormControlModel> | null = null;
 
   private _breakpoint: BreakpointType;
 
-  private _willRenderChanges: IterableChanges<FormControlConfig>;
+  private _willRenderChanges: IterableChanges<FormControlModel>;
 
   private _headerRowDefChanged = true;
 
@@ -94,7 +94,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
   private _customLayoutDef: DyLayoutDirective;
 
-  private _viewRefs: { [k: string]: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>> } = {};
+  private _viewRefs: { [k: string]: EmbeddedViewRef<DyFormCellDefContext<FormControlModel>> } = {};
 
   formArea: FormGroup;
 
@@ -260,7 +260,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._layoutItemDefs = mergeArrayAndSet(this._formLayoutItems?.toArray() || [], this._customLayoutItems);
   }
 
-  private _removeControlView({uid, name}: FormControlConfig) {
+  private _removeControlView({uid, name}: FormControlModel) {
     // 目前只允许存在一个布局容器
     const layoutDef = Array.from(this._customLayoutDefs)[0];
 
@@ -273,7 +273,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       const outletViewContainer = containers[0].viewContainer;
 
-      const viewRef = outletViewContainer.get(0) as EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>;
+      const viewRef = outletViewContainer.get(0) as EmbeddedViewRef<DyFormCellDefContext<FormControlModel>>;
 
       const context = viewRef.context;
 
@@ -286,7 +286,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return false;
   }
 
-  private _isRenderControl(item: FormControlConfig) {
+  private _isRenderControl(item: FormControlModel) {
     // 是否需要渲染控件
     let isRenderControl = true;
 
@@ -319,7 +319,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return isRenderControl;
   }
 
-  private _renderLayoutModeControl(item: FormControlConfig, currentIndex: number) {
+  private _renderLayoutModeControl(item: FormControlModel, currentIndex: number) {
     // 是否需要渲染控件
     const isRenderControl = this._isRenderControl(item);
 
@@ -351,7 +351,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     this._recordControlUIDMap.set(item.uid, item);
   }
 
-  private _addControl(record: IterableChangeRecord<FormControlConfig>) {
+  private _addControl(record: IterableChangeRecord<FormControlModel>) {
     const config = record.item;
 
     if (config.layoutGroup) {
@@ -552,7 +552,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     return control;
   }
 
-  private _removeControl(options: FormControlConfig) {
+  private _removeControl(options: FormControlModel) {
     this._removeControlView(options);
 
     const {controlName, group, parent, name, uid} = options;
@@ -579,7 +579,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
-  private _getGroupChildrenControlMap(childMap: { [key: string]: FormControlConfig }) {
+  private _getGroupChildrenControlMap(childMap: { [key: string]: FormControlModel }) {
     const childControlMap: { [key: string]: FormControl } = {};
 
     for (const childKey in childMap) {
@@ -610,7 +610,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   private _getGroupChildrenMap(groupName: string) {
-    const groupChildrenMap: { [key: string]: FormControlConfig } = {};
+    const groupChildrenMap: { [key: string]: FormControlModel } = {};
 
     this.options
       .filter(value => value.parent === groupName && !value.group)
@@ -620,7 +620,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
   }
 
   private _updateRowIndexContext() {
-    const attachContext = (viewRef: EmbeddedViewRef<DyFormCellDefContext<FormControlConfig>>, count: number, renderIndex: number) => {
+    const attachContext = (viewRef: EmbeddedViewRef<DyFormCellDefContext<FormControlModel>>, count: number, renderIndex: number) => {
       const {model} = viewRef.context;
 
       const controlName = model.name;
@@ -678,7 +678,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
     }
   }
 
-  private _applyChanges(changes: IterableChanges<FormControlConfig>) {
+  private _applyChanges(changes: IterableChanges<FormControlModel>) {
     if (!changes) {
       return;
     }
@@ -687,7 +687,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
     this.options.forEach(value => this._controlUIDMap.set(value.uid, value));
 
-    changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>,
+    changes.forEachOperation((record: IterableChangeRecord<FormControlModel>,
                               previousIndex: number | null,
                               currentIndex: number | null) => {
       // 新增 | 修改
@@ -765,7 +765,7 @@ export class DyFormComponent implements DoCheck, OnInit, OnDestroy, AfterContent
 
       if (changes) {
         if (this._columnDefsByName.size) {
-          changes.forEachOperation((record: IterableChangeRecord<FormControlConfig>) => {
+          changes.forEachOperation((record: IterableChangeRecord<FormControlModel>) => {
             const containers = this._layoutItemDefs.filter(value => value.controlName === record.item.name);
 
             if (!containers.length) {

@@ -85,7 +85,7 @@ import { DyFormModule } from ' @supine/dy-form';
 | --- | --- | --- | --- | --- | --- |
 | `model` | 表单模型实例，模型注册后即可获取 | `<T extends BaseFormModel>` | `null` | `public` | 很高 |
 | `dyForm` | 动态表单实例,一般很少用 | `DyFormComponent` | `null` | `public` | 很低 |
-| `allOptions` | 所有模型控件配置，一般拓展dyFormRef可能会用到 | `FormControlConfig[]` | `[]` | `protected` | 很低 |
+| `allOptions` | 所有模型控件配置，一般拓展dyFormRef可能会用到 | `FormControlModel[]` | `[]` | `protected` | 很低 |
 
 - 成员方法 - 根据使用频率从高往低排序
 

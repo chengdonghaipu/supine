@@ -1,4 +1,4 @@
-import {BaseModel, FormControlConfig} from './models';
+import {BaseModel, FormControlModel} from './models';
 import {Type} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {AsyncValidatorFn, FormControl, ValidatorFn} from '@angular/forms';
@@ -26,7 +26,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
     this._unsubscribe$.complete();
   }
 
-  protected renderDataNext(options: FormControlConfig[]) {
+  protected renderDataNext(options: FormControlModel[]) {
     this.optionMap.clear();
 
     options.forEach(value => this.optionMap.set(value.name, value));
@@ -52,8 +52,8 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
   //   return undefined;
   // }
 
-  private _registeredModel(model: FormControlConfig[]) {
-    const optionMap = new Map<string, FormControlConfig>();
+  private _registeredModel(model: FormControlModel[]) {
+    const optionMap = new Map<string, FormControlModel>();
 
     model.forEach(value => {
       if (optionMap.has(value.name)) {
@@ -89,7 +89,7 @@ export class DyFormRef<T extends BaseFormModel> extends AbstractDyFormRef<T> {
       throw Error(`不能注册多个表单模型`);
     }
 
-    const options: FormControlConfig[] = Reflect.getMetadata(DY_FORM_OPTIONS, Model.prototype) || [];
+    const options: FormControlModel[] = Reflect.getMetadata(DY_FORM_OPTIONS, Model.prototype) || [];
 
     const controlModel: ControlModelMeta<M> = Reflect.getMetadata(CONTROL_MODEL, Model) || {
       models: [],

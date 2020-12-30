@@ -18,7 +18,7 @@ import {
   DyLayoutComponent,
   DyLayoutDirective,
   DyLayoutItemDirective,
-  FormControlConfig
+  FormControlModel
 } from '@supine/dy-form';
 import {AbstractControl, FormControl, NgModel} from '@angular/forms';
 import {ZorroDyFormRef} from './dy-form-ref';
@@ -26,7 +26,7 @@ import {ZorroDyFormRef} from './dy-form-ref';
 @Directive({selector: '[jdDyFormCustomLayout]'})
 // tslint:disable-next-line:directive-class-suffix
 export class DyFormCustomLayout {
-  constructor(public viewContainer: ViewContainerRef, public template: TemplateRef<{ $implicit: FormControlConfig[] }>) {
+  constructor(public viewContainer: ViewContainerRef, public template: TemplateRef<{ $implicit: FormControlModel[] }>) {
     viewContainer.createEmbeddedView(template);
   }
 }

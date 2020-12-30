@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseFormModel, DyFormRef, ControlModel, FormControlConfig} from '@supine/dy-form';
+import {BaseFormModel, DyFormRef, ControlModel} from '@supine/dy-form';
 import {InputModel} from './basic';
 
 export class CommonModel extends BaseFormModel {
@@ -23,7 +23,7 @@ export class FormModelAttached extends BaseFormModel {
 @Component({
   selector: 'nz-demo-dy-form-common-model',
   template: `
-    <nz-zorro-dy-form [dyFormRef]="dyFormRef" layout="horizontal"></nz-zorro-dy-form>
+    <nz-zorro-dy-form [dyFormRef]="dyFormRef" layout="horizontal"></nz-zorro-dy-form>99
   `,
   styles: [
     `

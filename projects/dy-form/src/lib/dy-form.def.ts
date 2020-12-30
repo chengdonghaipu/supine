@@ -6,7 +6,7 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import {FormControlConfig} from './models';
+import {FormControlModel} from './models';
 import {FormControl} from '@angular/forms';
 
 
@@ -83,7 +83,7 @@ export class DyFormColumnDef {
 
   constructor(public viewContainer: ViewContainerRef,
               public elementRef: ElementRef,
-              public template: TemplateRef<DyFormCellDefContext<FormControlConfig>>) {
+              public template: TemplateRef<DyFormCellDefContext<FormControlModel>>) {
   }
 
   /** Unique name for this column. */

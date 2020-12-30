@@ -59,7 +59,7 @@ export class LoginModel extends BaseFormModel {
    * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params: any[]): FormControlModel[] | void {
     return model;
   }
 
@@ -124,7 +124,7 @@ export class LoginModel extends BaseFormModel {
    * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params: any[]): FormControlModel[] | void {
     return model;
   }
 
@@ -226,7 +226,7 @@ export class LoginModel extends BaseFormModel {
    * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params: any[]): FormControlModel[] | void {
     return model;
   }
 

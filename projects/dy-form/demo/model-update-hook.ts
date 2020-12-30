@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseFormModel, DyFormRef, ControlModel, FormControlConfig} from '@supine/dy-form';
+import {BaseFormModel, DyFormRef, ControlModel, FormControlModel} from '@supine/dy-form';
 import {InputModel} from './basic';
 
 export class FormModel extends BaseFormModel {
@@ -32,7 +32,7 @@ export class FormModelByActionType extends BaseFormModel {
    * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: any[]): FormControlConfig[] | void {
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params: any[]): FormControlModel[] | void {
     const groupMap = {
       group1: ['filed', 'filed1', 'filed2'],
       group2: ['filed', 'filed3', 'filed4'],
@@ -52,7 +52,7 @@ export class FormModelByModelParams extends BaseFormModel {
    * @param params 调用 executeModelUpdate方法传的参数 以此来更加灵活来动态控制表单
    * @return 如果返回值为void 则渲染所有注册的表单控件 如果返回表单控件数组 则只渲染该数组中的控件模型
    */
-  modelUpdateHook(formValue: any, model: FormControlConfig[], ...params: string[]): FormControlConfig[] | void {
+  modelUpdateHook(formValue: any, model: FormControlModel[], ...params: string[]): FormControlModel[] | void {
     return model.filter(value => params.includes(value.name));
   }
 }
