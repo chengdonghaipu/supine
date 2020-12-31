@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
 
   theme: SiteTheme = 'default';
 
-  language: 'zh' | 'en' = 'en';
+  language: 'zh' | 'en' = 'zh';
   direction: 'ltr' | 'rtl' = 'ltr';
   currentVersion = VERSION.full;
 
@@ -182,9 +182,9 @@ export class AppComponent implements OnInit {
         if (currentDemoComponent) {
           const path = currentDemoComponent.path.replace(/\/(en|zh)/, '');
           if (this.language === 'en') {
-            this.updateMateTitle(`${currentDemoComponent.label} | NG-ZORRO`);
+            this.updateMateTitle(`${currentDemoComponent.label} | NG-ZORRO-DOC`);
           } else {
-            this.updateMateTitle(`${currentDemoComponent.zh}(${currentDemoComponent.label}) | NG-ZORRO`);
+            this.updateMateTitle(`${currentDemoComponent.zh}(${currentDemoComponent.label}) | NG-ZORRO-DOC`);
           }
           this.updateDocMetaAndLocale(currentDemoComponent.description, `${currentDemoComponent.label}, ${currentDemoComponent.zh}`, path);
         }
@@ -193,13 +193,13 @@ export class AppComponent implements OnInit {
         if (currentIntroComponent) {
           const path = currentIntroComponent.path.replace(/\/(en|zh)/, '');
           if (/docs\/introduce/.test(this.router.url)) {
-            if (this.language === 'en') {
-              this.updateMateTitle(`NG-ZORRO - Angular UI component library`);
-            } else {
-              this.updateMateTitle(`NG-ZORRO - 企业级 UI 设计语言和 Angular 组件库`)
-            }
+            // if (this.language === 'en') {
+            //   this.updateMateTitle(`NG-ZORRO - Angular UI component library`);
+            // } else {
+            //   this.updateMateTitle(`NG-ZORRO - 企业级 UI 设计语言和 Angular 组件库`)
+            // }
           } else {
-            this.updateMateTitle(`${currentIntroComponent.label} | NG-ZORRO`);
+            this.updateMateTitle(`${currentIntroComponent.label} | NG-ZORRO-DOC`);
           }
           this.updateDocMetaAndLocale(currentIntroComponent.description, currentIntroComponent.label, path);
         }

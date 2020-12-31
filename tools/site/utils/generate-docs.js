@@ -84,7 +84,8 @@ function generateModule(docsPath, docsMap) {
     imports += `import { ${enComponentName} } from './${name}-en';\n`;
     imports += `import { ${zhComponentName} } from './${name}-zh';\n`;
     router += `\t\t\t{ path: '${name}/zh', component: ${zhComponentName} },\n`;
-    router += `\t\t\t{ path: '${name}/en', component: ${enComponentName} },\n`;
+    router += `\t\t\t{ path: '${name}/en', redirectTo: '${name}/zh' },\n`;
+    // router += `\t\t\t{ path: '${name}/en', component: ${enComponentName} },\n`;
     declarations += `\t\t${zhComponentName},\n`;
     declarations += `\t\t${enComponentName},\n`;
   }

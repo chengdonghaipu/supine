@@ -10,8 +10,9 @@ import { moduleList, providers } from './module';
     ShareModule,
     ...moduleList,
     RouterModule.forChild([
-      { path: 'en', component: NzDemo{{component}}EnComponent },
-      { path: 'zh', component: NzDemo{{component}}ZhComponent }
+      // { path: 'en', component: NzDemo{{component}}EnComponent },
+      { path: 'zh', component: NzDemo{{component}}ZhComponent },
+      { path: 'en', redirectTo: 'zh' },
     ])
   ],
   declarations: [
