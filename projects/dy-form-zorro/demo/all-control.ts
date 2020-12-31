@@ -27,10 +27,10 @@ export class FormModel extends BaseFormModel {
   @TextareaModel<FormModel>({label: 'textarea'})
   textarea = [null];
 
-  @SelectModel<FormModel>({label: 'select', optionContent: [{label: '男', value: 1}, {label: '女', value: 1}]})
+  @SelectModel<FormModel>({label: 'select', optionContent: [{label: '男', value: 1}, {label: '女', value: 2}]})
   select = [null];
 
-  @SelectGroupModel<FormModel>({label: 'selectGroup', addOnAfter: 'UC', optionContent: [{label: '男', value: 1}, {label: '女', value: 1}]})
+  @SelectGroupModel<FormModel>({label: 'selectGroup', addOnAfter: 'UC', optionContent: [{label: '男', value: 1}, {label: '女', value: 2}]})
   selectGroup = [null];
 
   @DatePickerModel<FormModel>({label: 'datePicker'})

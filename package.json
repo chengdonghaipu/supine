@@ -1,6 +1,6 @@
 {
   "name": "jd-lib",
-  "version": "10.0.0-rc45",
+  "version": "10.0.0",
   "keywords": [
     "validator",
     "Angular",
@@ -12,6 +12,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start:site": "gulp start:dev",
+    "build:site": "gulp build:simple-site",
     "watch:lib": "gulp build:watch:libs",
     "build": "gulp build:app && gulp build:version",
     "publish": "gulp build:publish",

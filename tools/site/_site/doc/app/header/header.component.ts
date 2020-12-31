@@ -23,7 +23,7 @@ const RESPONSIVE_SM = 1200;
           <app-logo></app-logo>
         </div>
         <div nz-col [nzXs]="0" [nzSm]="0" [nzMd]="18" [nzLg]="18" [nzXl]="19" [nzXXl]="20" class="menu-row">
-          <div app-searchbar [language]="language" [responsive]="responsive" (focusChange)="onFocusChange($event)"></div>
+<!--          <div app-searchbar [language]="language" [responsive]="responsive" (focusChange)="onFocusChange($event)"></div>-->
           <ng-container *ngIf="!isMobile" [ngTemplateOutlet]="menu"></ng-container>
         </div>
       </div>
@@ -67,14 +67,14 @@ const RESPONSIVE_SM = 1200;
             <nz-option [nzLabel]="currentVersion" [nzValue]="currentVersion"></nz-option>
             <nz-option *ngFor="let version of oldVersionList" [nzLabel]="version" [nzValue]="version"></nz-option>
           </nz-select>
-          <button
-            nz-button
-            nzSize="small"
-            class="header-button header-lang-butto"
-            (click)="onChangeLanguage(language === 'zh' ? 'en' : 'zh')"
-          >
-            {{ language == 'zh' ? 'English' : '中文' }}
-          </button>
+<!--          <button-->
+<!--            nz-button-->
+<!--            nzSize="small"-->
+<!--            class="header-button header-lang-butto"-->
+<!--            (click)="onChangeLanguage(language === 'zh' ? 'en' : 'zh')"-->
+<!--          >-->
+<!--            {{ language == 'zh' ? 'English' : '中文' }}-->
+<!--          </button>-->
 <!--          <button nz-button nzGhost nzSize="small" class="header-button header-direction-button" (click)="toggleDirection()">-->
 <!--            {{ nextDirection | uppercase }}-->
 <!--          </button>-->
